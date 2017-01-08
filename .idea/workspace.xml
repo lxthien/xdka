@@ -1,127 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="803f8d44-75bb-4c19-b6b7-a06e6fd14d1f" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/themes/xdka/images/dot.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/VietcomBank-Logo-thumb.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/VietcomBank-Logo.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-100x70.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-150x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-218x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-265x198.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-300x200.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-324x160.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-324x235.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-324x333.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-356x220.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-356x333.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-500x261.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha-80x60.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-sua-chua-nha.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-100x70.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-1024x691.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-1068x580.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-1068x721.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-150x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-218x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-265x198.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-300x202.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-324x160.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-324x235.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-324x400.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-356x220.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-356x364.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-533x261.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-534x462.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-622x420.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-696x385.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-696x470.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-741x486.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-768x518.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho-80x60.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-phan-tho.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-100x70.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-150x150.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-218x150.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-265x198.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-300x205.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-324x160.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-324x235.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-324x400.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-356x220.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-356x364.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-533x261.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-534x410.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-600x385.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi-80x60.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/bao-gia-xay-nha-tron-goi.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-100x70.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-150x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-218x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-265x198.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-300x186.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-324x160.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-324x235.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-324x400.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-356x220.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-356x364.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-533x261.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-534x462.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-676x420.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-696x385.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-696x432.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-741x486.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-768x477.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-80x60.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang-948x580.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-nang-tang.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-100x70.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-150x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-218x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-265x198.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-300x225.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-324x160.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-324x235.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-324x400.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-356x220.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-356x364.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-533x261.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-534x462.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-559x420.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-696x385.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-696x523.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-741x486.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-768x577.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-799x580.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re-80x60.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-chua-nha-tron-goi-gia-re.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-100x70.jpeg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-100x70.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-150x150.jpeg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-150x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-218x150.jpeg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-218x150.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-265x183.jpeg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-265x198.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-275x160.jpeg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-300x200.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-324x160.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-324x235.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-324x400.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-356x220.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-356x364.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-533x261.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-534x400.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-600x385.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-80x60.jpeg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe-80x60.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe.jpeg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/sua-nha-2-tang-thanh-quan-cafe.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/viglacera-logo-thumb.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wp-content/uploads/2017/01/viglacera-logo.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wp-content/themes/xdka/style.css" afterPath="$PROJECT_DIR$/wp-content/themes/xdka/style.css" />
-    </list>
+    <list default="true" id="803f8d44-75bb-4c19-b6b7-a06e6fd14d1f" name="Default" comment="" />
     <ignored path="xaydungkimanh.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -366,12 +246,20 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1483846680241</updated>
-      <workItem from="1483846682361" duration="2017000" />
+      <workItem from="1483846682361" duration="2147000" />
     </task>
+    <task id="LOCAL-00001" summary="Slider logo">
+      <created>1483886718220</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1483886718220</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2017000" />
+    <option name="totallyTimeSpent" value="2147000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="720" extended-state="6" />
@@ -424,6 +312,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Slider logo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Slider logo" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
