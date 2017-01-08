@@ -28627,3 +28627,34 @@ td-md-is-safari
 .wpb_single_image .vc_single_image-wrapper {
   display: inline-block !important;
 }
+
+
+
+.home-about-us h3 {
+  text-align: center;
+  background: url(./images/dot.png) no-repeat center bottom;
+  padding-bottom: 20px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  color: #184575;
+  font-family: "Open Sans";
+  font-size: 30px;
+  line-height: 35px;
+}
+.home-about-us p {
+  margin: 0;
+}
+.td-main-page-wrap {
+  padding-top: 15px;
+}
+.td-main-content-wrap {
+  padding-bottom: 15px;
+}
+
+.keyword-footer a {
+  padding: 5px 15px; background: #ffffff;
+  color: #000000;
+  margin-right: 10px;
+  display: inline-block;
+  margin-bottom: 5px;
+}
