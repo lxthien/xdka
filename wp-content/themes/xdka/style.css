@@ -1268,10 +1268,11 @@ Headers style
   background-color: #222222;
 }
 .td-header-style-1 .td-header-sp-logo {
-  width: 284px;
+  width: 300px;
   position: relative;
-  height: 90px;
-  margin: 28px 28px 9px 28px;
+  height: 115px;
+  margin: 28px 28px 9px 0px;
+  padding-left: 0px;
   /* responsive landscape tablet */
   /* responsive portrait tablet */
   /* responsive portrait phone */
@@ -1295,7 +1296,7 @@ Headers style
   }
 }
 .td-header-style-1 .td-header-sp-logo img {
-  max-height: 90px;
+  max-height: 115px;
   /* responsive portrait tablet */
 }
 @media (min-width: 768px) and (max-width: 1018px) {
@@ -9197,10 +9198,10 @@ blockquote.pull-right:after {
 .td-related-title .td-cur-simple-item,
 .woocommerce .product .products h2,
 .td-subcat-filter .td-subcat-dropdown:hover .td-subcat-more {
-  background-color: #4db2ec;
+  background-color: #184575;
 }
 .woocommerce div.product .woocommerce-tabs ul.tabs li.active {
-  background-color: #4db2ec !important;
+  background-color: #184575 !important;
 }
 .block-title,
 .td-related-title,
@@ -23530,7 +23531,7 @@ a.vc_btn-black.vc_btn_outlined:hover {
   margin: 0;
 }
 .widgettitle {
-  background-color: #222;
+  background-color: #184575;
   color: #fff;
   display: inline-block;
   padding: 6px 12px 4px;
@@ -28657,4 +28658,28 @@ td-md-is-safari
   margin-right: 10px;
   display: inline-block;
   margin-bottom: 5px;
+}
+
+
+.info-company {
+  float: left;
+}
+.header-right p {
+  margin: 0; color: #184575; font-family: "Roboto";
+}
+.header-right p.header-company {
+  font-size: 32px; line-height: 32px; text-transform: uppercase;
+}
+.header-right p.header-address, .header-right p.header-email, .header-right p.header-website {
+  font-size: 26px; line-height: 28px; letter-spacing: 1.1px;
+}
+
+.info-hotline {
+  float: right; text-align: right;
+}
+.info-hotline p.header-hotline {
+  font-size: 30px; line-height: 32px; text-decoration: underline;
+}
+.info-hotline p.header-hotline-number {
+  font-size: 15px;
 }
