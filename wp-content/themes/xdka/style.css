@@ -1296,7 +1296,7 @@ Headers style
   }
 }
 .td-header-style-1 .td-header-sp-logo img {
-  max-height: 115px;
+  max-height: 145px;
   /* responsive portrait tablet */
 }
 @media (min-width: 768px) and (max-width: 1018px) {
