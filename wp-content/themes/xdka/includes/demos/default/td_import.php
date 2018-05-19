@@ -98,6 +98,14 @@ td_demo_menus::add_link(array(
     background - leave empty if you want to make sure that there is NO background on the demo - td_demo_misc::update_background('');
  */
 td_demo_misc::update_background('');
+// mobile background
+td_demo_misc::update_background_mobile('td_pic_8');
+
+// login background
+td_demo_misc::update_background_login('td_pic_8');
+
+// footer background
+td_demo_misc::update_background_footer('td_pic_8');
 
 
 
@@ -106,22 +114,20 @@ td_demo_misc::update_background('');
  */
 td_demo_misc::update_logo(array(
     'normal' => 'td_pic_logo',
-    'retina' => 'td_pic_logo',
-    'mobile' => 'td_pic_logo_footer'
+    'mobile' => 'td_pic_logo_mobile'
 ));
 
 
 //footer
 td_demo_misc::update_footer_logo(array(
-    'normal' => 'td_pic_logo_footer',
-    'retina' => 'td_pic_logo_footer'
+    'normal' => 'td_pic_logo_footer'
 ));
 
 
 /*  ----------------------------------------------------------------------------
     footer text
  */
-td_demo_misc::update_footer_text('Newspaper 6 is your news, entertainment, music fashion website. We provide you with the latest breaking news and videos straight from the entertainment industry.');
+td_demo_misc::update_footer_text('Newspaper is your news, entertainment, music fashion website. We provide you with the latest breaking news and videos straight from the entertainment industry.');
 
 
 
@@ -156,6 +162,12 @@ td_demo_misc::add_ad_image('content_bottom', 'td_default_ad_full');
 
 //default sidebar
 td_demo_widgets::remove_widgets_from_sidebar('default');
+
+//remove footer widgets > remove existing widgets from footer widgets areas
+td_demo_widgets::remove_widgets_from_sidebar('footer-1');
+td_demo_widgets::remove_widgets_from_sidebar('footer-2');
+td_demo_widgets::remove_widgets_from_sidebar('footer-3');
+
 td_demo_widgets::add_widget_to_sidebar('default', 'td_block_ad_box_widget',
     array (
         'spot_title' => '- Advertisement -',
@@ -260,10 +272,10 @@ td_demo_widgets::add_widget_to_sidebar('td_demo_sidebar_blog', 'td_block_slide_w
 td_demo_widgets::add_widget_to_sidebar('td_demo_sidebar_blog', 'td_block_social_counter_widget',
     array (
         'custom_title'  => "I'M SOCIAL",
-        'facebook'      => "envato",
-        'twitter'       => "envato",
-        'instagram'     => "envato",
-        'youtube'       => "envato",
+        'facebook'      => "tagDiv",
+        'twitter'       => "tagDivOfficial",
+        'instagram'     => "tagDiv",
+        'youtube'       => "tagDiv",
         'header_color'  => '#cb9558'
     )
 );
@@ -567,7 +579,7 @@ $td_homepage_full_post_id = td_demo_content::add_page(array(
 $td_homepage_infinite_scroll_id = td_demo_content::add_page(array(
     'title' => 'Homepage - Infinite Scroll',
     'file' => td_global::$get_template_directory . '/includes/demos/default/pages/homepage_infinite_scroll.txt',
-    'template' => 'page.php',   // the page template full file name with .php
+    'template' => 'default',   // the page template full file name with .php
     'td_layout' => '',
     'homepage' => false
 ));
@@ -592,7 +604,7 @@ $td_homepage_newsmag_id = td_demo_content::add_page(array(
 $td_homepage_magazine_id = td_demo_content::add_page(array(
     'title' => 'Homepage - Magazine',
     'file' => td_global::$get_template_directory . '/includes/demos/default/pages/homepage_magazine.txt',
-    'template' => 'page.php',   // the page template full file name with .php
+    'template' => 'default',   // the page template full file name with .php
     'td_layout' => '',
     'homepage' => false
 ));
@@ -600,7 +612,7 @@ $td_homepage_magazine_id = td_demo_content::add_page(array(
 $td_homepage_loop_id = td_demo_content::add_page(array(
     'title' => 'Homepage - Loop',
     'file' => td_global::$get_template_directory . '/includes/demos/default/pages/homepage_loop.txt',
-    'template' => 'page.php',   // the page template full file name with .php
+    'template' => 'default',   // the page template full file name with .php
     'td_layout' => '',
     'homepage' => false
 ));
@@ -616,7 +628,7 @@ $td_homepage_big_slide_id = td_demo_content::add_page(array(
 $td_homepage_less_images_id = td_demo_content::add_page(array(
     'title' => 'Homepage - Big Slide',
     'file' => td_global::$get_template_directory . '/includes/demos/default/pages/homepage_less_images.txt',
-    'template' => 'page.php',   // the page template full file name with .php
+    'template' => 'default',   // the page template full file name with .php
     'td_layout' => '',
     'homepage' => false
 ));
@@ -770,7 +782,7 @@ td_demo_content::add_post(array(
     'categories_id_array' => array(get_cat_ID(TD_FEATURED_CAT), $demo_cat_7_id),
     'featured_image_td_id' => 'td_pic_4',
     'template' => 'single_template_11',
-    'featured_video_url' => 'https://www.youtube.com/watch?v=o7JSltCqpCI',
+    'featured_video_url' => 'https://www.youtube.com/watch?v=28wpIeHRcnI',
     'post_format' => 'video'
 ));
 td_demo_content::add_post(array(
@@ -793,7 +805,7 @@ td_demo_content::add_post(array(
     'categories_id_array' => array(get_cat_ID(TD_FEATURED_CAT), $demo_cat_10_id),
     'featured_image_td_id' => 'td_pic_9',
     'template' => 'single_template_11',
-    'featured_video_url' => 'https://www.youtube.com/watch?v=o7JSltCqpCI',
+    'featured_video_url' => 'https://www.youtube.com/watch?v=28wpIeHRcnI',
     'post_format' => 'video'
 ));
 td_demo_content::add_post(array(
@@ -866,7 +878,7 @@ td_demo_content::add_post(array(
     'categories_id_array' => array($demo_cat_8_id),
     'featured_image_td_id' => 'td_pic_9',
     'template' => 'single_template_11',
-    'featured_video_url' => 'https://www.youtube.com/watch?v=o7JSltCqpCI',
+    'featured_video_url' => 'https://www.youtube.com/watch?v=28wpIeHRcnI',
     'post_format' => 'video'
 ));
 td_demo_content::add_post(array(
@@ -967,7 +979,7 @@ td_demo_content::add_post(array(
     'categories_id_array' => array($demo_cat_2_id),
     'featured_image_td_id' => 'td_pic_11',
     'template' => 'single_template_11',
-    'featured_video_url' => 'https://www.youtube.com/watch?v=o7JSltCqpCI',
+    'featured_video_url' => 'https://www.youtube.com/watch?v=28wpIeHRcnI',
     'post_format' => 'video'
 ));
 td_demo_content::add_post(array(
@@ -1046,7 +1058,7 @@ td_demo_content::add_post(array(
     'categories_id_array' => array($demo_cat_2_id),
     'featured_image_td_id' => 'td_pic_5',
     'template' => 'single_template_11',
-    'featured_video_url' => 'https://www.youtube.com/watch?v=o7JSltCqpCI',
+    'featured_video_url' => 'https://www.youtube.com/watch?v=28wpIeHRcnI',
     'post_format' => 'video'
 ));
 td_demo_content::add_post(array(
@@ -1101,7 +1113,7 @@ td_demo_content::add_post(array(
     'categories_id_array' => array($demo_cat_5_id),
     'featured_image_td_id' => 'td_pic_2',
     'template' => 'single_template_11',
-    'featured_video_url' => 'https://www.youtube.com/watch?v=o7JSltCqpCI',
+    'featured_video_url' => 'https://www.youtube.com/watch?v=28wpIeHRcnI',
     'post_format' => 'video'
 ));
 td_demo_content::add_post(array(
@@ -1162,7 +1174,7 @@ td_demo_content::add_post(array(
     'categories_id_array' => array($demo_cat_2_id),
     'featured_image_td_id' => 'td_pic_4',
     'template' => 'single_template_11',
-    'featured_video_url' => 'https://www.youtube.com/watch?v=o7JSltCqpCI',
+    'featured_video_url' => 'https://www.youtube.com/watch?v=28wpIeHRcnI',
     'post_format' => 'video'
 ));
 td_demo_content::add_post(array(
@@ -1203,7 +1215,7 @@ td_demo_content::add_post(array(
     'categories_id_array' => array($demo_cat_9_id),
     'featured_image_td_id' => 'td_pic_8',
     'template' => 'single_template_11',
-    'featured_video_url' => 'https://www.youtube.com/watch?v=o7JSltCqpCI',
+    'featured_video_url' => 'https://www.youtube.com/watch?v=28wpIeHRcnI',
     'post_format' => 'video'
 ));
 td_demo_content::add_post(array(
@@ -1245,7 +1257,7 @@ td_demo_content::add_post(array(
     'categories_id_array' => array($demo_cat_10_id),
     'featured_image_td_id' => 'td_pic_2',
     'template' => 'single_template_11',
-    'featured_video_url' => 'https://www.youtube.com/watch?v=o7JSltCqpCI',
+    'featured_video_url' => 'https://www.youtube.com/watch?v=28wpIeHRcnI',
     'post_format' => 'video'
 ));
 td_demo_content::add_post(array(

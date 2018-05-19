@@ -24,32 +24,38 @@ class td_block_big_grid_8 extends td_block {
 
         $buffy = '';
 
-        $buffy .= '<div class="' . $this->get_block_classes(array($td_grid_style, 'td-hover-1')) . '">';
+        $buffy .= '<div class="' . $this->get_block_classes(array($td_grid_style, 'td-hover-1 td-big-grids')) . '" ' . $this->get_block_html_atts() . '>';
+
+		    //get the block css
+		    $buffy .= $this->get_block_css();
+
             $buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner">';
-                $buffy .= $this->inner($this->td_query->posts); //inner content of the block
+                $buffy .= $this->inner($this->td_query->posts, $this->get_att('td_column_number')); //inner content of the block
                 $buffy .= '<div class="clearfix"></div>';
             $buffy .= '</div>';
         $buffy .= '</div> <!-- ./block -->';
         return $buffy;
     }
 
-    function inner($posts) {
+    function inner($posts, $td_column_number = '') {
 
         $buffy = '';
 
-            $td_block_layout = new td_block_layout();
+        if (!empty($posts)) {
 
-            if (!empty($posts)) {
+            if ($td_column_number==1 || $td_column_number==2) {
+                $buffy .= td_util::get_block_error('Big grid 8', 'Please move this shortcode on a full row in order for it to work.');
+            } else {
 
                 $buffy .= '<div class="td-big-grid-wrapper">';
 
                 $post_count = 0;
 
-	            // when 2 posts make post scroll full
-	            $td_scroll_posts = '';
-	            if (count($posts) == 3) {
-		            $td_scroll_posts = ' td-scroll-full';
-	            }
+                // when 2 posts make post scroll full
+                $td_scroll_posts = '';
+                if (count($posts) == 3) {
+                    $td_scroll_posts = ' td-scroll-full';
+                }
 
                 foreach ($posts as $post) {
 
@@ -72,7 +78,7 @@ class td_block_big_grid_8 extends td_block {
                     // group 2
                     if ($post_count == 2) {
                         $buffy .= '</div>';
-	                    $buffy .= '<div class="td-big-grid-scroll' . $td_scroll_posts . '">';
+                        $buffy .= '<div class="td-big-grid-scroll' . $td_scroll_posts . '">';
                         $buffy .= '<div class="td-grid-columns td-grid-group-2">';
                     }
                     if ($post_count >= 2 && $post_count <= 4) {
@@ -101,7 +107,6 @@ class td_block_big_grid_8 extends td_block {
                     }
                 }
 
-
                 if ($post_count < self::POST_LIMIT) {
 
                     for ($i = $post_count; $i < self::POST_LIMIT; $i++) {
@@ -110,12 +115,12 @@ class td_block_big_grid_8 extends td_block {
                         if ( $post_count == 0 ) {
                             $buffy .= '<div class="td-grid-columns td-grid-group-1">';
                             $td_module_mx_empty = new td_module_mx_empty();
-                            $buffy .= $td_module_mx_empty->render( $post_count );
+                            $buffy .= $td_module_mx_empty->render($i, 'td_module_mx14');
                             $post_count ++;
                         }
                         if ( $post_count == 1 ) {
                             $td_module_mx_empty = new td_module_mx_empty();
-                            $buffy .= $td_module_mx_empty->render( $post_count );
+                            $buffy .= $td_module_mx_empty->render($i, 'td_module_mx12');
                             $post_count ++;;
                         }
 
@@ -128,7 +133,7 @@ class td_block_big_grid_8 extends td_block {
                         }
                         if ( $post_count >= 2 && $post_count <= 4 ) {
                             $td_module_mx_empty = new td_module_mx_empty();
-                            $buffy .= $td_module_mx_empty->render( $post_count );
+                            $buffy .= $td_module_mx_empty->render($i, 'td_module_mx12');
                             $post_count ++;
                         }
 
@@ -138,23 +143,23 @@ class td_block_big_grid_8 extends td_block {
                             $buffy .= '</div>';
                             $buffy .= '<div class="td-grid-columns td-grid-group-3">';
                             $td_module_mx_empty = new td_module_mx_empty();
-                            $buffy .= $td_module_mx_empty->render( $post_count );
+                            $buffy .= $td_module_mx_empty->render($i, 'td_module_mx12');
                             $post_count ++;
                         }
                         if ( $post_count == 6 ) {
                             $td_module_mx_empty = new td_module_mx_empty();
-                            $buffy .= $td_module_mx_empty->render( $post_count );
+                            $buffy .= $td_module_mx_empty->render($i,'$td_module_mx14');
                             $post_count ++;
                             $buffy .= '</div>';
                         }
                     }
                 }
 
-	                $buffy .= '</div>';  // close td-big-grid-scroll
-	            $buffy .= '</div>'; // close td-big-grid-wrapper
+                    $buffy .= '</div>';  // close td-big-grid-scroll
+                $buffy .= '</div>'; // close td-big-grid-wrapper
             }
+        }
 
-            $buffy .= $td_block_layout->close_all_tags();
         return $buffy;
     }
 }

@@ -35,34 +35,74 @@ function td_js_generator() {
     td_js_buffer::add_variable('td_magnific_popup_translation_image_tError', __td('The image #%curr% could not be loaded.', TD_THEME_NAME));
 
 
-    td_js_buffer::add_to_header("
-var tdBlocksArray = []; //here we store all the items for the current page
+	// make the nonce for our wp-admin ajax
+	if (is_admin()) {
+		if (current_user_can('switch_themes')) {
+			td_js_buffer::add_variable('tdWpAdminImportNonce', wp_create_nonce('td-demo-install'));         // install demos
+		}
 
-//td_block class - each ajax block uses a object of this class for requests
-function tdBlock() {
-    this.id = '';
-    this.block_type = 1; //block type id (1-234 etc)
-    this.atts = '';
-    this.td_column_number = '';
-    this.td_current_page = 1; //
-    this.post_count = 0; //from wp
-    this.found_posts = 0; //from wp
-    this.max_num_pages = 0; //from wp
-    this.td_filter_value = ''; //current live filter value
-    this.is_ajax_running = false;
-    this.td_user_action = ''; // load more or infinite loader (used by the animation)
-    this.header_color = '';
-    this.ajax_pagination_infinite_stop = ''; //show load more at page x
-}
+		if (current_user_can('edit_theme_options')) {
+			td_js_buffer::add_variable('tdWpAdminPanelBoxNonce', wp_create_nonce('td-panel-box'));          // load ajax box
+			td_js_buffer::add_variable('tdWpAdminSidebarOpsNonce', wp_create_nonce('td-sidebar-ops'));      // sidebar operations in theme panel
+		}
+	}
 
-    ");
+    // javascript date
+    if (td_util::get_option('tds_data_js') == 'true') {
+
+        // get format and timestamp
+        $td_date_i18n_format = td_util::get_option('tds_data_time_format');
+        if ($td_date_i18n_format == '') {
+            $td_date_i18n_format = 'l, F j, Y';
+        }
+        td_js_buffer::add_variable('tdsDateFormat', $td_date_i18n_format);
+    }
+	
+	// global used by tdDatei18n.js
+	global $wp_locale;
+	$monthNames = array_map(array($wp_locale, 'get_month'), range(1, 12));
+	$monthNamesShort = array_map(array($wp_locale, 'get_month_abbrev'), $monthNames);
+	$dayNames = array_map(array($wp_locale, 'get_weekday'), range(0, 6));
+	$dayNamesShort = array_map(array($wp_locale, 'get_weekday_abbrev'), $dayNames);
+	td_js_buffer::add_variable('tdDateNamesI18n', array(
+		"month_names" => $monthNames,
+		"month_names_short" => $monthNamesShort,
+		"day_names" => $dayNames,
+		"day_names_short" => $dayNamesShort
+	));
+
+    //tinymce video playlits shortcodes
+    if (td_api_features::is_enabled('video_playlists') === false){
+        td_js_buffer::add_variable('tds_video_playlists', false);
+    }
 
 
-    // The mini detector - ads classes to the HTML tag, it enables us to fix issues in each device.
-    // Has to run as fast as possible
+
+    // This js code has to run as fast as possible. No jQuery dependencies here
     ob_start();
     ?>
     <script>
+
+	    var tdBlocksArray = []; //here we store all the items for the current page
+
+	    //td_block class - each ajax block uses a object of this class for requests
+	    function tdBlock() {
+		    this.id = '';
+		    this.block_type = 1; //block type id (1-234 etc)
+		    this.atts = '';
+		    this.td_column_number = '';
+		    this.td_current_page = 1; //
+		    this.post_count = 0; //from wp
+		    this.found_posts = 0; //from wp
+		    this.max_num_pages = 0; //from wp
+		    this.td_filter_value = ''; //current live filter value
+		    this.is_ajax_running = false;
+		    this.td_user_action = ''; // load more or infinite loader (used by the animation)
+		    this.header_color = '';
+		    this.ajax_pagination_infinite_stop = ''; //show load more at page x
+	    }
+
+
         // td_js_generator - mini detector
         (function(){
             var htmlTag = document.getElementsByTagName("html")[0];
@@ -100,6 +140,10 @@ function tdBlock() {
                 htmlTag.className += ' td-md-is-safari';
             }
 
+            if( -1 !== navigator.userAgent.indexOf('IEMobile') ){
+                htmlTag.className += ' td-md-is-iemobile';
+            }
+
         })();
 
 
@@ -131,6 +175,7 @@ function tdBlock() {
     </script>
     <?php
     td_js_buffer::add_to_header(td_util::remove_script_tag(ob_get_clean()));
+
 
 
 

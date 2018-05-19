@@ -29,7 +29,7 @@ if (!empty($td_post_featured_image)) {
 }
 
 ?>
-<article id="post-<?php echo $td_mod_single->post->ID;?>" class="<?php echo join(' ', get_post_class('td-post-template-6'));?>" <?php echo $td_mod_single->get_item_scope();?>>
+<article id="post-<?php echo $td_mod_single->post->ID;?>" class="<?php echo join(' ', get_post_class('td-post-template-6'));?> td-container-wrap" <?php echo $td_mod_single->get_item_scope();?>>
 
     <div class="td-full-screen-header-image-wrap">
 

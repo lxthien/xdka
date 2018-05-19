@@ -14,6 +14,10 @@
   max-width: 1050px;
   clear: both;
 
+  @media (max-width: 730px) {
+    margin-right: 30px;
+  }
+
   p {
     font-size: 15px;
     line-height: 25px;
@@ -24,25 +28,30 @@
     height: 21px;
     z-index: 1;
     position: absolute;
-    padding: 0 15px;
+    padding: 0 9px;
     color: #fff;
-    font-size: 12px;
+    font-size: 10px;
     vertical-align: middle;
     font-weight: 700;
-    text-transform: capitalize;
+    text-transform: uppercase;
     line-height: 21px;
     letter-spacing: 0.2px;
+    background-color: #222;
 
     &.td-required {
-      background-color: #aa0100;
+      background-color: #d93d4f;
     }
 
     &.td-optional {
-      background-color: #3c80dc;
+      background-color: #0085ba;
     }
 
     &.td-active {
-      background-color: #b0d029;
+      background-color: #69bd32;
+    }
+
+    &.td-premium{
+      background-color: #f4ae2b;
     }
   }
 
@@ -53,8 +62,8 @@
     position: relative;
 
     /* responsive portrait phone  */
-    @media (min-width: 1600px) {
-        height: 213px;
+    @media (min-width: 1298px) {
+        height: 214px;
     }
   }
   .theme .theme-actions {
@@ -106,9 +115,14 @@
     }
   }
 
-  &.theme-browser .theme:nth-of-type(3n+1) {
+  &.td-admin-plugins .theme:nth-of-type(3n+1) {
     margin-left: 0 !important;
   }
+}
+
+// demo install page button align
+.td-demo-page-content .theme .theme-actions .button {
+  line-height: 14px;
 }
 
 
@@ -117,17 +131,38 @@
 */
 
 .td-wp-admin-header {
-  //background-color: #f1f1f1;
-  //background-color: white;
   max-width: none;
-  margin: 0 -48px 0 0px;
+  margin: 0 -48px 0 0;
   padding-left: 28px;
   padding-top: 28px;
   position:relative;
   left:-48px;
 
   .nav-tab-wrapper {
-    padding-left: 37px !important;
+    padding-left: 40px !important;
+  }
+
+  .nav-tab {
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  @media (min-width: 880px) and (max-width: 1210px) {
+    .nav-tab {
+      margin-left: .4em;
+      padding: 4px 9px;
+      font-size: 16px;
+    }
+  }
+
+  /* responsive portrait tablet */
+  @media (min-width: 600px) and (max-width: 880px) {
+    .nav-tab {
+      margin-left: .3em;
+      padding: 3px 8px;
+      font-size: 15px;
+    }
   }
 }
 
@@ -156,10 +191,12 @@
   }
 
   h2 {
+    margin: 1em 0 0.5em;
     color: #111;
     font-size: 1.8em;
     font-weight: bold;
     line-height: 1.1em;
+    text-align: left;
   }
 }
 
@@ -213,9 +250,6 @@
       display: inline-block;
       font-size: 13px;
       margin: 0 0 0 5px;
-      //line-height: 1;
-      //position: relative;
-      //top: 1px;
     }
 
     .td-checbox-buton {
@@ -240,6 +274,24 @@
       @media (max-width: 782px) {
         text-align: center;
       }
+    }
+  }
+}
+
+// plugins page
+.td-admin-plugins {
+  .theme .theme-screenshot img {
+    width: auto;
+    margin: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    max-width: none;
+
+    /* responsive portrait phone */
+    @media (max-width: 1300px) {
+      max-height: 100%;
     }
   }
 }

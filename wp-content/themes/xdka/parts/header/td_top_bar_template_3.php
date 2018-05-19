@@ -5,4 +5,6 @@
         <?php locate_template('parts/header/top-widget.php', true); ?>
     </div>
 
-<?php } ?> 
+<?php }
+    locate_template('parts/header/td-login-modal.php', true);
+?>

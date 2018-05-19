@@ -51,6 +51,130 @@
 <?php echo td_panel_generator::box_end();?>
 
 
+<!-- FOOTER INSTAGRAM SETTINGS -->
+<?php echo td_panel_generator::box_start('Instagram settings', false); ?>
+
+<div class="td-box-row">
+    <div class="td-box-description td-box-full">
+        <p>From this section you can set and configure the <strong>Footer Instagram Section</strong> - this area appears above the footer section on all pages</p>
+        <ul>
+            <li> Note: When you enable this make sure you also enter an Instagram ID in the <strong>INSTAGRAM ID</strong> field! </li>
+        </ul>
+    </div>
+
+
+    <div class="td-box-row-margin-bottom"></div>
+</div>
+
+<!-- Enable Instagram -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">SHOW THE FOOTER INSTAGRAM SECTION</span>
+        <p>Show or hide the instagram section</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_footer_instagram',
+            'true_value' => 'show',
+            'false_value' => ''
+        ));
+        ?>
+    </div>
+</div>
+
+<!-- Instagram ID -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Instagram ID</span>
+        <p>Enter the ID as it appears after the instagram url ( ex. instagram.com/<strong>myID</strong> )</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::input(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_footer_instagram_id'
+        ));
+        ?>
+    </div>
+</div>
+
+<!-- number of images per row -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Number of images per row:</span>
+        <p>Set the number of images displayed on each row (default is 3)</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::dropdown(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_footer_instagram_on_row_images_number',
+            'values' => array(
+                array('text' => '- Default -' , 'val' => ''),
+                array('text' => '1' , 'val' => 1),
+                array('text' => '2' , 'val' => 2),
+                array('text' => '3' , 'val' => 3),
+                array('text' => '4' , 'val' => 4),
+                array('text' => '5' , 'val' => 5),
+                array('text' => '6' , 'val' => 6),
+                array('text' => '7' , 'val' => 7),
+                array('text' => '8' , 'val' => 8),
+            )
+        ));
+        ?>
+    </div>
+</div>
+
+<!-- number of rows -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Number of rows:</span>
+        <p>Set on how many rows to display the images (default is 1)</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::dropdown(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_footer_instagram_rows_number',
+            'values' => array(
+                array('text' => '- Default -' , 'val' => ''),
+                array('text' => '1' , 'val' => 1),
+                array('text' => '2' , 'val' => 2),
+                array('text' => '3' , 'val' => 3),
+                array('text' => '4' , 'val' => 4),
+                array('text' => '5' , 'val' => 5)
+            )
+        ));
+        ?>
+    </div>
+</div>
+
+<!-- image gap -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">Image gap</span>
+        <p>Set a gap between images (default: No gap)</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::dropdown(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_footer_instagram_image_gap',
+            'values' => array(
+                array('text' => 'No gap' , 'val' => ''),
+                array('text' => '2 px' , 'val' => 2),
+                array('text' => '5 px' , 'val' => 5)
+            )
+        ));
+        ?>
+    </div>
+</div>
+
+
+<?php echo td_panel_generator::box_end();?>
+
 
 
 <!-- FOOTER PREDEFINED CONTENT -->
@@ -100,49 +224,49 @@
         </div>
     </div>
 
-	<!-- footer logo alt -->
-	<div class="td-box-row">
-		<div class="td-box-description">
-			<span class="td-box-title">LOGO ALT ATTRIBUTE</span>
-			<p><a target="_blank" href="http://www.w3schools.com/tags/att_img_alt.asp">Alt attribute</a> for the logo. This is the alternative text if the logo cannot be displayed. It's useful for SEO and generally is the name of the site.
-				<?php td_util::tooltip_html('
-	                        <h3>Footer Logo ALT:</h3>
-	                        <p>If you don\'t set the footer alt attribute the theme will use the one set for the header logo.</p>
+    <!-- footer logo alt -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">LOGO ALT ATTRIBUTE</span>
+            <p><a target="_blank" href="http://www.w3schools.com/tags/att_img_alt.asp">Alt attribute</a> for the logo. This is the alternative text if the logo cannot be displayed. It's useful for SEO and generally is the name of the site.
+                <?php td_util::tooltip_html('
+                        <h3>Footer Logo ALT:</h3>
+                        <p>If you don\'t set the footer alt attribute the theme will use the one set for the header logo.</p>
 
-	                ', 'right')?>
-			</p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::input(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_footer_logo_alt'
-			));
-			?>
-		</div>
-	</div>
+                ', 'right')?>
+            </p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::input(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_footer_logo_alt'
+            ));
+            ?>
+        </div>
+    </div>
 
-	<!-- footer logo title -->
-	<div class="td-box-row">
-		<div class="td-box-description">
-			<span class="td-box-title">LOGO TITLE ATTRIBUTE</span>
-			<p><a target="_blank" href="http://www.w3schools.com/tags/att_global_title.asp">Title attribute</a> for the logo. This attribute specifies extra information about the logo. Most browsers will show a tooltip with this text on logo hover.
-				<?php td_util::tooltip_html('
-	                        <h3>Footer Logo TITLE:</h3>
-	                        <p>If you don\'t set the footer title attribute the theme will use the one set for the header logo.</p>
+    <!-- footer logo title -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">LOGO TITLE ATTRIBUTE</span>
+            <p><a target="_blank" href="http://www.w3schools.com/tags/att_global_title.asp">Title attribute</a> for the logo. This attribute specifies extra information about the logo. Most browsers will show a tooltip with this text on logo hover.
+                <?php td_util::tooltip_html('
+                        <h3>Footer Logo TITLE:</h3>
+                        <p>If you don\'t set the footer title attribute the theme will use the one set for the header logo.</p>
 
-	                ', 'right')?>
-			</p>
-		</div>
-		<div class="td-box-control-full">
-			<?php
-			echo td_panel_generator::input(array(
-				'ds' => 'td_option',
-				'option_id' => 'tds_footer_logo_title'
-			));
-			?>
-		</div>
-	</div>
+                ', 'right')?>
+            </p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::input(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_footer_logo_title'
+            ));
+            ?>
+        </div>
+    </div>
 
     <!-- footer text -->
     <div class="td-box-row td-custom-css">
@@ -287,7 +411,7 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">BACKGROUND OPACITY</span>
-            <p>Set the background image transparency. (Example: 0.3)</p>
+            <p>Set the background image transparency (Example: 0.3)</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -341,7 +465,7 @@
         </div>
         <div class="td-box-control-full">
             <?php
-            echo td_panel_generator::input(array(
+            echo td_panel_generator::textarea(array(
                 'ds' => 'td_option',
                 'option_id' => 'tds_footer_copyright'
             ));

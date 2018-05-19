@@ -3,19 +3,6 @@
 */
 
 /*  ----------------------------------------------------------------------------
-    general fonts setup
-*/
-.td_module_1,
-.td_module_2,
-.td_module_3,
-.td_module_4,
-.td_module_5,
-.td_module_6 {
-
-}
-
-
-/*  ----------------------------------------------------------------------------
     Modules
 */
 .td_module_wrap {
@@ -70,6 +57,13 @@
   min-height: 17px;
 }
 
+.td_module_wrap.td-meta-info-hide {
+  .td-module-meta-info {
+    min-height: 1px;
+    margin-top: -4px;
+  }
+}
+
 .entry-review-stars {
   display: inline-block;
   position: relative;
@@ -90,6 +84,11 @@
     color: #ccc;
     margin: 0 2px 0 2px;
     font-weight: normal;
+  }
+
+  div {
+    display: inline;
+    margin-right: 2px;
   }
 }
 
@@ -155,9 +154,10 @@
     background-color: @td_theme_color;
     color: #fff;
     display: inline-block;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
     line-height: 1;
-    padding: 10px 12px;
+    padding: 10px 15px;
     .transition(background-color @td_transition_time);
 
     &:hover {

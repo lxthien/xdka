@@ -1,6 +1,7 @@
 <?php
-include_once get_template_directory()  . '/includes/wp_booster/wp-admin/external/wpalchemy/MetaBox.php';
-
+if ( ! class_exists( 'WPAlchemy_MetaBox' ) ){
+    include_once get_template_directory()  . '/includes/wp_booster/wp-admin/external/wpalchemy/MetaBox.php';
+}
 
 
 add_action('init', 'td_register_post_metaboxes', 9999); // we need to be on init because we use get_post_types - we need the high priority to catch retarded plugins that bind late to the hook to register it's CPT
@@ -11,7 +12,7 @@ function td_register_post_metaboxes() {
     //default page
     new WPAlchemy_MetaBox(array(
         'id' => 'td_page',
-        'title' => 'Page template settings',
+        'title' => 'Page Template Settings',
         'types' => array('page'),
         'priority' => 'high',
         'template' => $td_template_settings_path . 'td_set_page.php',
@@ -22,22 +23,24 @@ function td_register_post_metaboxes() {
     //homepage with loop
     new WPAlchemy_MetaBox(array(
         'id' => 'td_homepage_loop',
-        'title' => 'Homepage latest articles',
+        'title' => 'Homepage Latest Articles',
         'types' => array('page'),
         'priority' => 'high',
         'template' => $td_template_settings_path . 'td_set_page_with_loop.php',
     ));
 
 
-    // featured video
-    new WPAlchemy_MetaBox(array(
-        'id' => 'td_post_video',
-        'title' => 'Featured Video',
-        'types' => array('post'),
-        'priority' => 'low',
-        'context' => 'side',
-        'template' => $td_template_settings_path . 'td_set_video_meta.php',
-    ));
+    if (current_user_can('publish_posts')) {
+        // featured video
+        new WPAlchemy_MetaBox(array(
+            'id' => 'td_post_video',
+            'title' => 'Featured Video',
+            'types' => array('post'),
+            'priority' => 'low',
+            'context' => 'side',
+            'template' => $td_template_settings_path . 'td_set_video_meta.php',
+        ));
+    }
 
 
 
@@ -52,13 +55,15 @@ function td_register_post_metaboxes() {
     /**
      * 'post' post type / single
      */
-    new WPAlchemy_MetaBox(array(
-        'id' => 'td_post_theme_settings',
-        'title' => 'Post settings',
-        'types' => array('post'),
-        'priority' => 'high',
-        'template' => get_template_directory() . '/includes/wp_booster/wp-admin/content-metaboxes/td_set_post_settings.php',
-    ));
+    if (current_user_can('publish_posts')) {
+        new WPAlchemy_MetaBox(array(
+            'id' => 'td_post_theme_settings',
+            'title' => 'Post Settings',
+            'types' => array('post'),
+            'priority' => 'high',
+            'template' => get_template_directory() . '/includes/wp_booster/wp-admin/content-metaboxes/td_set_post_settings.php',
+        ));
+    }
 
 
     /**
@@ -71,7 +76,7 @@ function td_register_post_metaboxes() {
         'names' //return the names in an array
     );
 
-    // remove the woo_commerce post tyep from the array if it's available and the woo_commerce plugin is installed
+    // remove the woo_commerce post type from the array if it's available and the woo_commerce plugin is installed
     if (td_global::$is_woocommerce_installed === true) {
         $woo_key = array_search('product', $td_custom_post_types);
         if($woo_key !== false) {
@@ -80,10 +85,10 @@ function td_register_post_metaboxes() {
     }
 
     // if we have any CPT left, associate them with the metaboxes
-    if (!empty($td_custom_post_types)) {
+    if (!empty($td_custom_post_types) && current_user_can('publish_posts')) {
         new WPAlchemy_MetaBox(array(
             'id' => 'td_post_theme_settings',
-            'title' => 'Custom Post Type - layout settings',
+            'title' => 'Custom Post Type - Layout Settings',
             'types' => $td_custom_post_types,
             'priority' => 'high',
             'template' => get_template_directory() . '/includes/wp_booster/wp-admin/content-metaboxes/td_set_post_settings_cpt.php',
@@ -96,7 +101,7 @@ function td_register_post_metaboxes() {
     if (td_global::$is_woocommerce_installed === true) {
         new WPAlchemy_MetaBox(array(
             'id' => 'td_post_theme_settings',
-            'title' => 'WooCommerce - product layout settings',
+            'title' => 'WooCommerce - Product Layout Settings',
             'types' => array('product'),
             'priority' => 'default',
             'template' => get_template_directory() . '/includes/wp_booster/wp-admin/content-metaboxes/td_set_post_settings_woo.php',

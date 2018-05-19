@@ -3,6 +3,15 @@
 class td_block_popular_categories extends td_block {
 
 
+	/**
+	 * Disable loop block features. This block does not use a loop and it dosn't need to run a query.
+	 */
+	function __construct() {
+		parent::disable_loop_block_features();
+	}
+
+
+
     function render($atts, $content = null){
         parent::render($atts);
 
@@ -29,13 +38,21 @@ class td_block_popular_categories extends td_block {
 
         // exclude categories from the demo
         if (TD_DEPLOY_MODE == 'demo' or TD_DEPLOY_MODE == 'dev') {
-            $cat_args['exclude'] = '90, 91, 92, 93 , 94, 95, 96, 97, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 82, 83, 84, 85, 86, 87, 88, 89, 98, ' . get_cat_ID(TD_FEATURED_CAT);
+            $cat_args['exclude'] = '153, 154, 155, 156, 157, 158, 159, 90, 91, 92, 93 , 94, 95, 96, 97, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 82, 83, 84, 85, 86, 87, 88, 89, 98, ' . get_cat_ID(TD_FEATURED_CAT);
         }
 
         $categories = get_categories($cat_args); // has a limit of 6 by default
 
-	    $buffy .= '<div class="' . $this->get_block_classes(array('widget', 'widget_categories')) . '">';
-            $buffy .= $this->get_block_title();
+	    $buffy .= '<div class="' . $this->get_block_classes(array('widget', 'widget_categories')) . '" ' . $this->get_block_html_atts() . '>';
+
+		    //get the block js
+		    $buffy .= $this->get_block_css();
+
+            // block title wrap
+            $buffy .= '<div class="td-block-title-wrap">';
+                $buffy .= $this->get_block_title();
+                $buffy .= $this->get_pull_down_filter(); //get the sub category filter for this block
+            $buffy .= '</div>';
 
             if (!empty($categories)) {
                 $buffy .= '<ul class="td-pb-padding-side">';

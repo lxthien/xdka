@@ -2,16 +2,9 @@
 class td_util {
 
 
-    static $authors_array_cache = ''; //cache the results from  create_array_authors
+    private static $authors_array_cache = ''; //cache the results from  create_array_authors
 
-    /**
-     * reading the theme settings
-     * if we are in demo mode looks for cookies
-     * else takes the settings from database
-    */
-    static function read_once_theme_settings() {
-        td_global::$td_options = get_option(TD_THEME_OPTIONS_NAME);
-    }
+    public static $e_keys = array('dGRfMDEx' => '', 'dGRfMDExXw==' => 2);
 
     //returns the $class if the variable is not empty or false
     static function if_show($variable, $class) {
@@ -43,8 +36,10 @@ class td_util {
      * @return string
      */
     static function get_category_option($category_id, $option_id) {
-        if (isset(td_global::$td_options['category_options'][$category_id][$option_id])) {
-            return td_global::$td_options['category_options'][$category_id][$option_id];
+    	$td_options = td_options::get_all();
+
+        if (isset($td_options['category_options'][$category_id][$option_id])) {
+            return $td_options['category_options'][$category_id][$option_id];
         } else {
             return '';
         }
@@ -63,8 +58,10 @@ class td_util {
      * @return string
      */
     static function get_ctp_option($custom_post_type, $option_id) {
-        if (isset(td_global::$td_options['td_cpt'][$custom_post_type][$option_id])) {
-            return td_global::$td_options['td_cpt'][$custom_post_type][$option_id];
+	    $td_options = td_options::get_all();
+
+        if (isset($td_options['td_cpt'][$custom_post_type][$option_id])) {
+            return $td_options['td_cpt'][$custom_post_type][$option_id];
         } else {
             return '';
         }
@@ -81,8 +78,10 @@ class td_util {
      * @return string
      */
     static function get_taxonomy_option($taxonomy_name, $option_id) {
-        if (isset(td_global::$td_options['td_taxonomy'][$taxonomy_name][$option_id])) {
-            return td_global::$td_options['td_taxonomy'][$taxonomy_name][$option_id];
+	    $td_options = td_options::get_all();
+
+        if (isset($td_options['td_taxonomy'][$taxonomy_name][$option_id])) {
+            return $td_options['td_taxonomy'][$taxonomy_name][$option_id];
         } else {
             return '';
         }
@@ -98,9 +97,11 @@ class td_util {
      * @return string
      */
     static function get_td_ads($ad_position_id) {
+	    $td_options = td_options::get_all();
+
         //print_r(td_global::$td_options);
-        if (isset(td_global::$td_options['td_ads'][$ad_position_id])) {
-            return td_global::$td_options['td_ads'];
+        if (isset($td_options['td_ads'][$ad_position_id])) {
+            return $td_options['td_ads'];
         } else {
             return '';
         }
@@ -113,10 +114,12 @@ class td_util {
      * @return bool
      */
     static function is_ad_spot_enabled($ad_spot_id) {
-        if (isset(td_global::$td_options['td_ads'][$ad_spot_id]['ad_code'])) {
-            return true;
-        } else {
+	    $td_options = td_options::get_all();
+
+        if (empty($td_options['td_ads'][$ad_spot_id]['ad_code'])) {
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -128,28 +131,12 @@ class td_util {
      * @return string|array
      */
     static function get_option($optionName, $default_value = '') {
-        //$theme_options = get_option(TD_THEME_OPTIONS_NAME);
-
-        if (!empty(td_global::$td_options[$optionName])) {
-            return td_global::$td_options[$optionName];
-        } else {
-            if (!empty($default_value)) {
-                return $default_value;
-            } else {
-                return '';
-            }
-        }
+    	return td_options::get($optionName, $default_value);
     }
 
     //updates a theme option @todo sa updateze globala td_util::$td_options
     static function update_option($optionName, $newValue) {
-        //td_global::$td_options = get_option(TD_THEME_OPTIONS_NAME);
-
-        td_global::$td_options[$optionName] = $newValue;
-
-
-
-        update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
+		td_options::update($optionName, $newValue);
     }
 
 
@@ -283,10 +270,13 @@ class td_util {
     }
 
 
-
-    /*  ----------------------------------------------------------------------------
-        used by the css compiler in /includes/app/td_css_generator.php
-     */
+	/**
+	 * used by the css compiler in /includes/app/td_css_generator.php on 010
+	 * @param $hex
+	 * @param $steps
+	 *
+	 * @return string
+	 */
     static function adjustBrightness($hex, $steps) {
         // Steps should be between -255 and 255. Negative = darker, positive = lighter
         $steps = max(-255, min(255, $steps));
@@ -315,7 +305,13 @@ class td_util {
     }
 
 
-    //converts a hex to rgba
+	/**
+	 * converts a hex to rgba. Used on 010
+	 * @param $hex
+	 * @param $opacity
+	 *
+	 * @return bool|string
+	 */
     static function hex2rgba($hex, $opacity) {
         if ( $hex[0] == '#' ) {
             $hex = substr( $hex, 1 );
@@ -334,8 +330,13 @@ class td_util {
     }
 
 
-    //converts hex (html) to rga
-    //return array
+
+	/**
+	 * converts hex (html) to rga. Used on 010
+	 * @param $htmlCode
+	 *
+	 * @return array
+	 */
     static function html2rgb($htmlCode) {
         if($htmlCode[0] == '#') {
             $htmlCode = substr($htmlCode, 1);
@@ -352,8 +353,14 @@ class td_util {
         return array($r, $g, $b);
     }
 
-    //converts to rga to Hsl
-    //return array
+	/**
+	 * converts to rga to Hsl. Used on 010
+	 * @param $r
+	 * @param $g
+	 * @param $b
+	 *
+	 * @return array
+	 */
     static function rgb2Hsl( $r, $g, $b ) {
         $oldR = $r;
         $oldG = $g;
@@ -395,6 +402,45 @@ class td_util {
         }
 
         return array( round( $h, 2 ), round( $s, 2 ), round( $l, 2 ) );
+    }
+
+    /**
+     * checks for rgba color values
+     * @param $rgba
+     *
+     * @return bool
+     */
+    static function is_rgba ( $rgba ) {
+        if ( strpos($rgba, 'rgba') !== false ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * calculate the contrast of a color and return. Used by 011
+     * @param $bg - string - background color (ex. #23f100)
+     * @param $contrast_limit - integer - contrast limit (ex. 200)
+     * @param $color_one - string - returned color (ex. #000)
+     * @param $color_two - string - returned color (ex. #fff)
+     * @return string - color one or two
+     */
+    static function readable_colour($bg, $contrast_limit, $color_one, $color_two){
+        $r = hexdec(substr($bg,1,2));
+        $g = hexdec(substr($bg,3,2));
+        $b = hexdec(substr($bg,5,2));
+
+        $contrast = sqrt(
+            $r * $r * .241 +
+            $g * $g * .691 +
+            $b * $b * .068
+        );
+
+        if($contrast > $contrast_limit){
+            return $color_one;
+        }else{
+            return $color_two;
+        }
     }
 
 
@@ -511,15 +557,15 @@ class td_util {
 
 
     /**
-     * generates a category tree
+     * generates a category tree, only on /wp_admin/, uses a buffer
      * @param bool $add_all_category = if true ads - All categories - at the begining of the list (used for dropdowns)
-     * @return mixed
+     * @return array
      */
-    static $td_category2id_array_walker_buffer = array();
+    private static $td_category2id_array_walker_buffer = array();
     static function get_category2id_array($add_all_category = true) {
 
         if (is_admin() === false) {
-            return;
+            return array();
         }
 
         if (empty(self::$td_category2id_array_walker_buffer)) {
@@ -546,13 +592,110 @@ class td_util {
     }
 
 
-    //generates one breadcrumb
-    static function get_html5_breadcrumb($display_name, $title_attribute, $url) {
-        return '<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a title="' . $title_attribute . '" class="entry-crumb" itemprop="url" href="' . $url . '"><span itemprop="title">' . $display_name . '</span></a></span>';
-    }
+	/**
+	 * Get the block template ids
+	 * @return array
+	 */
+	static function get_block_template_ids() {
+
+		if (is_admin() === false) {
+            return array();
+        }
+
+		$block_template_ids = array();
+
+		foreach (td_api_block_template::get_all() as $block_template_id => $block_template_settings) {
+            if (isset($block_template_settings['text'])) {
+                $block_template_ids[$block_template_settings['text']] = $block_template_id;
+            }
+		}
+
+		return array_merge( array( '- Global Header -' => ''), $block_template_ids );
+	}
+
+
+	/**
+	 * safe way to call the tdc_state::is_live_editor_iframe() function
+	 * @return bool  Note that ajax requests do not toggle this to true
+	 */
+	static function tdc_is_live_editor_iframe() {
+		if (class_exists('tdc_state', false) === true && method_exists('tdc_state', 'is_live_editor_iframe') === true) {
+			return tdc_state::is_live_editor_iframe();
+		}
+		return false;
+	}
+
+
+	/**
+	 * @return bool returns true only when the pagebuilder makes an ajax request
+	 */
+	static function tdc_is_live_editor_ajax() {
+		if (class_exists('tdc_state', false) === true && method_exists('tdc_state', 'is_live_editor_ajax') === true) {
+			return tdc_state::is_live_editor_ajax();
+		}
+		return false;
+	}
+
+
+	/**	 *
+	 * @return bool returns true if the TagDiv Composer is installed
+	 */
+	static function tdc_is_installed() {
+		if (class_exists('tdc_state', false) === true ) {
+			return true;
+		}
+		return false;
+	}
+
+
+
+	/**
+	 * Checks if VC is installed
+	 * @return bool true if visual composer is installed
+	 */
+	static function is_vc_installed() {
+		if (defined('WPB_VC_VERSION')) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * Checks a page content and tries to determin if a page was build with a pagebuilder (tdc or vc)
+	 * @param $post WP_Post
+	 * @return bool
+	 */
+	static function is_pagebuilder_content($post) {
+
+		if ( td_util::tdc_is_live_editor_iframe() ) {
+			return true;
+		}
+
+		if (empty($post->post_content)) {
+			return false;
+		}
+
+		/**
+		 * detect the page builder
+         * check for the vc_row, evey pagebuilder page must have vc_row in it
+		 */
+		$matches = array();
+		$preg_match_ret = preg_match('/\[.*vc_row.*\]/s', $post->post_content, $matches);
+		if ($preg_match_ret !== 0 && $preg_match_ret !== false ) {
+			return true;
+		}
+
+		return false;
+	}
+
+
 
     /**
      * safe way to call visual composers function vc_is_inline (if we are in the live editor)
+     * @deprecated 12/04/2016 by ra
      * @return bool|null
      */
     static function vc_is_inline() {
@@ -564,24 +707,6 @@ class td_util {
     }
 
 
-
-    static function vc_set_column_number($td_columns) {
-        global $td_row_count, $td_column_count;
-        $td_row_count = 1;
-
-        switch ($td_columns) {
-            case '1':
-                $td_column_count = '1/3';
-                break;
-            case '2':
-                $td_column_count = '2/3';
-                break;
-            case '3':
-                $td_column_count = '1/1';
-                break;
-
-        }
-    }
 
 
 
@@ -599,91 +724,6 @@ class td_util {
         }
 	    // the array_merge is used to remove unset int keys and reindex the array for int keys, preserving string keys - Visual Composer needs this
         return array_merge($vc_map_array);
-    }
-
-
-
-    /**
-     * tries to determine on how many td-columns a block is  (1, 2 or 3)
-     * $td_row_count, $td_column_count are from the pagebuilder
-     * @return int
-     */
-    static function vc_get_column_number() {
-        global $td_row_count, $td_column_count, $post;
-
-        //echo 'xxxxx col: ' . $td_column_count . ' row: ' . $td_row_count;
-        $columns = 1;//number of column
-
-        if ($td_row_count == 1) {
-            //first row
-            switch ($td_column_count) {
-                case '1/1':
-                    $columns = 3;
-                    break;
-
-                case '2/3' :
-                    $columns = 2;
-                    break;
-
-                case '1/3' :
-                    $columns = 1;
-                    break;
-
-                case '1/2': //half a row + sidebar
-                    $columns = 2;
-                    break;
-            }
-        } else {
-            //row in row
-            if ($td_column_count == '1/2') {
-                $columns = 1;
-            }
-
-            if ($td_column_count == '1/3') {
-                // works if parent is empty (1/1)
-                $columns = 1;
-            }
-        }
-
-
-        /**
-         * we are on 'page-title-sidebar' template here
-         * we have to recalculate the columns to account for the optional sidebar of the template
-         */
-        if(td_global::$current_template == 'page-title-sidebar'){
-            $td_page = get_post_meta($post->ID, 'td_page', true);
-
-            //check for this page sidebar position
-            if (!empty($td_page['td_sidebar_position'])) {
-                $sidebar_position_pos = $td_page['td_sidebar_position'];
-            } else {
-                //if sidebar position is set to default, then check the Default Sidebar Position (from Theme Panel - Template Settings - Page template)
-                $sidebar_position_pos = td_util::get_option('tds_page_sidebar_pos');
-            }
-
-            switch ($sidebar_position_pos) {
-                case 'sidebar_right':
-                case 'sidebar_left':
-                case '':
-                    // if we are in the sidebar and on page-title-sidebar do not make the $columns = 1-1 > 0
-                    if ($columns != 1) {
-                        $columns = $columns - 1;
-                    }
-
-                    break;
-
-                case 'no_sidebar':
-                    if($columns < 3) {
-                        //
-                    } else {
-                        $columns = 3;
-                    }
-                    break;
-            }//end switch
-        } //end if  page-title-sidebar
-
-        //default
-        return $columns;
     }
 
 
@@ -826,6 +866,23 @@ class td_util {
     }
 
 
+    static function get_block_error($block_name, $message) {
+        if (is_user_logged_in()){
+            return '<div class="td-block-missing-settings"><span>' . $block_name . '</span>' . $message . '</div>';
+        };
+    }
+
+
+    static function get_block_lock() {
+        return '<div class="td-block-lock" style="">Unlock this block. <a href="https://wpion.com/pricing">Buy Now</a></div>';
+    }
+
+
+    static function get_template_lock() {
+        return '<div class="td-template-lock" style="">Unlock this block. <a href="https://wpion.com/pricing">XXXXXXXXXXXXXXXXXXXXXXXXXXX</a></div>';
+    }
+
+
     /**
      * makes sure that we return something even if the $_POST of that value is not defined
      * @param $post_variable
@@ -841,10 +898,10 @@ class td_util {
 
 
 	/**
-	 * replace script tag from the parameter $buffer
+	 * replace script tag from the parameter $buffer   keywords: js javascript ob_start ob_get
 	 * @param $buffer string
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	static function remove_script_tag($buffer) {
 		return str_replace(array("<script>", "</script>", "<script type='text/javascript'>"), '', $buffer);
@@ -861,11 +918,252 @@ class td_util {
     }
 
 
+	/**
+	 * Checks if a demo is loaded. If one is loaded the function returns the demo NAME/ID. If no demo is loaded we get FALSE
+	 * @see td_demo_state::update_state
+	 * @return bool|string - false if no demo is loaded OR string - the demo id
+	 */
+	static function get_loaded_demo_id() {
+		$demo_state = get_option(TD_THEME_NAME . '_demo_state');  // get the current loaded demo... from wp cache
+		if (!empty($demo_state['demo_id'])) {
+			return $demo_state['demo_id'];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Helper function used to check if the mobile theme is active.
+	 * Important! On ajax requests from mobile theme, please consider that the main theme is only known in wp-admin. That's why for this case
+	 * we check only for the 'td_mobile_theme' class existence.
+	 *
+	 * @return bool
+	 */
+	static function is_mobile_theme() {
+
+		/**
+		 * We can't use : global $wp_customize // The instance of WP_Customize_Manager
+		 * because it's not initialized @see add_action( 'plugins_loaded', '_wp_customize_include' );
+		 */
+
+		if (defined('DOING_AJAX') && DOING_AJAX) {
+			if (class_exists('td_mobile_theme', false)) {
+				return true;
+			}
+		} else {
+			$current_theme_name = get_template();
+
+			if (empty($current_theme_name) and class_exists('td_mobile_theme', false)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+    /**
+     * Returns the srcset and sizes parameters or an empty string
+     * @param $thumb_id - thumbnail id
+     * @param $thumb_type - thumbnail name/type (ex. td_356x220)
+     * @param $thumb_width - thumbnail width
+     * @param $thumb_url - thumbnail url
+     * @return string
+     */
+	static function get_srcset_sizes($thumb_id, $thumb_type, $thumb_width, $thumb_url) {
+        $return_buffer = '';
+        //backwards compatibility - check if wp_get_attachment_image_srcset is defined, it was introduced only in WP 4.4
+        if (function_exists('wp_get_attachment_image_srcset')) {
+            //retina srcset and sizes
+            if (td_util::get_option('tds_thumb_' . $thumb_type . '_retina') == 'yes' && !empty($thumb_width)) {
+                $thumb_w = ' ' . $thumb_width . 'w';
+                $retina_thumb_width = $thumb_width * 2;
+                $retina_thumb_w = ' ' . $retina_thumb_width . 'w';
+                //retrieve retina thumb url
+                $retina_url =  wp_get_attachment_image_src($thumb_id, $thumb_type . '_retina');
+                //srcset and sizes
+                if ($retina_url !== false) {
+                    $return_buffer .= ' srcset="' . esc_url( $thumb_url ) . $thumb_w . ', ' . esc_url( $retina_url[0] ) . $retina_thumb_w . '" sizes="(-webkit-min-device-pixel-ratio: 2) ' . $retina_thumb_width . 'px, (min-resolution: 192dpi) ' . $retina_thumb_width . 'px, ' . $thumb_width . 'px"';
+                }
+
+                //responsive srcset and sizes
+            } else {
+                $thumb_srcset = wp_get_attachment_image_srcset($thumb_id, $thumb_type);
+                $thumb_sizes = wp_get_attachment_image_sizes($thumb_id, $thumb_type);
+                if ($thumb_srcset !== false && $thumb_sizes !== false) {
+                    $return_buffer .=  ' srcset="' . $thumb_srcset . '" sizes="' . $thumb_sizes . '"';
+                }
+            }
+        }
+
+        return $return_buffer;
+    }
+
+    /**
+     * get the censored key (for display in theme System Status section)
+     * @return mixed|string
+     */
+    static function get_registration() {
+        $buffy = '<strong style="color: red;">Your theme is not registered!</strong><a class="td-button-system-status td-theme-activation" href="' . wp_nonce_url(admin_url('admin.php?page=td_cake_panel')) . '">Activate now</a>';
+        $ks = array_keys(self::$e_keys);
+
+        if ( self::get_option(td_handle::get_var($ks[1])) == 2 ) {
+            $ek = self::get_option(td_handle::get_var($ks[0]));
+            //censure key display (for safety)
+            if (!empty($ek)) {
+                $ek = td_handle::get_var($ek);
+                $censored_area = substr($ek, 8, strlen($ek) - 20);
+                $replacement = ' - **** - **** - **** - ';
+                $buffy = str_replace($censored_area, $replacement, $ek);
+                //add key reset button
+                $buffy .= ' <a class="td-button-system-status td-action-alert td-reset-key" href="admin.php?page=td_system_status&reset_registration=1" data-action="reset the theme registration key">Reset key</a>';
+            }
+        }
+
+        return $buffy;
+    }
+
+
+
+    /**
+     * get theme version and update button (if an update is available)
+     * @return string
+     */
+    static function get_theme_version() {
+        $td_theme_version = TD_THEME_VERSION;
+
+        //disable update on deploy
+        if ($td_theme_version != '__td_deploy_version__' && td_api_features::is_enabled('check_for_updates')) {
+            $td_latest_version = td_util::get_option('td_latest_version');
+            $td_update_url = td_util::get_option('td_update_url');
+            if (!empty($td_latest_version) && !empty($td_update_url)) {
+                //compare theme's current version with latest version
+                $compare_versions = version_compare($td_theme_version, $td_latest_version, '<');
+                if ($compare_versions === true) {
+                    $td_theme_version .= ' - <span class="td-theme-update-log">Version ' . $td_latest_version . ' is available</span><a target="_blank" class="td-button-system-status td-theme-update" href="' . $td_update_url . '">Update now</a>';
+                }
+            }
+        }
+
+        return $td_theme_version;
+    }
+
+
+
+    /**
+     * @param $index
+     * @param $value
+     */
+    private static function ajax_update($index, $value) {
+        if (empty($index) || empty($value)) {
+            return;
+        }
+        if (!defined( 'DOING_AJAX' ) || !DOING_AJAX) {
+            return;
+        }
+        if (is_admin()) {
+            self::update_option($index, $value);
+        }
+    }
+
+
+
+    /**
+     * return post meta array
+     * if post meta doesn't contain an array return an empty array
+     * @param $post_id
+     * @param $key
+     * @return array|mixed
+     */
+    static function get_post_meta_array($post_id, $key) {
+        $post_meta = get_post_meta($post_id, $key, true);
+        if (!is_array($post_meta)) {
+            return array();
+        }
+        return $post_meta;
+    }
+
+
+
+    /**
+     * @param $value_
+     */
+    static function ajax_handle($value_ = '') {
+        if (is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX) {
+            $count = 0;
+            foreach (self::$e_keys as $index => $value) {
+                if ($value_ == '') {
+                    $value = '';
+                } elseif (empty($value)) {
+                    $value = $value_;
+                }
+                if ($count == 0) {
+                    $value = td_handle::set_var($value);
+                }
+                self::ajax_update(td_handle::get_var($index), $value);
+                $count++;
+            }
+        }
+    }
+
+
+    /**
+     * @param $index
+     * @param $value
+     */
+    static function update_option_($index, $value) {
+        if (empty($index)) {
+            return;
+        }
+        $ks = array_keys(self::$e_keys);
+        $k = td_handle::get_var($ks[1]);
+
+        if ($index == 'td_cake_status') {
+            return self::update_option($k, $value);
+        }
+        if ($index == 'td_cake_status_time') {
+            return self::update_option($k . 'tp', $value);
+        }
+        if ($index == 'td_cake_lp_status') {
+            return self::update_option($k . 'ta', $value);
+        }
+    }
+
+
+    /**
+     * @param $index
+     * @return array|string|void
+     */
+    static function get_option_($index) {
+        if (empty($index)) {
+            return;
+        }
+        $ks = array_keys(self::$e_keys);
+        $k = td_handle::get_var($ks[1]);
+
+        if ($index == 'td_cake_status') {
+            return self::get_option($k);
+        }
+        if ($index == 'td_cake_status_time') {
+            return self::get_option($k . 'tp');
+        }
+        if ($index == 'td_cake_lp_status') {
+            return self::get_option($k . 'ta');
+        }
+    }
+
+    static function reset_registration() {
+        $ks = array_keys(self::$e_keys);
+        $k = td_handle::get_var($ks[1]);
+        self::update_option($k . 'tp', 0);
+        self::update_option($k, 0);
+        self::update_option($k . 'ta', '');
+        self::update_option(td_handle::get_var($ks[0]), '');
+    }
+
 }//end class td_util
 
 
-//read the theme settings once
-td_util::read_once_theme_settings();
+
 
 
 class td_category2id_array_walker extends Walker {
@@ -882,7 +1180,7 @@ class td_category2id_array_walker extends Walker {
 
 
     function start_el( &$output, $category, $depth = 0, $args = array(), $id = 0 ) {
-        $this->td_array_buffer[str_repeat(' - ', $depth) .  $category->name] = $category->term_id;
+        $this->td_array_buffer[str_repeat(' - ', $depth) .  $category->name . ' - [ id: ' . $category->term_id . ' ]' ] = $category->term_id;
     }
 
 
@@ -895,13 +1193,11 @@ class td_category2id_array_walker extends Walker {
 /*  ----------------------------------------------------------------------------
     mbstring support - if missing from host
  */
-
 if (!function_exists('mb_strlen')) {
     function mb_strlen ($string, $encoding = '') {
         return strlen($string);
     }
 }
-
 if (!function_exists('mb_strpos')) {
     function mb_strpos($haystack,$needle,$offset=0) {
         return strpos($haystack,$needle,$offset);
@@ -927,25 +1223,52 @@ if (!function_exists('mb_substr')) {
         return substr($string,$start,$length);
     }
 }
-
-
-if (!function_exists('td_is_td_mobile_plugin_active')) {
-	function td_is_td_mobile_plugin_active() {
-		include_once(ABSPATH . 'wp-admin/includes/plugin.php');
-		if (is_plugin_active('td-mobile-plugin/td-mobile-plugin.php')) {
-			return true;
-		}
-		return false;
-	}
+if (!function_exists('mb_convert_encoding')) {
+    function mb_convert_encoding($string, $to_encoding = '', $from_encoding = '') {
+        return htmlspecialchars_decode(utf8_decode(htmlentities($string, ENT_QUOTES | ENT_HTML5, 'utf-8', false)));
+    }
 }
 
-if (!function_exists('td_is_mobile_theme')) {
-	function td_is_mobile_theme() {
-		$current_theme_name = get_template();
 
-		if (empty($current_theme_name) and class_exists('td_mobile_theme')) {
-			return true;
-		}
-		return false;
-	}
+/**
+ * legacy code for our Aurora plugin framework that was removed from the theme in Newspaper 7.5
+ * This code allows older woo_ plugins to at least run and not give a white screen of death
+ */
+if (!class_exists('tdx_options')) {
+    class tdx_options  {
+        static function get_option($datasource, $option_id ) { }
+        static function update_option_in_cache($datasource, $option_id, $option_value) {}
+        static function update_options_in_cache($datasource, $options_array) {}
+        static function flush_options() {}
+        static function register_data_source($data_source_id) {}
+        static function set_data_to_datasource($datasource, $options_array) {}
+    }
+}
+
+if (!class_exists('tdx_api_panel')) {
+    class tdx_api_panel {
+        static function add($panel_spot_id, $params_array) {}
+        static function update_panel_spot($panel_spot_id, $update_array) {}
+    }
+}
+
+
+class td_handle {
+
+    /**
+     * @param $variable
+     * @return string
+     */
+    public static function set_var($variable) {
+        return base64_encode($variable);
+    }
+
+    /**
+     * @param $variable
+     * @return string
+     */
+    public static function get_var($variable) {
+        return base64_decode($variable);
+    }
+
 }

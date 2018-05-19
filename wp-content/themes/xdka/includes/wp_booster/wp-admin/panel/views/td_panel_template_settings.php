@@ -2,9 +2,15 @@
 <?php echo td_panel_generator::box_start('Smart sidebar', false); ?>
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
-            <p>From here you can enable and disable the smart sidebar on all the templates. The smart sidebar is an affix (sticky) sidebar that has auto resize and it scrolls with the content. The smart sidebar reverts back to a normal sidebar on iOS (iPad) and on mobile devices. The following widgets are not supported in the smart sidebar:</p>
-            <?php echo td_global::$td_wp_admin_text_list['text_smart_sidebar_widget_support'] ?>
+            <?php echo td_api_text::get('text_smart_sidebar_widget_support') ?>
         </div>
+
+    <div class="td-box-row">
+        <div class="td-box-description td-box-full">
+            <span class="td-box-title">Warning</span>
+            <p>If you plan to use Google AdSense in the sidebar don't enable this feature. Google's policy doesn't allow placing the ad in a "floating box", you can read more about it <a target="_blank" href="https://support.google.com/adsense/answer/1354742?hl=en">here</a>.</p>
+        </div>
+    </div>
 
 
 
@@ -204,35 +210,108 @@
 <?php echo td_panel_generator::box_end();?>
 
 
-
-<!-- smooth scroll -->
-<?php echo td_panel_generator::box_start('Smooth scroll', false); ?>
+<?php if ('Newspaper' == TD_THEME_NAME || 'ionMag' == TD_THEME_NAME) { ?>
+    <!-- Force full width -->
+    <?php echo td_panel_generator::box_start('Force full width', false); ?>
     <!-- text -->
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
-            <p>Enable or disable smooth scroll on browsers that do not have smooth scroll built in (google chrome)</p>
+            <p>From here you can stretch the container or the content for different sections like header, menu or footer.</p>
         </div>
         <div class="td-box-row-margin-bottom"></div>
     </div>
-    <!-- Stretch background -->
+
     <div class="td-box-row">
         <div class="td-box-description">
-            <span class="td-box-title">SMOOTH SCROLL</span>
-            <p>Disable or enable smooth scroll</p>
+            <span class="td-box-title">Header ⇢ Top bar</span>
+            <p></p>
         </div>
         <div class="td-box-control-full">
             <?php
-            echo td_panel_generator::checkbox(array(
+            echo td_panel_generator::dropdown(array(
                 'ds' => 'td_option',
-                'option_id' => 'tds_smooth_scroll',
-                'true_value' => 'yes',
-                'false_value' => ''
+                'option_id' => 'td_full_top_bar',
+                'values' => array(
+                    array('text' => 'No stretch' , 'val' => ''),
+                    array('text' => 'Stretch container' , 'val' => 'td_stretch_container'), // .td_stretch_container
+                    array('text' => 'Stretch container and content' , 'val' => 'td_stretch_content') // .td_stretch_content
+                )
+            ));
+            ?>
+        </div>
+
+        <div class="td-box-description">
+            <span class="td-box-title">Header ⇢ Logo and ad space</span>
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::dropdown(array(
+                'ds' => 'td_option',
+                'option_id' => 'td_full_header',
+                'values' => array(
+                    array('text' => 'No stretch' , 'val' => ''),
+                    array('text' => 'Stretch container' , 'val' => 'td_stretch_container'), // stretch_container
+                    array('text' => 'Stretch container and content' , 'val' => 'td_stretch_content') // stretch_content
+                )
+            ));
+            ?>
+        </div>
+
+        <div class="td-box-description">
+            <span class="td-box-title">Header ⇢ Menu</span>
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::dropdown(array(
+                'ds' => 'td_option',
+                'option_id' => 'td_full_menu',
+                'values' => array(
+                    array('text' => 'No stretch' , 'val' => ''),
+                    array('text' => 'Stretch container' , 'val' => 'td_stretch_container'), // stretch_container
+                    array('text' => 'Stretch container and content' , 'val' => 'td_stretch_content') // stretch_content
+                )
+            ));
+            ?>
+        </div>
+
+        <div class="td-box-description">
+            <span class="td-box-title">Footer ⇢ Instagram</span>
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::dropdown(array(
+                'ds' => 'td_option',
+                'option_id' => 'td_full_footer_instagram',
+                'values' => array(
+                    array('text' => 'No stretch' , 'val' => ''),
+                    array('text' => 'Stretch container and content' , 'val' => 'td_stretch_content') // stretch_content
+                )
+            ));
+            ?>
+        </div>
+
+        <div class="td-box-description">
+            <span class="td-box-title">Footer</span>
+            <p></p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::dropdown(array(
+                'ds' => 'td_option',
+                'option_id' => 'td_full_footer',
+                'values' => array(
+                    array('text' => 'No stretch' , 'val' => ''),
+                    array('text' => 'Stretch container' , 'val' => 'td_stretch_container') // stretch_container
+                )
             ));
             ?>
         </div>
     </div>
-<?php echo td_panel_generator::box_end();?>
-
+    <?php echo td_panel_generator::box_end();?>
+<?php } ?>
 
 
 
@@ -246,9 +325,9 @@
 <!-- text -->
 <div class="td-box-row">
     <div class="td-box-description td-box-full">
-        <p>In this section you can configure the <a href="http://codex.wordpress.org/Template_Hierarchy" target="_blank">default wordpress templates</a>. Most of the templates support the following configurations:</p>
+        <p>In this section you can configure the <a href="http://codex.wordpress.org/Template_Hierarchy" target="_blank">default WordPress templates</a>. Most of the templates support the following configurations:</p>
         <ul>
-            <li>How to display posts in the default wordpress loops</li>
+            <li>How to display posts in the default WordPress loops</li>
             <li>Sidebar position</li>
             <li>What sidebar to show</li>
         </ul>
@@ -354,9 +433,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_archive_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -403,9 +482,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_attachment_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -471,9 +550,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_author_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -538,9 +617,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_home_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -593,9 +672,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_page_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -683,9 +762,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_search_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -751,9 +830,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_tag_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -777,9 +856,9 @@
 
 
 <!-- Woocommerce template -->
-<?php echo td_panel_generator::box_start('Woocommerce template', false); ?>
+<?php echo td_panel_generator::box_start('WooCommerce template', false); ?>
     <div class="td-box-description td-box-full">
-        <p>Set the custom sidebar and position for the woocommerce pages.</p>
+        <p>Set the custom sidebar and position for the WooCommerce pages.</p>
     </div>
 
 
@@ -797,9 +876,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_woo_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -831,9 +910,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_woo_single_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -878,9 +957,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_bbpress_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -897,5 +976,73 @@
             </div>
         </div>
     </div>
+
+<?php echo td_panel_generator::box_end();?>
+
+
+<!-- Taxonomy + post format page template -->
+<?php echo td_panel_generator::box_start('Post formats archive template', false); ?>
+<div class="td-box-description td-box-full">
+    <p>These settings help you configure the archive page which lists all posts in one specific <a href="https://codex.wordpress.org/Post_Formats" target="_blank">post format</a>.</p>
+    <p>Select the layout for theme's video <a href="https://codex.wordpress.org/Taxonomies#Post_Formats" target="_blank">post format taxonomy</a> pages.</p>
+
+    <ul>
+        <li>Check a <a href="<?php echo get_post_format_link('video') ?>" target="_blank">sample post format archive page</a> from your site.</li>
+        <li>This template is located in <strong>taxonomy-post_format.php</strong> file.</li>
+    </ul>
+</div>
+
+
+<!-- Articles DISPLAY VIEW -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">ARTICLE DISPLAY VIEW</span>
+        <p>Select a module type, this is how your article list will be displayed.</p>
+    </div>
+    <div class="td-box-control-full td-panel-module">
+        <?php
+        echo td_panel_generator::visual_select_o(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_taxonomy_post_format_page_layout',
+            'values' => td_panel_generator::helper_display_modules('enabled_on_loops')
+        ));
+        ?>
+    </div>
+</div>
+
+
+<!-- Custom Sidebar + position -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">CUSTOM SIDEBAR + POSITION</span>
+        <p>Sidebar position and custom sidebars</p>
+    </div>
+    <div class="td-box-control-full td-panel-sidebar-pos">
+        <div class="td-display-inline-block">
+            <?php
+            echo td_panel_generator::visual_select_o(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_taxonomy_post_format_sidebar_pos',
+                'values' => array(
+                    array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                    array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                    array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
+                )
+            ));
+            ?>
+            <div class="td-panel-control-comment td-text-align-right">Select sidebar position</div>
+        </div>
+        <div class="td-display-inline-block td_sidebars_pulldown_align">
+            <?php
+            echo td_panel_generator::sidebar_pulldown(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_taxonomy_post_format_sidebar'
+            ));
+            ?>
+            <div class="td-panel-control-comment td-text-align-right">Create or select an existing sidebar</div>
+        </div>
+    </div>
+</div>
+
 
 <?php echo td_panel_generator::box_end();?>

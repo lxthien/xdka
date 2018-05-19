@@ -18,7 +18,7 @@ $td_enable_or_disable_page_comments = td_util::get_option('tds_disable_comments_
 
 
 //read the custom single post settings - this setting overids all of them
-$td_page = get_post_meta($post->ID, 'td_page', true);
+$td_page = td_util::get_post_meta_array($post->ID, 'td_page');
 if (!empty($td_page['td_sidebar_position'])) {
     $loop_sidebar_position = $td_page['td_sidebar_position'];
 }
@@ -34,21 +34,7 @@ if($loop_sidebar_position == 'sidebar_left') {
 /**
  * detect the page builder
  */
-$td_use_page_builder = false;
-if (method_exists('WPBMap', 'getShortCodes')) {
-    $short_codes_buffer = array();
-    $td_page_builder_short_codes = array_keys(WPBMap::getShortCodes());
-    if (is_array($td_page_builder_short_codes) && !empty($td_page_builder_short_codes)) {
-        foreach ($td_page_builder_short_codes as $short_code_name){
-            // we have to add [ before the shortcode name, else it may target simple words that match with the shortcode name
-            $short_codes_buffer[] = '[' .  $short_code_name;
-        }
-    }
-    if (!empty($short_codes_buffer) && td_util::strpos_array($post->post_content, $short_codes_buffer) === true) {
-        $td_use_page_builder = true;
-    }
-}
-
+$td_use_page_builder = td_global::is_page_builder_content();
 
 
 
@@ -59,8 +45,8 @@ if ($td_use_page_builder) {
     if (have_posts()) { ?>
         <?php while ( have_posts() ) : the_post(); ?>
 
-            <div class="td-main-content-wrap td-main-page-wrap">
-                <div class="td-container">
+            <div class="td-main-content-wrap td-main-page-wrap td-container-wrap">
+                <div class="<?php if (!td_util::tdc_is_installed()) { echo 'td-container '; } ?>tdc-content-wrap">
                     <?php the_content(); ?>
                 </div>
                 <?php
@@ -86,8 +72,8 @@ if ($td_use_page_builder) {
     //no page builder detected, we load a default page template with sidebar / no sidebar
     ?>
 
-<div class="td-main-content-wrap">
-    <div class="td-container <?php echo $td_sidebar_position; ?>">
+<div class="td-main-content-wrap td-container-wrap">
+    <div class="td-container tdc-content-wrap <?php echo $td_sidebar_position; ?>">
         <div class="td-crumb-container">
             <?php echo td_page_generator::get_page_breadcrumbs(get_the_title()); ?>
         </div>

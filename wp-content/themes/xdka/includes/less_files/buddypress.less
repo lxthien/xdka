@@ -24,6 +24,7 @@
 
 /*  ----------------------------------------------------------------------------
     Buttons
+
 */
 
 //#buddypress button,
@@ -115,12 +116,19 @@
 #buddypress #item-header-avatar {
   /* responsive portrait tablet */
   @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    width: 100px !important;
-    margin-right: 10px;
-    margin-top: 165px !important;
+    width: 100% !important;
+    text-align: center;
   }
 
   a {
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      display: inline-block;
+
+      img {
+        margin: 0 0 20px !important;
+      }
+    }
     /* responsive portrait phone */
     @media (max-width: @responsive_p_phone_max) {
         width: 100px;
@@ -232,6 +240,18 @@ a.bp-title-button {
   }
 }
 
+#buddypress .ac-reply-content {
+  .ac-reply-cancel {
+    top: 2px;
+  }
+
+  input {
+    font-size: 11px;
+    line-height: 13px;
+    font-family: @font1;
+  }
+}
+
 #buddypress div.dir-search input[type=text],
 #buddypress li.groups-members-search input[type=text] {
   font-size: 13px;
@@ -279,7 +299,6 @@ a.bp-title-button {
 
   /* responsive portrait tablet */
   @media (max-width: @responsive_p_tablet_max) {
-    width: 49.8%;
     margin-bottom: 10px;
   }
 }
@@ -613,7 +632,6 @@ legend.screen-reader-text {
   select {
     font-size: 13px;
     padding: 3px 9px;
-    vertical-align: top;
   }
 
   table.forum tr td.td-title a.topic-title {
@@ -799,6 +817,34 @@ body.activity-permalink #buddypress div.activity-comments > ul {
   }
 }
 
+#buddypress #signup_form.standard-form div.submit {
+  margin-bottom: 30px;
+}
+
+#buddypress .standard-form #basic-details-section input[type="password"],
+#buddypress .standard-form #blog-details-section input#signup_blog_url,
+#buddypress #signup_form.standard-form input[type="text"] {
+  width: 100%;
+}
+
+#buddypress .standard-form #basic-details-section,
+#buddypress .standard-form #profile-details-section {
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+    float: none;
+    display: block;
+    width: 100%;
+  }
+}
+#buddypress .standard-form label,
+#buddypress .standard-form span.label {
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+    font-size: 12px;
+  }
+}
+
+
 //#buddypress div.activity-comments ul li {
 //}
 
@@ -934,13 +980,30 @@ body.activity-permalink #buddypress div.activity-comments ul li {
 #buddypress div#item-header #item-header-cover-image #item-header-content {
   /* responsive portrait tablet */
   @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    margin-left: 110px;
-    margin-top: -105px;
+    margin-top: -20px;
+    margin-left: 0;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+#buddypress {
+  .bbp-header li {
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      font-size: 11px;
+    }
   }
 }
 
 #buddypress div#item-header-cover-image h2 a,
 #buddypress div#item-header-cover-image h2 {
+  /* responsive portrait tablet */
+  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+    color: inherit;
+    text-shadow: none;
+    margin: 0;
+  }
   /* responsive portrait phone */
   @media (max-width: @responsive_p_phone_max) {
     margin: 0;
@@ -1098,6 +1161,16 @@ body.activity-permalink #buddypress div.activity-comments ul li {
 
 #buddypress div.dir-search {
   margin-top: -45px;
+  min-width: 280px;
+  position: relative;
+
+  #search-members-form #members_search_submit,
+  #search-groups-form #groups_search_submit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: auto;
+  }
 }
 
 /* responsive portrait phone */
@@ -1111,21 +1184,13 @@ body.activity-permalink #buddypress div.activity-comments ul li {
 
   #buddypress div.dir-search {
     width: 100%;
-    margin: 0;
+    margin: 0 0 25px;
   }
 
   #buddypress div.dir-search input[type="text"],
   #buddypress div.item-list-tabs ul li.groups-members-search,
   #buddypress div.item-list-tabs ul li#group_members-order-select {
     width: 100%;
-  }
-
-  #search-members-form #members_search_submit,
-  #search-groups-form #groups_search_submit {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: auto;
   }
 
   #members_search,

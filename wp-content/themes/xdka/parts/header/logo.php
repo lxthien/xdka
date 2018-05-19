@@ -17,18 +17,18 @@ if (!empty($td_logo_title)) {
     $td_logo_title = ' title="' . $td_logo_title . '"';
 }
 
-if (!empty($td_customLogoR)) {
-    //if retina
+if (!empty($td_customLogoR)) { //if retina
     ?>
-    <a href="<?php echo esc_url(home_url( '/' )); ?>">
-        <img class="td-retina-data" data-retina="<?php echo esc_attr($td_customLogoR) ?>" src="<?php echo $td_customLogo?>" alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
-    </a>
-<?php
-} else {
-    //not retina
+        <a class="td-main-logo" href="<?php echo esc_url(home_url( '/' )); ?>">
+            <img class="td-retina-data" data-retina="<?php echo esc_attr($td_customLogoR) ?>" src="<?php echo $td_customLogo?>" alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
+        </a>
+    <?php
+} else { //not retina
     if (!empty($td_customLogo)) {
-        ?>
-        <a href="<?php echo esc_url(home_url( '/' )); ?>"><img src="<?php echo $td_customLogo?>" alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/></a>
+    ?>
+        <a class="td-main-logo" href="<?php echo esc_url(home_url( '/' )); ?>">
+            <img src="<?php echo $td_customLogo?>" alt="<?php echo $td_logo_alt ?>"<?php echo $td_logo_title ?>/>
+        </a>
     <?php
     }
 }

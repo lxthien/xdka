@@ -6,7 +6,7 @@
  * Time: 15:58
  */
 
-global $loop_module_id, $loop_sidebar_position, $post, $td_sidebar_position;
+global $loop_module_id, $loop_sidebar_position, $post, $td_sidebar_position, $content_width;
 
 //global $wp_query;
 //var_dump($wp_query->query_vars);
@@ -40,16 +40,36 @@ if (!empty($primary_category_id)) {
 	}
 }
 
+// custom post type - override sidebar position
+if ($post->post_type != 'post') {
+    $tds_custom_post_sidebar_pos = td_util::get_ctp_option($post->post_type, 'tds_custom_post_sidebar_pos');
+    if (!empty($tds_custom_post_sidebar_pos)) {
+        //update the sidebar position from custom post type
+        $loop_sidebar_position = $tds_custom_post_sidebar_pos;
+    }
+}
 
 //read the custom single post settings - this setting overids all of them
-$td_post_theme_settings = get_post_meta($post->ID, 'td_post_theme_settings', true);
+$td_post_theme_settings = td_util::get_post_meta_array($post->ID, 'td_post_theme_settings');
 if (!empty($td_post_theme_settings['td_sidebar_position'])) {
 	$loop_sidebar_position = $td_post_theme_settings['td_sidebar_position'];
 }
 
-//set the content width if needed (we already have the default in functions)
+//set the content width if needed (we already have the default in td_wp_booster_functions.php ) @see td_init_booster()
 if ($loop_sidebar_position == 'no_sidebar') {
-	$content_width = 980;
+	switch (TD_THEME_NAME) {
+		case 'Newspaper' :
+			$content_width = 1068;
+			break;
+
+		case 'Newsmag' :
+			$content_width = 1021;
+			break;
+
+		case 'ionMag' :
+			$content_width = 1068;
+			break;
+	}
 }
 
 //send the sidebar position to gallery

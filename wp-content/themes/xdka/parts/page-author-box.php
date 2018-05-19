@@ -48,7 +48,7 @@ global $part_cur_auth_obj;
                 //echo get_the_author_meta($td_social_id) . '<br>';
                 $authorMeta = get_the_author_meta($td_social_id, $part_cur_auth_obj->ID);
                 if (!empty($authorMeta)) {
-                    echo td_social_icons::get_icon($authorMeta, $td_social_id, 4, 16);
+                    echo td_social_icons::get_icon($authorMeta, $td_social_id, true );
                 }
             }
             ?>

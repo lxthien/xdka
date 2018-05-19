@@ -9,14 +9,18 @@ class td_demo_installer {
 
     function __construct() {
         //AJAX VIEW PANEL LOADING
-        add_action( 'wp_ajax_nopriv_td_ajax_demo_install', array($this, 'ajax_stacks_controller'));
-        add_action( 'wp_ajax_td_ajax_demo_install', array($this, 'ajax_stacks_controller'));
+        add_action( 'wp_ajax_td_ajax_demo_install', array( $this, 'ajax_demos_controller' ) );
     }
 
 
-    function ajax_stacks_controller() {
+    function ajax_demos_controller() {
+
+
+		// die if request is fake
+	    check_ajax_referer('td-demo-install', 'td_magic_token');
+
         if (!current_user_can('switch_themes')) {
-            echo 'Permission denied!';
+            die;
         }
 
         // try to extend the time limit
@@ -75,17 +79,26 @@ class td_demo_installer {
             td_demo_widgets::remove();
 
 
+	        $td_options = &td_options::get_all_by_ref();
+
             // remove panel settings and recompile the css as empty
-            foreach (td_global::$td_options as $option_id => $option_value) {
-                td_global::$td_options[$option_id] = '';
+            foreach ($td_options as $option_id => $option_value) {
+	            $td_options[$option_id] = '';
             }
             //typography settings
-            td_global::$td_options['td_fonts'] = '';
-            //css font files (google) buffer
-            td_global::$td_options['td_fonts_css_files'] = '';
+	        $td_options['td_fonts'] = array();
+
+            /**
+             * css font files (google) buffer
+             * since 10.01.2017 the google fonts moved at run time
+            and do not store the g fonts css files to the database therefore this key is not used anymore */
+	        //$td_options['td_fonts_css_files'] = '';
+
             //compile user css if any
-            td_global::$td_options['tds_user_compile_css'] = td_css_generator();
-            update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
+	        $td_options['tds_user_compile_css'] = td_css_generator();
+
+	        td_options::schedule_save();
+	        //update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
         }
 
         /*  ----------------------------------------------------------------------------
@@ -116,16 +129,18 @@ class td_demo_installer {
             td_demo_category::remove();
             td_demo_menus::remove();
             td_demo_widgets::remove();
-        }
-        /*  ----------------------------------------------------------------------------
-            install Full
-        */
-        else if ($td_demo_action == 'td_media_1') {
+
             // change our state
             td_demo_state::update_state($td_demo_id, 'full');
 
             // load panel settings
             $this->import_panel_settings(td_global::$demo_list[$td_demo_id]['folder'] . 'td_panel_settings.txt', true);
+        }
+        /*  ----------------------------------------------------------------------------
+            install Full
+        */
+        else if ($td_demo_action == 'td_media_1') {
+
 
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_1.php');
@@ -133,10 +148,12 @@ class td_demo_installer {
 
 
         else if ($td_demo_action == 'td_media_2') {
+	        //echo 'sss';
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_2.php');
         }
         else if ($td_demo_action == 'td_media_3') {
+
             // load the media import script
             require_once(td_global::$demo_list[$td_demo_id]['folder'] . 'td_media_3.php');
         }
@@ -164,6 +181,7 @@ class td_demo_installer {
 
 
     public function import_panel_settings($file_path, $empty_ignored_settings = false) { //it's public only for testing
+	    $td_options = &td_options::get_all_by_ref();
 
         // this settings will be "" out when any of the imports is runned
         $ignored_settings = array(
@@ -185,30 +203,34 @@ class td_demo_installer {
         $file_settings = unserialize(base64_decode(file_get_contents($file_path, true)));
 
         //apply td_cake variables
-        $file_settings['td_cake_status_time'] = td_util::get_option('td_cake_status_time');
-        $file_settings['td_cake_status'] = td_util::get_option('td_cake_status');
-        $file_settings['envato_key'] = td_util::get_option('envato_key');
+        $file_settings['td_cake_status_time'] = td_util::get_option_('td_cake_status_time');
+        $file_settings['td_cake_status'] = td_util::get_option_('td_cake_status');
+        $file_settings['envato_key'] = td_util::get_option_('envato_key');
 
 
         if ($empty_ignored_settings === true) {
             // we empty the ignored settings
-            td_global::$td_options = $file_settings;
+	        $td_options = $file_settings;
             foreach ($ignored_settings as $setting) {
-                td_global::$td_options[$setting] = '';
+	            if (isset($td_options[$setting])) {
+		            unset($td_options[$setting]);
+	            }
+                //td_global::$td_options[$setting] = '';
             }
         } else {
             // we leave the ignored settings alone
             foreach ($file_settings as $setting_id => $setting_value) {
                 if (!in_array($setting_id, $ignored_settings)) {
-                    td_global::$td_options[$setting_id] = $setting_value;
+	                $td_options[$setting_id] = $setting_value;
                 }
             }
         }
 
         //compile user css if any
-        td_global::$td_options['tds_user_compile_css'] = td_css_generator();
+	    $td_options['tds_user_compile_css'] = td_css_generator();
         //write the changes to the database
-        update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
+	    td_options::schedule_save();
+        //update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
     }
 
 }

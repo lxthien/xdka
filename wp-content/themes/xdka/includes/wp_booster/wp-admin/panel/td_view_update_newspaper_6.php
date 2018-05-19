@@ -1,6 +1,11 @@
 <?php
 
 
+if (empty($_REQUEST['td_magic_token']) || wp_verify_nonce($_REQUEST['td_magic_token'], 'td-newspaper4-import') === false) {
+	echo 'Permission denied';
+	die;
+}
+
 
 class td_update_to_newspaper6 {
     static $shortcode_map = array (
@@ -116,7 +121,9 @@ class td_update_to_newspaper6 {
         'td_fonts',   // de verificat
         'td_fonts_js_buffer',
         'td_fonts_css_buffer',
-        'td_fonts_css_files',
+        /** since 10.01.2017 the google fonts moved at run time
+        and do not store the g fonts css files to the database therefore this key is not used anymore */
+        //'td_fonts_css_files',
         'tds_logo_menu_upload',
         'tds_logo_menu_upload_r',
         'tds_tweeter_username',
@@ -173,8 +180,12 @@ class td_update_to_newspaper6 {
                 $settings_buffer[$option_id] = $old_theme_settings[$option_id];
             }
         }
-        td_global::$td_options = $settings_buffer;
-        update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
+
+	    $td_options = &td_options::get_all_by_ref();
+	    $td_options = $settings_buffer;
+	    td_options::schedule_save();
+
+	    //update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
     }
 
 

@@ -1,8 +1,18 @@
 <?php
 class td_block_authors extends td_block {
 
+
+	/**
+	 * Disable loop block features. This block does not use a loop and it dosn't need to run a query.
+	 */
+	function __construct() {
+		parent::disable_loop_block_features();
+	}
+
+
+
     function render($atts, $content = null) {
-        parent::render($atts);
+	    parent::render($atts);
         global $wpdb;
 
         $sort = '';
@@ -13,7 +23,7 @@ class td_block_authors extends td_block {
                 'sort' => '',
                 'exclude' => '',
                 'include' => ''
-            ),$this->atts));
+            ), $atts));
 
 
 
@@ -57,8 +67,13 @@ class td_block_authors extends td_block {
 
 
         $buffy = '';
-        $buffy .= '<div class="' . $this->get_block_classes(array('td_top_authors')) . '">';
+        $buffy .= '<div class="' . $this->get_block_classes(array('td_top_authors')) . '" ' . $this->get_block_html_atts() . '>';
+
+	    //get the block js
+	    $buffy .= $this->get_block_css();
+
         $buffy .= $this->get_block_title();
+	    $buffy .= $this->get_pull_down_filter();
 
 
         if (!empty($td_authors)) {

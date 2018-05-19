@@ -14,13 +14,13 @@ $td_demo_top_menu = td_demo_menus::create_menu('td-demo-top-menu', 'top-menu');
 td_demo_menus::add_link(array(
     'title' => 'About',
     'add_to_menu_id' => $td_demo_top_menu,
-    'url' => 'http://tagdiv.com/about-us',
+    'url' => '#',
     'parent_id' => ''
 ));
 td_demo_menus::add_link(array(
     'title' => 'Contact',
     'add_to_menu_id' => $td_demo_top_menu,
-    'url' => 'http://tagdiv.com',
+    'url' => '#',
     'parent_id' => ''
 ));
 
@@ -29,39 +29,45 @@ $td_demo_footer_menu = td_demo_menus::create_menu('td-demo-footer-menu', 'footer
 td_demo_menus::add_link(array(
     'title' => 'About',
     'add_to_menu_id' => $td_demo_footer_menu,
-    'url' => 'http://tagdiv.com/about-us',
+    'url' => '#',
     'parent_id' => ''
 ));
 td_demo_menus::add_link(array(
     'title' => 'Blog',
     'add_to_menu_id' => $td_demo_footer_menu,
     'url' => '#',
-    'parent_id' => 'http://tagdiv.com/blog'
+    'parent_id' => '#'
 ));
 td_demo_menus::add_link(array(
     'title' => 'Contact',
     'add_to_menu_id' => $td_demo_footer_menu,
-    'url' => 'http://tagdiv.com',
+    'url' => '#',
     'parent_id' => ''
 ));
 
 
-/*  ----------------------------------------------------------------------------
-    background - leave empty if you want to make sure that there is NO background on the demo - td_demo_misc::update_background('');
- */
+// main background > keep empty to make sure you do not have a bg set
 td_demo_misc::update_background('');
+
+// login background
+td_demo_misc::update_background_login('td_pic_2');
+
+// mobile background
+td_demo_misc::update_background_mobile('td_pic_p2');
+
+// login popup background
+td_demo_misc::update_background_login('td_pic_p2');
 
 // footer background
 td_demo_misc::update_background_footer('td_footer_bg');
-
 
 /*  ----------------------------------------------------------------------------
     logo
 */
 td_demo_misc::update_logo(array(
     'normal' => 'td_logo_header',
-    'retina' => '',
-    'mobile' => ''
+    'retina' => 'td_logo_header',
+    'mobile' => 'td_logo_footer'
 ));
 
 
@@ -75,7 +81,7 @@ td_demo_misc::update_footer_logo(array(
 /*  ----------------------------------------------------------------------------
     footer text
  */
-td_demo_misc::update_footer_text('Newspaper 6 is your news, entertainment, music fashion website. We provide you with the latest news and videos straight from the entertainment industry.');
+td_demo_misc::update_footer_text('Newspaper is your news, entertainment, music fashion website. We provide you with the latest news and videos straight from the entertainment industry.');
 
 
 
@@ -104,6 +110,11 @@ td_demo_misc::add_ad_image('sidebar', 'td_wedding_sidebar_ad');
  */
 //default sidebar
 td_demo_widgets::remove_widgets_from_sidebar('default');
+
+//remove footer widgets > remove existing widgets from footer widgets areas
+td_demo_widgets::remove_widgets_from_sidebar('footer-1');
+td_demo_widgets::remove_widgets_from_sidebar('footer-2');
+td_demo_widgets::remove_widgets_from_sidebar('footer-3');
 
 td_demo_widgets::add_widget_to_sidebar('default', 'td_block_social_counter_widget',
     array (
@@ -269,19 +280,19 @@ $demo_cat_11_id =td_demo_category::add_category(array(
 $td_homepage_id = td_demo_content::add_page(array(
     'title' => 'Home',
     'file' => td_global::$get_template_directory . '/includes/demos/wedding/pages/homepage.txt',
-    'template' => 'page.php',   // the page template full file name with .php
+    'template' => 'default',   // the page template full file name with .php
     'td_layout' => '',
     'homepage' => true
 ));
 
 //gallery
-$td_gallery_id = td_demo_content::add_page(array(
-    'title' => 'Gallery',
-    'file' => td_global::$get_template_directory . '/includes/demos/wedding/pages/gallery.txt',
-    'template' => 'page.php',   // the page template full file name with .php
-    'td_layout' => '',
-    'homepage' => false
-));
+//$td_gallery_id = td_demo_content::add_page(array(
+//    'title' => 'Gallery',
+//    'file' => td_global::$get_template_directory . '/includes/demos/wedding/pages/gallery.txt',
+//    'template' => 'default',   // the page template full file name with .php
+//    'td_layout' => '',
+//    'homepage' => false
+//));
 
 /*  ----------------------------------------------------------------------------
     menu
@@ -303,11 +314,18 @@ td_demo_menus::add_mega_menu(array(
     'category_id' => $demo_cat_1_id
 ));
 
-td_demo_menus::add_page(array(
-    'title' => 'Gallery',
+//td_demo_menus::add_page(array(
+//    'title' => 'Gallery',
+//    'add_to_menu_id' => $td_demo_header_menu_id,
+//    'page_id' => $td_gallery_id,
+//    'parent_id' => ''
+//));
+
+// mega menu one subcateg
+td_demo_menus::add_mega_menu(array(
+    'title' => 'Photography',
     'add_to_menu_id' => $td_demo_header_menu_id,
-    'page_id' => $td_gallery_id,
-    'parent_id' => ''
+    'category_id' => $demo_cat_9_id,
 ));
 
 // mega menu one subcateg
@@ -326,12 +344,6 @@ $parent_submenu_id = td_demo_menus::add_link(array(
     'parent_id' => ''
 ));
 
-td_demo_menus::add_category(array(
-    'title' => 'Photography',
-    'add_to_menu_id' => $td_demo_header_menu_id,
-    'category_id' => $demo_cat_9_id,
-    'parent_id' => $parent_submenu_id
-));
 td_demo_menus::add_category(array(
     'title' => 'Ideas',
     'add_to_menu_id' => $td_demo_header_menu_id,

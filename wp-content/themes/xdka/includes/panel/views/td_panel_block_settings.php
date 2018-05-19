@@ -1,6 +1,40 @@
+<!-- Global block template -->
+<?php echo td_panel_generator::box_start('Global Block Header Template', true); ?>
+
+
+    <!-- text -->
+    <div class="td-box-row">
+        <div class="td-box-description td-box-full">
+            <p>This header template will be applied to the whole site. The theme will also try to adjust the default widgets to look in the same style
+            with the block template selected here.</p>
+        </div>
+        <div class="td-box-row-margin-bottom"></div>
+    </div>
+
+    <!-- GLOBAL BLOCK TEMPLATE SELECT -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">BLOCK HEADER TEMPLATE</span>
+            <p>You can overwrite the template on each block and widget.</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::visual_select_o(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_global_block_template',
+                'values' => td_api_block_template::_helper_generate_block_templates()
+            ));
+            ?>
+        </div>
+    </div>
+<?php echo td_panel_generator::box_end();?>
+
+
+
+
 <!-- Thumbs on Modules/Blocks -->
 <?php
-    echo td_panel_generator::ajax_box('Thumbs on modules &amp; blocks', array(
+    echo td_panel_generator::ajax_box('Thumbs on Modules/Blocks', array(
         'td_ajax_calling_file' => basename(__FILE__),
         'td_ajax_box_id' => 'td_thumbs_on_modules_and_blocks',
         ), '', 'td_panel_box_thumb_on_modules'
@@ -17,7 +51,7 @@
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
             <span class="td-box-title">More information:</span>
-            <p>From here you can show or hide the category tag from modules. <a target="_blank" href="http://forum.tagdiv.com/modules/" >Read more about modules</a></p>
+            <p>From here you can show or hide the category tag from modules. <a target="_blank" href="http://forum.tagdiv.com/category-tag-on-modulesblocks/" >Read more about modules</a></p>
         </div>
         <div class="td-box-row-margin-bottom"></div>
     </div>
@@ -53,6 +87,64 @@
 <?php echo td_panel_generator::box_end();?>
 
 
+
+<!-- Meta info on Modules/Blocks -->
+<?php echo td_panel_generator::box_start('Meta info on Modules/Blocks', false); ?>
+
+<!-- Show author name -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">SHOW AUTHOR NAME</span>
+        <p>Enable or disable the author name (on blocks and modules)</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_m_show_author_name',
+            'true_value' => '',
+            'false_value' => 'hide'
+        ));
+        ?>
+    </div>
+</div>
+
+<!-- Show date -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">SHOW DATE</span>
+        <p>Enable or disable the post date (on blocks and modules)</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_m_show_date',
+            'true_value' => '',
+            'false_value' => 'hide'
+        ));
+        ?>
+    </div>
+</div>
+
+<!-- SHow comment count -->
+<div class="td-box-row">
+    <div class="td-box-description">
+        <span class="td-box-title">SHOW COMMENT COUNT</span>
+        <p>Enable or disable comment number (on blocks and modules)</p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_m_show_comments',
+            'true_value' => '',
+            'false_value' => 'hide'
+        ));
+        ?>
+    </div>
+</div>
+<?php echo td_panel_generator::box_end();?>
 
 
 
@@ -92,74 +184,3 @@
 
 
 
-
-<?php
-    //@todo run only on Newsmag - HACK
-    if (TD_THEME_NAME === 'Newsmag') { ?>
-    <hr>
-    <div class="td-section-separator">Block predefined style</div>
-
-    <!-- STYLE 1 CSS ------------------------------------------------------------------------->
-    <?php
-    echo td_panel_generator::ajax_box('Style 1 - Red', array(
-            'td_ajax_calling_file' => basename(__FILE__),
-            'td_ajax_box_id' => 'td_style_1_red'
-        )
-    );
-    ?>
-
-
-
-    <!-- STYLE 2 CSS ------------------------------------------------------------------------->
-    <?php
-    echo td_panel_generator::ajax_box('Style 2 - Black', array(
-            'td_ajax_calling_file' => basename(__FILE__),
-            'td_ajax_box_id' => 'td_style_2_black'
-        )
-    );
-    ?>
-
-
-
-    <!-- STYLE 3 CSS ------------------------------------------------------------------------->
-    <?php
-    echo td_panel_generator::ajax_box('Style 3 - Orange', array(
-            'td_ajax_calling_file' => basename(__FILE__),
-            'td_ajax_box_id' => 'td_style_3_orange'
-        )
-    );
-    ?>
-
-
-
-    <!-- STYLE 4 CSS ------------------------------------------------------------------------->
-    <?php
-    echo td_panel_generator::ajax_box('Style 4 - Yellow', array(
-            'td_ajax_calling_file' => basename(__FILE__),
-            'td_ajax_box_id' => 'td_style_4_yellow'
-        )
-    );
-    ?>
-
-
-
-    <!-- STYLE 5 CSS ------------------------------------------------------------------------->
-    <?php
-    echo td_panel_generator::ajax_box('Style 5 - Green', array(
-            'td_ajax_calling_file' => basename(__FILE__),
-            'td_ajax_box_id' => 'td_style_5_green'
-        )
-    );
-    ?>
-
-
-
-    <!-- STYLE 6 CSS ------------------------------------------------------------------------->
-    <?php
-    echo td_panel_generator::ajax_box('Style 6 - Pink', array(
-            'td_ajax_calling_file' => basename(__FILE__),
-            'td_ajax_box_id' => 'td_style_6_pink'
-        )
-    );
-
-}

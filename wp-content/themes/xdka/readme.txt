@@ -3,7 +3,7 @@
     |   |/ ._>| | | |<_-<| . \<_> || . \/ ._>| '_>
     |_\_|\___.|__/_/ /__/|  _/<___||  _/\___.|_|
                          |_|       |_|
-    ~ tagDiv 2015 ~
+    ~ tagDiv 2017 ~
 
 
 The documentations is here: 
@@ -17,4 +17,4 @@ http://forum.tagdiv.com/
 
 
 
-~ tagDiv 2015 ~
+~ tagDiv 2017 ~

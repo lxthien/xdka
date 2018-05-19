@@ -16,7 +16,7 @@ class td_module_single_base extends td_module {
         parent::__construct($post);
 
         //read post settings
-        $this->td_post_theme_settings = get_post_meta($post->ID, 'td_post_theme_settings', true);
+        $this->td_post_theme_settings = td_util::get_post_meta_array($post->ID, 'td_post_theme_settings');
 
         $this->is_single = is_single();
     }
@@ -65,12 +65,20 @@ class td_module_single_base extends td_module {
     //$show_stars_on_review - not used
     function get_author() {
         $buffy = '';
+
+        // used in ionMag to hide the date "." when the post date & comment count are off
+        // it does nothing on newspaper & newsmag
+        $post_author_no_dot = '';
+        if ( td_util::get_option('tds_p_show_date') == 'hide' and td_util::get_option('tds_p_show_comments') == 'hide' ) {
+            $post_author_no_dot = ' td-post-author-no-dot';
+        }
+
         if (td_util::get_option('tds_p_show_author_name') != 'hide') {
-            $buffy .= '<div class="td-post-author-name">' . __td('By', TD_THEME_NAME) . ' ';
+            $buffy .= '<div class="td-post-author-name' . $post_author_no_dot . '"><div class="td-author-by">' . __td('By', TD_THEME_NAME) . '</div> ';
             $buffy .= '<a href="' . get_author_posts_url($this->post->post_author) . '">' . get_the_author_meta('display_name', $this->post->post_author) . '</a>' ;
 
             if (td_util::get_option('tds_p_show_author_name') != 'hide' and td_util::get_option('tds_p_show_date') != 'hide') {
-                $buffy .= ' - ';
+                $buffy .= '<div class="td-author-line"> - </div> ';
             }
             $buffy .= '</div>';
         }
@@ -83,7 +91,7 @@ class td_module_single_base extends td_module {
      * @param $thumbType
      * @return string
      */
-    function get_image($thumbType) {
+    function get_image($thumbType, $css_image = false) {
         global $page;
 
 
@@ -105,11 +113,10 @@ class td_module_single_base extends td_module {
             return '';
         }
 
-
         //handle video post format
         if (get_post_format($this->post->ID) == 'video') {
             //if it's a video post...
-            $td_post_video = get_post_meta($this->post->ID, 'td_post_video', true);
+            $td_post_video = td_util::get_post_meta_array($this->post->ID, 'td_post_video');
 
             //render the video if the post has a video in the featured video section of the post
             if (!empty($td_post_video['td_video'])) {
@@ -123,6 +130,9 @@ class td_module_single_base extends td_module {
                 $featured_image_id = get_post_thumbnail_id($this->post->ID);
                 $featured_image_info = td_util::attachment_get_full_info($featured_image_id, $thumbType);
 
+                //retina image
+                $srcset_sizes = td_util::get_srcset_sizes($featured_image_id, $thumbType, $featured_image_info['width'], $featured_image_info['src']);
+
                 //get the full size for the popup
                 $featured_image_full_size_src = td_util::attachment_get_src($featured_image_id, 'full');
 
@@ -134,14 +144,14 @@ class td_module_single_base extends td_module {
                     if ($show_td_modal_image != 'no_modal') {
                         //wrap the image_html with a link + add td-modal-image class
                         $image_html = '<a href="' . $featured_image_full_size_src['src'] . '" data-caption="' . esc_attr($featured_image_info['caption'], ENT_QUOTES) . '">';
-                        $image_html .= '<img width="' . $featured_image_info['width'] . '" height="' . $featured_image_info['height'] . '" class="entry-thumb td-modal-image" src="' . $featured_image_info['src'] . '" alt="' . $featured_image_info['alt']  . '" title="' . $featured_image_info['title'] . '"/>';
+                        $image_html .= '<img width="' . $featured_image_info['width'] . '" height="' . $featured_image_info['height'] . '" class="entry-thumb td-modal-image" src="' . $featured_image_info['src'] . '"' . $srcset_sizes . ' alt="' . $featured_image_info['alt']  . '" title="' . $featured_image_info['title'] . '"/>';
                         $image_html .= '</a>';
                     } else { //no_modal
-                        $image_html = '<img width="' . $featured_image_info['width'] . '" height="' . $featured_image_info['height'] . '" class="entry-thumb" src="' . $featured_image_info['src'] . '" alt="' . $featured_image_info['alt']  . '" title="' . $featured_image_info['title'] . '"/>';
+                        $image_html = '<img width="' . $featured_image_info['width'] . '" height="' . $featured_image_info['height'] . '" class="entry-thumb" src="' . $featured_image_info['src'] . '"' .  $srcset_sizes . ' alt="' . $featured_image_info['alt']  . '" title="' . $featured_image_info['title'] . '"/>';
                     }
                 } else {
                     //on blog index page
-                    $image_html = '<a href="' . $this->href . '"><img width="' . $featured_image_info['width'] . '" height="' . $featured_image_info['height'] . '" class="entry-thumb" src="' . $featured_image_info['src'] . '" alt="' . $featured_image_info['alt']  . '" title="' . $featured_image_info['title'] . '"/></a>';
+                    $image_html = '<a href="' . $this->href . '"><img width="' . $featured_image_info['width'] . '" height="' . $featured_image_info['height'] . '" class="entry-thumb" src="' . $featured_image_info['src'] . '"' . $srcset_sizes . ' alt="' . $featured_image_info['alt']  . '" title="' . $featured_image_info['title'] . '"/></a>';
                 }
 
 
@@ -204,8 +214,8 @@ class td_module_single_base extends td_module {
                         //get the parent of this cat
                         $td_parent_cat_obj = get_category( $category->category_parent );
 
-                        //if we have a parent, shot it first
-                        if ( ! empty( $td_parent_cat_obj->name ) ) {
+                        //if we have a parent and the default category display is disabled show it first
+                        if ( ! empty( $td_parent_cat_obj->name ) and td_util::get_option('tds_default_category_display') != 'true') {
                             $tax_meta__color_parent                = td_util::get_category_option( $td_parent_cat_obj->cat_ID, 'tdc_color' );//swich by RADU A, get_tax_meta($td_parent_cat_obj->cat_ID,'tdc_color');
                             $tax_meta__hide_on_post_parent         = td_util::get_category_option( $td_parent_cat_obj->cat_ID, 'tdc_hide_on_post' );//swich by RADU A, get_tax_meta($td_parent_cat_obj->cat_ID,'tdc_hide_on_post');
                             $terms_ui_array[ $td_parent_cat_obj->name ] = array(
@@ -252,7 +262,7 @@ class td_module_single_base extends td_module {
 
                 if ( ! empty( $term_params['color'] ) ) {
                     // set title color based on background color contrast
-                    $td_cat_title_color = $this->readableColour($term_params['color']);
+                    $td_cat_title_color = td_util::readable_colour($term_params['color'], 200, 'rgba(0, 0, 0, 0.9)', '#fff');
                     $td_cat_color = ' style="background-color:' . $term_params['color'] . '; color:' . $td_cat_title_color . '; border-color:' . $term_params['color']  . ';"';
                 } else {
                     $td_cat_color = '';
@@ -268,31 +278,37 @@ class td_module_single_base extends td_module {
     }
 
 
-    /**
-     * calculate the contrast of a color and return:
-     * @param $bg - string (ex. #23f100)
-     * @return string - #000 - for light background - #fff - for dark background
-     */
-    function readableColour($bg){
-        $r = hexdec(substr($bg,1,2));
-        $g = hexdec(substr($bg,3,2));
-        $b = hexdec(substr($bg,5,2));
-
-        $contrast = sqrt(
-            $r * $r * .241 +
-            $g * $g * .691 +
-            $b * $b * .068
-        );
-
-        if($contrast > 200){
-            return '#000';
-        }else{
-            return '#fff';
+    function get_date($show_stars_on_review = true) {
+        $visibility_class = '';
+        if (td_util::get_option('tds_p_show_date') == 'hide') {
+            $visibility_class = ' td-visibility-hidden';
         }
+
+        // used in ionMag to hide the date "." when the post comment count is off
+        // it does nothing on newspaper & newsmag
+        $td_post_date_no_dot = '';
+        if ( td_util::get_option('tds_p_show_comments') == 'hide' ) {
+            $td_post_date_no_dot = ' td-post-date-no-dot';
+        }
+
+        $buffy = '';
+        if ($this->is_review and $show_stars_on_review === true) {
+            //if review show stars
+            $buffy .= '<div class="entry-review-stars">';
+            $buffy .=  td_review::render_stars($this->td_review);
+            $buffy .= '</div>';
+
+        } else {
+            if (td_util::get_option('tds_p_show_date') != 'hide') {
+                $td_article_date_unix = get_the_time('U', $this->post->ID);
+                $buffy .= '<span class="td-post-date' . $td_post_date_no_dot . '">';
+                $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . date(DATE_W3C, $td_article_date_unix) . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
+                $buffy .= '</span>';
+            }
+        }
+
+        return $buffy;
     }
-
-
-
 
 
     function get_comments() {
@@ -349,10 +365,10 @@ class td_module_single_base extends td_module {
          * @see td_autoload_classes::loading_classes
          */
         //$td_smart_list = get_post_meta($this->post->ID, 'td_smart_list', true);
-        $td_smart_list = get_post_meta($this->post->ID, 'td_post_theme_settings', true);
-        if (!empty($td_smart_list['smart_list_template'])) {
+	    $td_post_theme_settings = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
+        if (!empty($td_post_theme_settings['smart_list_template'])) {
 
-            $td_smart_list_class = $td_smart_list['smart_list_template'];
+            $td_smart_list_class = $td_post_theme_settings['smart_list_template'];
             if (class_exists($td_smart_list_class)) {
                 /**
                  * @var $td_smart_list_obj td_smart_list
@@ -367,12 +383,12 @@ class td_module_single_base extends td_module {
                     'extract_first_image' => td_api_smart_list::get_key($td_smart_list_class, 'extract_first_image')
                 );
 
-                if (!empty($td_smart_list['td_smart_list_order'])) {
+                if (!empty($td_post_theme_settings['td_smart_list_order'])) {
                     $smart_list_settings['counting_order_asc'] = true;
                 }
 
-                if (!empty($td_smart_list['td_smart_list_h'])) {
-                    $smart_list_settings['td_smart_list_h'] = $td_smart_list['td_smart_list_h'];
+                if (!empty($td_post_theme_settings['td_smart_list_h'])) {
+                    $smart_list_settings['td_smart_list_h'] = $td_post_theme_settings['td_smart_list_h'];
                 }
                 return $td_smart_list_obj->render_from_post_content($smart_list_settings);
             } else {
@@ -395,61 +411,114 @@ class td_module_single_base extends td_module {
         $tds_inline_ad_paragraph = td_util::get_option('tds_inline_ad_paragraph');
         $tds_inline_ad_align = td_util::get_option('tds_inline_ad_align');
 
+        //ads titles
+        $tds_inline_ad_title = td_util::get_option('tds_content_inline_title');
+        $tds_bottom_ad_title = td_util::get_option('tds_content_bottom_title');
+        $tds_top_ad_title = td_util::get_option('tds_content_top_title');
+
+        //show the inline ad at the last paragraph ( replacing the bottom ad ) whenever there are not as many paragraphs mentioned in After Paragraph field
+        // ..and the article bottom ad is not active
+        $show_inline_ad_at_bottom = false;
 
         //add the inline ad
         if (td_util::is_ad_spot_enabled('content_inline') and is_single()) {
-
             if (empty($tds_inline_ad_paragraph)) {
                 $tds_inline_ad_paragraph = 0;
             }
 
-            $cnt = 0;
             $content_buffer = ''; // we replace the content with this buffer at the end
-
-            $content_parts = preg_split('/(<p.*>)/U', $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+            $content_parts = preg_split('/(<blockquote.*\/blockquote>)/Us', $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
             $p_open_tag_count = 0; // count how many <p> tags we have added to the buffer
             foreach ($content_parts as $content_part_index => $content_part_value) {
                 if (!empty($content_part_value)) {
 
-                    // Show the ad ONLY IF THE CURRENT PART IS A <p> opening tag and before the <p> -> so we will have <p>content</p>  ~ad~ <p>content</p>
-                    // and prevent cases like <p> ~ad~ content</p>
-                    if (preg_match('/(<p.*>)/U', $content_part_value) === 1) {
-                        if ($tds_inline_ad_paragraph == $p_open_tag_count) {
-                            switch ($tds_inline_ad_align) {
-                                case 'left':
-                                    $content_buffer .= td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_inline', 'align' => 'left'));
-                                    break;
+                    //skip <blockquote> parts - look for <p> in the other parts
+                    if (preg_match('/(<blockquote.*>)/U', $content_part_value) !== 1) {
+                        $section_parts = preg_split('/(<p.*>)/U', $content_part_value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
-                                case 'right':
-                                    $content_buffer .= td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_inline', 'align' => 'right'));
-                                    break;
+                        foreach ($section_parts as $section_part_index => $section_part_value) {
+                            if (!empty($section_part_value)) {
+                                // Show the ad ONLY IF THE CURRENT PART IS A <p> opening tag and before the <p> -> so we will have <p>content</p>  ~ad~ <p>content</p>
+                                // and prevent cases like <p> ~ad~ content</p>
+                                if (preg_match('/(<p.*>)/U', $section_part_value) === 1) {
+                                    if ($tds_inline_ad_paragraph == $p_open_tag_count) {
+                                        $show_inline_ad_at_bottom = true;
+                                        switch ($tds_inline_ad_align) {
+                                            case 'left':
+                                                $content_buffer .= td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_inline', 'align' => 'left', 'spot_title' => $tds_inline_ad_title ));
+                                                break;
 
-                                default:
-                                    $content_buffer .= td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_inline'));
-                                    break;
+                                            case 'right':
+                                                $content_buffer .= td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_inline', 'align' => 'right', 'spot_title' => $tds_inline_ad_title));
+                                                break;
+
+                                            default:
+                                                $content_buffer .= td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_inline', 'spot_title' => $tds_inline_ad_title));
+                                                break;
+                                        }
+                                    }
+                                    $p_open_tag_count ++;
+                                }
+                                //add section to buffer
+                                $content_buffer .= $section_part_value;
                             }
                         }
-                        $p_open_tag_count ++;
+
+                    } else {
+                        //add <blockquote> to buffer
+                        $content_buffer .= $content_part_value;
                     }
-                    $content_buffer .= $content_part_value;
-                    $cnt++;
                 }
             }
             $content = $content_buffer;
         }
 
+
         //add the top ad
-        if (td_util::is_ad_spot_enabled('content_top') and is_single()) {
-            $content = td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_top')) . $content;
+        if (td_util::is_ad_spot_enabled('content_top') && is_single()) {
+
+	        //disable the top ad on post template 1, it breaks the layout, the top image and ad should float on the left side of the content
+	        if (!empty($td_post_theme_settings['td_post_template'])) {
+		        $td_default_site_post_template = $td_post_theme_settings['td_post_template'];
+
+	        //if the post individual template is not set, check the global settings, if template 1 is set disable the top ad
+	        } else {
+		        $td_default_site_post_template = td_util::get_option('td_default_site_post_template');
+	        }
+
+	        //default post template - is empty, check td_api_single_template::_helper_td_global_list_to_metaboxes()
+	        if (empty($td_default_site_post_template)) {
+                $td_default_site_post_template = 'single_template';
+            }
+
+            //check if ad is excluded from current post template
+	        if (td_api_single_template::get_key($td_default_site_post_template, 'exclude_ad_content_top') === false) {
+		        $content = td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_top', 'spot_title' => $tds_top_ad_title)) . $content;
+	        }
         }
 
 
         //add bottom ad
-        if (td_util::is_ad_spot_enabled('content_bottom') and is_single()) {
-            $content = $content . td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_bottom'));
-        }
+        if (td_util::is_ad_spot_enabled('content_bottom') && is_single()) {
+            $content = $content . td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_bottom', 'spot_title' => $tds_bottom_ad_title));
+        } else {
+            if ( $show_inline_ad_at_bottom !== true ) {
+                switch ($tds_inline_ad_align) {
+                    case 'left':
+                        $content = $content . td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_inline', 'align' => 'left', 'spot_title' => $tds_inline_ad_title ));
+                        break;
 
+                    case 'right':
+                        $content = $content . td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_inline', 'align' => 'right', 'spot_title' => $tds_inline_ad_title));
+                        break;
+
+                    default:
+                        $content = $content . td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'content_inline', 'spot_title' => $tds_inline_ad_title));
+                        break;
+                }
+            }
+        }
 
         return $content;
     }
@@ -580,6 +649,7 @@ class td_module_single_base extends td_module {
         }
         return $buffy;
     }
+
 
     /**
      * returns the review at the bottom of single posts and single posts types
@@ -788,6 +858,7 @@ class td_module_single_base extends td_module {
         }
 
 
+
         $buffy = '';
 
         $hideAuthor = td_util::get_option('hide_author');
@@ -829,7 +900,7 @@ class td_module_single_base extends td_module {
                             $authorMeta = 'http://twitter.com/' . $authorMeta;
                         }
                     }
-                    $buffy .= td_social_icons::get_icon($authorMeta, $td_social_id, 4);
+                    $buffy .= td_social_icons::get_icon($authorMeta, $td_social_id, true);
                 }
             }
             $buffy .= '</div>';

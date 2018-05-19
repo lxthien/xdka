@@ -13,7 +13,7 @@ $loop_sidebar_position = td_util::get_option('tds_' . $template_id . '_sidebar_p
 
 
 //read the custom single post settings - this setting overids all of them
-$td_page = get_post_meta($post->ID, 'td_page', true);
+$td_page = td_util::get_post_meta_array($post->ID, 'td_page');
 if (!empty($td_page['td_sidebar_position'])) {
 	$loop_sidebar_position = $td_page['td_sidebar_position'];
 }
@@ -25,14 +25,14 @@ if($loop_sidebar_position == 'sidebar_left') {
 }
 ?>
 
-	<div class="td-main-content-wrap td-main-page-wrap">
+	<div class="td-main-content-wrap td-main-page-wrap td-container-wrap">
 		<div class="td-container">
 			<div class="td-pb-row">
 				<?php
 				switch ($loop_sidebar_position) {
 					default:
 						?>
-						<div class="td-pb-span8 td-main-content" role="main">
+						<div class="td-pb-span8 td-main-content">
 							<div class="td-ss-main-content">
 								<?php
 								if (have_posts()) {
@@ -48,7 +48,7 @@ if($loop_sidebar_position == 'sidebar_left') {
 								?>
 							</div>
 						</div>
-						<div class="td-pb-span4 td-main-sidebar" role="complementary">
+						<div class="td-pb-span4 td-main-sidebar">
 							<div class="td-ss-main-sidebar">
 								<?php get_sidebar(); ?>
 							</div>
@@ -58,7 +58,7 @@ if($loop_sidebar_position == 'sidebar_left') {
 
 					case 'sidebar_left':
 						?>
-						<div class="td-pb-span8 td-main-content  <?php echo $td_sidebar_position; ?>-content" role="main">
+						<div class="td-pb-span8 td-main-content  <?php echo $td_sidebar_position; ?>-content">
 							<div class="td-ss-main-content">
 								<?php
 
@@ -75,7 +75,7 @@ if($loop_sidebar_position == 'sidebar_left') {
 								?>
 							</div>
 						</div>
-						<div class="td-pb-span4 td-main-sidebar" role="complementary">
+						<div class="td-pb-span4 td-main-sidebar">
 							<div class="td-ss-main-sidebar">
 								<?php get_sidebar(); ?>
 							</div>
@@ -85,7 +85,7 @@ if($loop_sidebar_position == 'sidebar_left') {
 
 					case 'no_sidebar':
 						?>
-						<div class="td-pb-span12 td-main-content" role="main">
+						<div class="td-pb-span12 td-main-content">
 							<div class="td-ss-main-content">
 								<?php
 								if (have_posts()) {

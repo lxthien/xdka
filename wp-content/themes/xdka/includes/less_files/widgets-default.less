@@ -48,6 +48,15 @@
   }
 }
 
+// widget archives
+.archive .widget_archive {
+  .current {
+    &,a {
+      color: @td_theme_color;
+    }
+  }
+}
+
 
 // calendar
 .widget_calendar {
@@ -125,7 +134,8 @@
 
 
 // recent comments
-.widget_recent_comments {
+.widget_recent_comments,
+.td_wp_recentcomments {
   margin-bottom: 42px;
   font-size: 12px;
   color: #444;
@@ -146,15 +156,46 @@
     font-weight: 600;
   }
 
-  li {
+  .recentcomments {
+    display: block;
     margin: 10px 12px !important;
     line-height: 21px;
     padding-bottom: 13px;
     border-bottom: 1px dashed #f1f1f1;
+  }
+}
 
+.widget_recent_comments {
+  .recentcomments {
     &:last-child {
       border-bottom: 0;
       padding-bottom: 0;
+    }
+  }
+}
+
+.td_wp_recentcomments {
+  & > div {
+    &:first-child {
+      .recentcomments {
+        margin-top: 0 !important;
+      }
+    }
+
+    &:last-child {
+      .recentcomments {
+        border-bottom: 0;
+        margin-bottom: 0 !important;
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  a {
+    color: #111;
+
+    &:hover {
+      color: @td_theme_color;
     }
   }
 }
@@ -220,8 +261,13 @@
       display: none;
     }
 
+    a:hover {
+      color: @td_theme_color;
+    }
+
     .rsswidget {
       color: #fff;
+      padding: 6px 12px 5px 12px;
     }
   }
 
@@ -237,7 +283,7 @@
       padding-bottom: 7px;
       font-family: @font3;
       font-weight: 500;
-      font-size: 16px;
+      font-size: 18px;
     }
 
     .rssSummary {
@@ -252,7 +298,7 @@
 
   .rss-date,
   cite {
-    display: inline-block;
+    display: block;
     font-family: @font1;
     font-size: 11px;
     line-height: 16px;
@@ -260,6 +306,7 @@
     font-style: italic;
     position: relative;
     margin-bottom: 5px;
+    margin-top: 5px;
   }
 }
 
@@ -278,7 +325,33 @@
 
 // text
 .widget_text {
-  margin-bottom: 17px;
+
+  ul {
+    margin-bottom: 21px;
+
+    li {
+      list-style: disc;
+      list-style-position: inside;
+    }
+  }
+
+  ol {
+    margin-bottom: 21px;
+
+    li {
+      list-style-type: decimal;
+      margin: 0 0 0 21px;
+      line-height: 24px;
+    }
+  }
+
+  a {
+    color: @td_theme_color;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
 
   .block-title {
     margin-bottom: 26px;
@@ -318,5 +391,21 @@
 
   .wp-video-shortcode {
     outline: none;
+  }
+}
+
+//video widget
+.widget_media_video {
+  .wp-video {
+    margin-bottom: 0;
+  }
+}
+
+// new widgets from WP 4.8 - video/audio/image
+.widget_media_video,
+.widget_media_audio,
+.widget_media_image {
+  .block-title {
+    margin-bottom: 26px;
   }
 }

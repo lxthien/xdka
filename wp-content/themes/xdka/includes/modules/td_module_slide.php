@@ -46,13 +46,9 @@ class td_module_slide extends td_module {
                 $buffy .= '<div class="td-module-meta-info">';
                     $buffy .= $this->get_author();
                     $buffy .= $this->get_date();
-                    if (td_util::get_option('tds_p_show_views') != 'hide') {
-                        $buffy .= '<div class="td-post-views"><i class="td-icon-views"></i>' . td_page_views::get_page_views( $this->post->ID ) . '</div>';
-                    }
                     $buffy .= $this->get_comments();
                 $buffy .= '</div>';
             $buffy .= '</div>';
-
 
         $buffy .= '</div>';
 
@@ -63,7 +59,7 @@ class td_module_slide extends td_module {
         $buffy = '';
 
         //read the post meta to get the custom primary category
-        $td_post_theme_settings = get_post_meta($this->post->ID, 'td_post_theme_settings', true);
+        $td_post_theme_settings = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
         if (!empty($td_post_theme_settings['td_primary_cat'])) {
             //we have a custom category selected
             $selected_category_obj = get_category($td_post_theme_settings['td_primary_cat']);
@@ -92,7 +88,7 @@ class td_module_slide extends td_module {
     //overwrite the default function from td_module.php
     function get_comments() {
         $buffy = '';
-        if (td_util::get_option('tds_p_show_comments') != 'hide') {
+        if (td_util::get_option('tds_m_show_comments') != 'hide') {
             $buffy .= '<div class="td-post-comments"><i class="td-icon-comments"></i>';
             $buffy .= '<a href="' . get_comments_link($this->post->ID) . '">';
             $buffy .= get_comments_number($this->post->ID);

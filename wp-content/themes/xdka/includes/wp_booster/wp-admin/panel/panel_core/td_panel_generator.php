@@ -380,7 +380,7 @@ class td_panel_generator {
 
         //get theme settings (sidebars) from wp_options
         //get current sidebars
-        $theme_sidebars = td_util::get_option('sidebars');
+        $theme_sidebars = td_options::get_array('sidebars');
 
 
         //get control selected value
@@ -444,6 +444,31 @@ class td_panel_generator {
     }
 
 
+    //upload font file
+    static function upload_font_file($params_array) {
+        $contro_unique_id = td_global::td_generate_unique_id();
+
+        $class_hidden = ' td-class-hidden ';
+
+        //get control option
+        $control_value = td_panel_data_source::read($params_array);
+
+        if (!empty($control_value)) {
+            $class_hidden = '';
+        }
+        
+        $buffy = '
+            <div class="td_wrapper_upload_control">
+                <div class="td_upload_font_controls">
+                    <input type="text" id="' . $contro_unique_id .'" name="' . self::generate_name($params_array) . '" value="' . esc_attr(stripslashes($control_value)) . '" class="td_upload_field_link_font" />
+                    <div><a id="' . $contro_unique_id . '_button" class="td_upload_button">Upload</a><a id="' . $contro_unique_id . '_button_delete" class="td_delete_font_button ' . $class_hidden . '" data-control-id="' . $contro_unique_id . '">Remove</a><script language="JavaScript">td_upload_image_font("' . $contro_unique_id . '");</script></div>
+                </div>
+            </div>';
+
+        return $buffy;
+    }
+
+
     //upload image control
     static function upload_image($params_array) {
         $contro_unique_id = td_global::td_generate_unique_id();
@@ -468,7 +493,7 @@ class td_panel_generator {
                 <div id="' . $contro_unique_id . '_display" class="td_upload_container_for_image ' . $class_hidden . '"><img src="' . esc_attr(stripslashes($image_path)) .  '" id="' . $display_img_id . '" width="66" height="66" class="td_upd_image_display_small_image"></div>
                 <div class="td_upload_image_controls">
                     <input type="text" id="' . $contro_unique_id .'" name="' . self::generate_name($params_array) . '" value="' . esc_attr(stripslashes($control_value)) . '" class="td_upload_field_link_image" />
-                    <div><a id="' . $contro_unique_id . '_button" class="td_upload_button">Upload</a><a id="' . $contro_unique_id . '_button_delete" class="td_delete_image_button ' . $class_hidden . '" data-control-id="' . $contro_unique_id . '">Remove</a><script language="JavaScript">td_upload_image("' . $contro_unique_id . '");</script></div>
+                    <div><a id="' . $contro_unique_id . '_button" class="td_upload_button">Upload</a><a id="' . $contro_unique_id . '_button_delete" class="td_delete_image_button ' . $class_hidden . '" data-control-id="' . $contro_unique_id . '">Remove</a><script language="JavaScript">td_upload_image_font("' . $contro_unique_id . '");</script></div>
                 </div>
             </div>';
 
@@ -520,7 +545,7 @@ class td_panel_generator {
             }
 
             $buffy .= '
-                <a class="td-panel-remove-transitions td-radio-control-option' . $top_option_border_class . $radio_option_border_class_selected . '" title="' . strip_tags($radio_option['text']) . '" data-control-id="' . $contro_unique_id . '" data-option-value="' . $radio_option['val'] . '">' . $display_option . '<img src="' . get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/radio-check.png' . '"></a>
+                <a class="td-panel-remove-transitions td-radio-control-option' . $top_option_border_class . $radio_option_border_class_selected . '" title="' . strip_tags($radio_option['text']) . '" data-control-id="' . $contro_unique_id . '" data-option-value="' . $radio_option['val'] . '">' . $display_option . '<span class="td-radio-check"></span></a>
             ';
             $icont++;
             $radio_option_border_class_selected = '';
@@ -821,8 +846,6 @@ class td_panel_generator {
             or $params_array['ds'] == 'td_taxonomy'
         ) {
             return $params_array['ds'] . '[' . $params_array['item_id'] . ']' . '[' . $params_array['option_id'] . ']';
-        } elseif($params_array['ds'] == 'wp_widget') {
-            return $params_array['ds'] . '[' . $params_array['sidebar'] . ']' . '[' . $params_array['widget_name'] . ']' . '[' . $params_array['attribute_key'] . ']';
         } else {
             return $params_array['ds'] . '[' . $params_array['option_id'] . ']';
         }
@@ -835,10 +858,14 @@ class td_panel_generator {
      * @return string
      */
     private static function generate_default_values_name($params_array) {
-        if ($params_array['ds'] == 'td_category' or $params_array['ds'] == 'td_author' or $params_array['ds'] == 'td_ads' or $params_array['ds'] == 'td_fonts' or $params_array['ds'] == 'td_block_styles') {
+        if (
+        	$params_array['ds'] == 'td_category'
+	        or $params_array['ds'] == 'td_author'
+	        or $params_array['ds'] == 'td_ads'
+	        or $params_array['ds'] == 'td_fonts'
+	        or $params_array['ds'] == 'td_block_styles'
+        ) {
             return 'td_default' . '[' . $params_array['ds'] . ']' . '[' . $params_array['item_id'] . ']' . '[' . $params_array['option_id'] . ']';
-        } elseif($params_array['ds'] == 'wp_widget') {
-            return 'td_default' . '[' . $params_array['ds'] . ']' . '[' . $params_array['sidebar'] . ']' . '[' . $params_array['widget_name'] . ']' . '[' . $params_array['attribute_key'] . ']';
         } else {
             return 'td_default' . '[' . $params_array['ds'] . ']' . '[' . $params_array['option_id'] . ']';
         }
@@ -858,14 +885,19 @@ class td_panel_generator {
         switch ($view_name) {
             case 'default+enabled_on_loops':
                 // all modules that have enabled_on_loops + default
-                $modules_array[] = array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/module-default.png');
+                $modules_array[] = array(
+                	'text' => '',
+	                'title' => 'Use the default site wide module.',
+	                'val' => '',
+	                'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/module-default.png'
+                );
 
-                foreach (td_api_module::get_all() as $module_class => $module_array) {
+                foreach (td_api_module::get_all() as $id => $module_array) {
                     if ($module_array['enabled_on_loops'] === true) {
                         $modules_array[] = array(
 	                        'text' => '',
-	                        'title' => '',
-	                        'val' => td_api_module::_helper_get_module_loop_id($module_class),
+	                        'title' => $module_array['text'] . ' - ' . td_api_module::_display_file_path($id),
+	                        'val' => td_api_module::_helper_get_module_loop_id($id),
 	                        'img' => $module_array['img']
                         );
                     }
@@ -874,11 +906,12 @@ class td_panel_generator {
 
             case 'enabled_on_loops':
                 // all modules that have enabled_on_loops
-                foreach (td_api_module::get_all() as $module_class => $module_array) {
+                foreach (td_api_module::get_all() as $id => $module_array) {
                     if ($module_array['enabled_on_loops'] === true) {
                         $modules_array[] = array(
-	                        'text' => '', 'title' => '',
-	                        'val' => td_api_module::_helper_get_module_loop_id($module_class),
+	                        'text' => '',
+	                        'title' => $module_array['text'] . ' - ' . td_api_module::_display_file_path($id),
+	                        'val' => td_api_module::_helper_get_module_loop_id($id),
 	                        'img' => $module_array['img']
                         );
                     }
@@ -887,12 +920,12 @@ class td_panel_generator {
 
             case 'enabled_on_more_articles_box':
                 // all modules that are enabled on the more articles box
-                foreach (td_api_module::get_all() as $module_class => $module_array) {
+                foreach (td_api_module::get_all() as $id => $module_array) {
                     if ($module_array['enabled_on_more_articles_box'] === true) {
                         $modules_array[] = array(
 	                        'text' => '',
-	                        'title' => '',
-	                        'val' => td_api_module::_helper_get_module_loop_id($module_class),
+	                        'title' => $module_array['text'] . ' - ' . td_api_module::_display_file_path($id),
+	                        'val' => td_api_module::_helper_get_module_loop_id($id),
 	                        'img' => $module_array['img']
                         );
                     }

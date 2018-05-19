@@ -18,10 +18,11 @@ class Vc_Vendor_ContactForm7 implements Vc_Vendor_Interface {
 	 */
 	public function load() {
 
-		vc_lean_map( 'contact-form-7', array(
-			$this,
-			'addShortcodeSettings',
-		) );
+		vc_lean_map( 'contact-form-7',
+			array(
+				$this,
+				'addShortcodeSettings',
+			) );
 	}
 
 	/**
@@ -35,7 +36,7 @@ class Vc_Vendor_ContactForm7 implements Vc_Vendor_Interface {
 	 */
 	public function addShortcodeSettings( $tag ) {
 		/**
-		 * Add Shortcode To Visual Composer
+		 * Add Shortcode To WPBakery Page Builder
 		 */
 		$cf7 = get_posts( 'post_type="wpcf7_contact_form"&numberposts=-1' );
 
@@ -56,19 +57,19 @@ class Vc_Vendor_ContactForm7 implements Vc_Vendor_Interface {
 			'description' => __( 'Place Contact Form7', 'js_composer' ),
 			'params' => array(
 				array(
-					'type' => 'textfield',
-					'heading' => __( 'Form title', 'js_composer' ),
-					'param_name' => 'title',
-					'admin_label' => true,
-					'description' => __( 'What text use as form title. Leave blank if no title is needed.', 'js_composer' ),
-				),
-				array(
 					'type' => 'dropdown',
 					'heading' => __( 'Select contact form', 'js_composer' ),
 					'param_name' => 'id',
 					'value' => $contact_forms,
 					'save_always' => true,
 					'description' => __( 'Choose previously created contact form from the drop down list.', 'js_composer' ),
+				),
+				array(
+					'type' => 'textfield',
+					'heading' => __( 'Search title', 'js_composer' ),
+					'param_name' => 'title',
+					'admin_label' => true,
+					'description' => __( 'Enter optional title to search if no ID selected or cannot find by ID.', 'js_composer' ),
 				),
 			),
 		);

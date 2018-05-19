@@ -11,7 +11,7 @@ global $loop_sidebar_position, $td_sidebar_position, $post;
 $td_mod_single = new td_module_single($post);
 
 ?>
-<article id="post-<?php echo $td_mod_single->post->ID;?>" class="<?php echo join(' ', get_post_class('td-post-template-9'));?>" <?php echo $td_mod_single->get_item_scope();?>>
+<article id="post-<?php echo $td_mod_single->post->ID;?>" class="<?php echo join(' ', get_post_class('td-post-template-9'));?> td-container-wrap" <?php echo $td_mod_single->get_item_scope();?>>
     <div class="td-container">
         <div class="td-crumb-container"><?php echo td_page_generator::get_single_breadcrumbs($td_mod_single->title); ?></div>
         <div class="td-post-featured-video">

@@ -34,6 +34,15 @@
   width: 10em; /* left offset of submenus need to match (see below) */
 }
 
+.sf-menu > li.td-normal-menu > ul.sub-menu {
+  left: -15px;
+
+  /* responsive portrait tablet */
+  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+    left: -5px;
+  }
+}
+
 .sf-menu ul li {
   width: 100%;
 }
@@ -87,6 +96,13 @@ ul.sf-menu li li.sfHover li ul {
   top: -999em;
 }
 
+// fix the z-index when menu is o 2 lines
+.sf-menu > .current-menu-ancestor,
+.sf-menu > .current-category-ancestor,
+.sf-menu > .current-menu-item {
+  z-index: 0;
+}
+
 
 /*  ----------------------------------------------------------------------------
     All the links
@@ -102,7 +118,6 @@ ul.sf-menu li li.sfHover li ul {
 // top links
 .sf-menu > li > a {
   padding: 0 14px;
-  //min-height:48px;
   line-height: 48px;
   font-size: 14px;
   color: #000;
@@ -160,15 +175,17 @@ ul.sf-menu li li.sfHover li ul {
 /* Bottom border on Main Menu */
 .sf-menu > li > a:after {
   background-color: transparent;
-  content: "";
-  width: 100%;
-  height: 4px;
+  content: '';
+  width: 0;
+  height: 3px;
   position: absolute;
   bottom: 0;
   left: 0;
+  right: 0;
+  margin: 0 auto;
   -webkit-transform: translate3d(0,0,0);
   transform: translate3d(0,0,0);
-  //.transition(background-color @td_transition_time); // @todo check transition
+  .transition(width 0.2s ease);
 }
 
 
@@ -180,6 +197,7 @@ ul.sf-menu li li.sfHover li ul {
 .sf-menu > .sfHover > a:after //when the submenu is opend
 {
   background-color: @td_theme_color;
+  width: 100%;
 }
 
 
@@ -189,18 +207,36 @@ ul.sf-menu li li.sfHover li ul {
 }
 
 
+
 /*  ----------------------------------------------------------------------------
     submenu
 */
 .td-normal-menu ul {
-  box-shadow: 1px 1px 6px rgba(0,0,0,.2);
+  box-shadow: 1px 1px 4px rgba(0,0,0,.15);
+}
+.sf-menu .td-normal-menu ul {
+  padding: 15px 0;
+
+  /* responsive portrait tablet */
+  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+    padding: 8px 0;
+  }
+}
+.sf-menu .td-normal-menu ul ul {
+  margin: -15px 0;
+
+  /* responsive portrait tablet */
+  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+    margin: -8px 0;
+  }
 }
 .sf-menu ul {
   background-color: #fff;
 
   .td-menu-item > a {
-    padding: 7px 14px 8px 14px;
-    font-size: 13px;
+    padding: 7px 30px;
+    font-size: 12px;
+    line-height: 20px;
     color: #111;
 
     // font awesome in menu
@@ -214,7 +250,7 @@ ul.sf-menu li li.sfHover li ul {
     }
 
     @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-      padding: 5px 12px 6px 12px;
+      padding: 5px 16px 6px;
       font-size: 11px;
     }
   }
@@ -222,14 +258,7 @@ ul.sf-menu li li.sfHover li ul {
   .td-icon-menu-down {
     float: right;
     top: 0;
-    font-size: 9px;
-  }
-}
-
-// firefox align font-awesome icon
-@-moz-document url-prefix() {
-  .sf-menu ul .td-menu-item > a .fa {
-    top: -2px;
+    font-size: 7px;
   }
 }
 
@@ -239,8 +268,7 @@ ul.sf-menu li li.sfHover li ul {
 .sf-menu ul .current-category-ancestor > a, //current ancestor
 .sf-menu ul .current-menu-item > a//current menu
 {
-  color: #fff;
-  background-color: @td_theme_color;
+  color: @td_theme_color;
 }
 
 .sf-menu li:hover, .sf-menu li.sfHover,
@@ -271,11 +299,28 @@ ul.sf-menu li li.sfHover li ul {
     .td-icon-menu-down {
       position: absolute;
       top: 50%;
-      right: 10px;
-      margin-top: -10px;
+      right: 19px;
+      margin-top: -9px;
       line-height: 19px;
-
     }
+  }
+
+  .td-menu-badge {
+    font-size: 10px;
+    background-color: #f0f8ff;
+    color: @td_theme_color;
+    border-radius: 10px;
+    padding: 1px 7px 2px;
+    margin-left: 6px;
+    line-height: 1;
+    position: relative;
+    top: -1px;
+  }
+}
+.td-menu-badge {
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+      display: none;
   }
 }
 
@@ -284,7 +329,7 @@ ul.sf-menu li li.sfHover li ul {
   min-width: 1px; /* trigger IE7 hasLayout so spans position accurately */
 
   @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    padding-right: 24px;
+    padding-right: 22px;
   }
 }
 
@@ -306,7 +351,7 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
 .td-mega-menu {
   position: static !important;
 
-  ul {
+  ul.sub-menu {
     position: absolute;
     width: 1114px !important;
     height: auto;
@@ -326,9 +371,8 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
   }
 
   // next-prev
-  .td_block_mega_menu  .td-next-prev-wrap {
-    margin-left: 22px;
-    margin-bottom: 22px;
+  .td_block_mega_menu .td-next-prev-wrap {
+    margin: 0 0 22px 22px;
   }
 }
 
@@ -461,7 +505,7 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
 .td_block_mega_menu {
   display: table;
   width: 100%;
-  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 // sub-categories
@@ -553,7 +597,12 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
 
 .td-mega-row {
   display: table-cell;
-  padding: 22px 0 16px 0;
+  padding: 22px 0 10px 0;
+
+  /* responsive portrait tablet */
+  @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+    padding-bottom: 6px;
+  }
 }
 
 .td-mega-span {
@@ -594,7 +643,13 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
     font-weight: 500;
     font-size: 13px;
     margin: 7px 0 0;
-    line-height: 20px;
+    line-height: 18px;
+
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      font-size: 12px;
+      line-height: 16px;
+    }
 
     a {
       color: #333;
@@ -637,7 +692,7 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
   margin: 0;
   border-right: 0;
   line-height: 17px;
-  border-color: #e1e1e1;
+  border-color: #eaeaea !important;
 
   /* responsive portrait phone */
   @media (max-width: @responsive_p_phone_max) {
@@ -649,9 +704,26 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
 .header-search-wrap {
 
   /* search toggle button */
-  #td-header-search-button {
+  #td-header-search-button,
+  #td-header-search-button-mob {
     display: block;
     position: relative;
+  }
+
+  #td-header-search-button {
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      display: none;
+    }
+  }
+
+  #td-header-search-button-mob {
+    display: none;
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      display: block;
+    }
   }
 
   .td-icon-search {
@@ -661,6 +733,11 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
     width: 48px;
     line-height: 48px;
     text-align: center;
+
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      font-size: 15px;
+    }
 
     /* responsive portrait phone */
     @media (max-width: @responsive_p_phone_max) {
@@ -677,13 +754,17 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
     position: absolute;
     top: 100%;
     z-index: 999; //99999; menu over the search
-    display: none;
+    //display: none;
+    visibility: hidden;
+    opacity: 0;
     right: 0;
     border-radius: 0;
     border: none;
     width: 342px;
     background: #fff;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    .transition(all 0.4s ease);
+    .transform(translate3d(0, 20px, 0));
 
     /* responsive portrait phone */
     @media (max-width: @responsive_p_phone_max) {
@@ -712,7 +793,7 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
     /* triangle top */
     &:before {
       position:absolute;
-      top: -10px;
+      top: -9px;
       right: 19px;
       display:block;
       content:'';
@@ -725,11 +806,14 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
 
     &:after {
       position: absolute;
-      top: -4px;
+      top: -3px;
       display: block;
       content: '';
+      right: 0;
+      left: 0;
+      margin: 0 auto;
       width: 100%;
-      height: 4px;
+      height: 3px;
       background-color: @td_theme_color;
     }
   }
@@ -754,7 +838,10 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
 
   /* this class is added by the js to open the menu - will be used for animation */
   .td-drop-down-search-open {
-    display: block;
+    //display: block;
+    visibility: visible;
+    opacity: 1;
+    .transform(translate3d(0, 0, 0));
   }
 
   .td-search-form {
@@ -779,7 +866,8 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
   }
 
   .td-aj-search-results {
-    background-color: #fdfdfd;
+    //background-color: #fdfdfd;
+    background-color: rgba(144, 144, 144, 0.02);
     border-top: 1px solid #ededed;
     border-bottom: 1px solid #ededed;
     padding: 10px 0;
@@ -809,6 +897,48 @@ ul.sf-js-enabled > li > a > i.td-icon-menu-down:before {
   }
 
   .td-aj-cur-element {
-    background-color: #f0f0f0;
+    //background-color: #f0f0f0;
+    background-color: rgba(128, 128, 128, 0.1);
   }
+}
+
+
+// custom menu for long lists
+.td-demo-multicolumn-2 {
+  .sub-menu {
+    padding: 14px;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+    column-count: 2;
+  }
+}
+.td-menu-mob-open-menu {
+  .td-demo-multicolumn-2 {
+    .sub-menu {
+      padding: 0;
+      -moz-column-count: 1;
+      -webkit-column-count: 1;
+      column-count: 1;
+    }
+  }
+
+  .td-demo-menuitem-hide {
+    display: none;
+  }
+}
+
+// hide a menu item
+.td-demo-menuitem-hide {
+  visibility: hidden;
+}
+
+//fix td composer list menu and wp custom menu widget in page mega menu
+.td-mega-menu-page {
+    .sub-menu {
+        ul {
+          display: inline-block !important;
+          position: initial !important;
+          width: auto !important;
+        }
+    }
 }

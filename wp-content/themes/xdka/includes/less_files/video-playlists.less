@@ -7,10 +7,6 @@ video list player
     player size configuration variable
 
 */
-.td_block_video_playlist {
-  padding-bottom: 48px;
-}
-
 
 // 1 column
 @video-wrapper-height-1 : 182px;
@@ -212,6 +208,12 @@ video list player
 
   .td_wrapper_player {
     background-color: #000;
+    overflow: hidden;
+
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      margin-bottom: -5px;
+    }
 
     iframe{
       width: 100%;
@@ -231,7 +233,6 @@ video list player
     overflow-x: hidden;
     height: 347px;
   }
-
 }
 
 
@@ -254,14 +255,9 @@ video list player
       height: 416px;
     }
 
-    @media (min-width: 361px) and (max-width: @responsive_p_phone_max) {
+    @media (max-width: @responsive_p_phone_max) {
       width: 100%;
-      height: 350px;
-    }
-
-    @media (max-width: 360px) {
-      width: 100%;
-      height: 190px;
+      height: auto;
     }
   }
 
@@ -396,14 +392,9 @@ video list player
       height: 272px;
     }
 
-    @media (min-width: 361px) and (max-width: @responsive_p_phone_max) {
+    @media (max-width: @responsive_p_phone_max) {
       display: block;
-      height: 350px;
-    }
-
-    @media (max-width: 360px) {
-      display: block;
-      height: 190px;
+      height: auto;
     }
   }
 
@@ -451,16 +442,10 @@ video list player
       height: 128px;
     }
 
-    @media (min-width: 361px) and (max-width: @responsive_p_phone_max) {
+    @media (max-width: @responsive_p_phone_max) {
       display: block;
       width: 100%;
-      height: 350px;
-    }
-
-    @media (max-width: 360px) {
-      display: block;
-      width: 100%;
-      height: 190px;
+      height: auto;
     }
   }
 

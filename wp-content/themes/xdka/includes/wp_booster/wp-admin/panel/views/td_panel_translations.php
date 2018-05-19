@@ -5,8 +5,12 @@
 <div class="td-box-row">
     <div class="td-box-description td-box-full">
         <span class="td-box-title">MORE INFORMATION:</span>
-        <p>Available translations: English, Dutch, Finnish, German, Greek, Hindi, Indonesian, Japanese, Marathi, Polish, Portuguese, Romanian, Russian, Spanish, Tamil, Thai, Turkish and Urdu. The rest are translated via google translate. Please note that the translations are loaded from our servers.</p>
-        <p><strong style="margin-right: 2px">Note:</strong>English translation being the default translation of our theme, will set default values for your translate input fields.</p>
+        <p>The theme has available translations for 90 languages. Most of them are submitted by our theme users and you can also always submit your own version or correction with one click.</p>
+        <span class="td-box-title">Note:</span>
+        <ul>
+            <li>Please note that the translations are loaded from our servers.</li>
+            <li>English translation being the default translation of our theme, will set default values for your translate input fields.</li>
+        </ul>
     </div>
 </div>
 
@@ -15,7 +19,7 @@
             <div class="td-box-control-full">
                 <?php
 
-                td_util::update_option('tds_language', '');
+                //td_util::update_option('tds_language', '');
 
                 $languages[] = array(
                     'text' => 'Choose a language...',
@@ -61,7 +65,7 @@
 
             // if it's a valuable selection in the loaded language list, the same value is set in the modal popup
             if (loaded_language_code != undefined && loaded_language_code != '') {
-                jQuery("#modal_window_send_tranlation_language").find('select[name="td_option[tds_language]"]:first').val(loaded_language_code);
+                jQuery("#modal_window_send_translation_language").find('select[name="td_option[tds_language]"]:first').val(loaded_language_code);
             }
 
             // prepare the modal interface to be redrawn
@@ -91,9 +95,9 @@
                     // initialize data parameters adding selected language, td_cake_status, theme name, theme version
                     var data = {
                         language_code: selected_language_code,
-                        td_product_name: '\'' + td_theme_name + '\'',
-                        td_product_version: '\'' + td_theme_version + '\'',
-                        td_cake_status: '\'' + td_cake_status + '\''
+                        td_product_name: td_theme_name,
+                        td_product_version: td_theme_version,
+                        td_cake_status: td_cake_status
                     };
 
                     // create data parameters
@@ -101,18 +105,28 @@
                         data[this.name] = this.value;
                     });
 
+                    // ajax action - we included it in the data
+                    // we send the entire POST to the api server and we cannot include data in another variable
+                    data['action'] = 'td_ajax_share_translation';
+
                     jQuery.ajax({
-                        crossDomain: true,
-
-                        // jsonp parameter is used for crossdomain requests compatibility. It is now used in send_translation, because there's no response.
-                        dataType: 'jsonp',
-                        // jsonpCallback parameter is used for crossdomain requests compatibility. It is now used in send_translation, because there's no response.
-                        jsonpCallback: 'jsonpCallback',
-
-                        url: 'http://api.tagdiv.com/user_translations/add_full_user_translation',
-
+                        type: 'POST',
+                        url: td_ajax_url,
                         data: data
                     });
+
+//                    jQuery.ajax({
+//                        crossDomain: true,
+//
+//                        // jsonp parameter is used for crossdomain requests compatibility. It is now used in send_translation, because there's no response.
+//                        dataType: 'jsonp',
+//                        // jsonpCallback parameter is used for crossdomain requests compatibility. It is now used in send_translation, because there's no response.
+//                        jsonpCallback: 'jsonpCallback',
+//
+//                        url: 'http://api.tagdiv.com/user_translations/add_full_user_translation',
+//
+//                        data: data
+//                    });
 
                     jQuery("#thanks_send_translation").show();
 
@@ -164,34 +178,26 @@
                 return;
             }
 
-            if (!confirm("Are you sure?\n\nLoading a language settings will overwrite your custom translation in the 'Translations' panel.\nYou have to Save Settings for keeping the loaded translation in your theme.")) {
-                return false;
-            }
+	        tdConfirm.showModal( 'Load translated language',
+                window,
+                function() {
 
-            // we clear the translation for english language, english being the default translation
-            if (selected_language_code == 'en') {
-                td_translation.clear_translation();
-                return;
-            }
+                    // we clear the translation for english language, english being the default translation
+		            if (selected_language_code == 'en') {
+		                td_translation.clear_translation();
+			            tb_remove();
+		                return;
+		            }
 
-            if (selected_language_code != undefined && selected_language_code != '') {
-                jQuery.ajax({
-                    crossDomain: true,
-
-                    // jsonp parameter is used for crossdomain requests. It's used for response type. It must be jsonp and not json.
-                    dataType: 'jsonp',
-                    // jsonpCallback parameter is used for crossdomain requests. It's used for response type. (must be wrapped in 'jsonpCallback')
-                    jsonpCallback: 'jsonpCallback',
-
-                    url: 'http://api.tagdiv.com/user_translations/get_translation',
-
-                    data: {
-                        'language_code': selected_language_code
-                    },
-                    complete: function (jqXHR, textStatus) {
-                        if (textStatus == 'success') {
-                            if (jqXHR.responseJSON.constructor === Object) {
-
+		            if (selected_language_code != undefined && selected_language_code != '') {
+                        jQuery.ajax({
+                            type: 'POST',
+                            url: td_ajax_url,
+                            data: {
+                                action: 'td_ajax_get_translation',
+                                language_code: selected_language_code
+                            },
+                            success: function(data, textStatus, XMLHttpRequest){
                                 // show the content panel updated with response values
                                 show_content_panel(
 
@@ -203,14 +209,63 @@
 
                                     // this is callback function. It completes the fields
                                     function () {
-                                        td_translation.completeTranslation(jqXHR.responseJSON)
+                                        td_translation.completeTranslation(JSON.parse(data));
                                     }
                                 );
+
+
+                            },
+                            error: function(MLHttpRequest, textStatus, errorThrown){
+                                //console.log(errorThrown);
                             }
-                        }
-                    }
-                });
-            }
+                        });
+
+
+
+//		                jQuery.ajax({
+//		                    crossDomain: true,
+//
+//		                    // jsonp parameter is used for crossdomain requests. It's used for response type. It must be jsonp and not json.
+//		                    dataType: 'jsonp',
+//		                    // jsonpCallback parameter is used for crossdomain requests. It's used for response type. (must be wrapped in 'jsonpCallback')
+//		                    jsonpCallback: 'jsonpCallback',
+//
+//		                    url: 'http://api.tagdiv.com/user_translations/get_translation',
+//
+//		                    data: {
+//		                        'language_code': selected_language_code
+//		                    },
+//		                    complete: function (jqXHR, textStatus) {
+//		                        if (textStatus == 'success') {
+//		                            if (jqXHR.responseJSON.constructor === Object) {
+//
+//		                                // show the content panel updated with response values
+//		                                show_content_panel(
+//
+//		                                    // this is the jquery object to be loaded
+//		                                    jQuery('#panel_translation_custom_id'),
+//
+//		                                    // this parameter keep the open position
+//		                                    true,
+//
+//		                                    // this is callback function. It completes the fields
+//		                                    function () {
+//		                                        td_translation.completeTranslation(jqXHR.responseJSON)
+//		                                    }
+//		                                );
+//		                            }
+//		                        }
+//		                    }
+//		                });
+
+
+		            }
+
+                    tb_remove();
+                },
+		        [],
+		        "Are you sure? Loading a language settings will overwrite your custom translation in the 'Translations' panel.\nYou have to Save Settings for saving the loaded translation in your theme."
+            );
         });
 
     });

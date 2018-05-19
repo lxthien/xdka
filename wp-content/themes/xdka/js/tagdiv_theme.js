@@ -12,54 +12,3058 @@ jQuery.extend(jQuery.easing,{def:"easeOutQuad",swing:function(e,a,c,b,d){return 
 
 
 /*
- *  v0.2b - jQuery plugin
- * Copyright (c) 2008 Joel Birch
- * Dual licensed under the MIT and GPL licenses:
- * 	http://www.opensource.org/licenses/mit-license.php
- * 	http://www.gnu.org/licenses/gpl.html
- */
-(function(a){a.fn.supersubs=function(h){var f=a.extend({},a.fn.supersubs.defaults,h);return this.each(function(){var c=a(this),d=a.meta?a.extend({},f,c.data()):f,h=a('<li id="menu-fontsize">&#8212;</li>').css({padding:0,position:"absolute",top:"-999em",width:"auto"}).appendTo(c).width();a("#menu-fontsize").remove();$ULs=c.find("ul");$ULs.each(function(e){e=$ULs.eq(e);var g=e.children(),c=g.children("a"),f=g.css("white-space","nowrap").css("float"),b=e.add(g).add(c).css({"float":"none",width:"auto"}).end().end()[0].clientWidth/
-    h,b=b+d.extraWidth;b>d.maxWidth?b=d.maxWidth:b<d.minWidth&&(b=d.minWidth);b+="em";e.css("width",b);g.css({"float":f,width:"100%","white-space":"normal"}).each(function(){var c=a(">ul",this),d=void 0!==c.css("left")?"left":"right";c.css(d,b)})})})};a.fn.supersubs.defaults={minWidth:9,maxWidth:25,extraWidth:0}})(jQuery);
-
-
-
-/**
- * hoverIntent is similar to jQuery's built-in "hover" method except that
- * instead of firing the handlerIn function immediately, hoverIntent checks
- * to see if the user's mouse has slowed down (beneath the sensitivity
- * threshold) before firing the event. The handlerOut function is only
- * called after a matching handlerIn.
- *
- * hoverIntent r7 // 2013.03.11 // jQuery 1.9.1+
- * http://cherne.net/brian/resources/jquery.hoverIntent.html
- */
-(function(e){e.fn.hoverIntent=function(a,f,n){var b={interval:100,sensitivity:7,timeout:0},b="object"===typeof a?e.extend(b,a):e.isFunction(f)?e.extend(b,{over:a,out:f,selector:n}):e.extend(b,{over:a,out:a,selector:f}),g,h,j,k,l=function(b){g=b.pageX;h=b.pageY},m=function(a,d){d.hoverIntent_t=clearTimeout(d.hoverIntent_t);if(Math.abs(j-g)+Math.abs(k-h)<b.sensitivity)return e(d).off("mousemove.hoverIntent",l),d.hoverIntent_s=1,b.over.apply(d,[a]);j=g;k=h;d.hoverIntent_t=setTimeout(function(){m(a,d)},
-    b.interval)};a=function(a){var d=jQuery.extend({},a),c=this;c.hoverIntent_t&&(c.hoverIntent_t=clearTimeout(c.hoverIntent_t));"mouseenter"==a.type?(j=d.pageX,k=d.pageY,e(c).on("mousemove.hoverIntent",l),1!=c.hoverIntent_s&&(c.hoverIntent_t=setTimeout(function(){m(d,c)},b.interval))):(e(c).off("mousemove.hoverIntent",l),1==c.hoverIntent_s&&(c.hoverIntent_t=setTimeout(function(){c.hoverIntent_t=clearTimeout(c.hoverIntent_t);c.hoverIntent_s=0;b.out.apply(c,[d])},b.timeout)))};return this.on({"mouseenter.hoverIntent":a,
-    "mouseleave.hoverIntent":a},b.selector)}})(jQuery);
-
-/*
- * Superfish v1.5.13 - jQuery menu widget
+ * Supersubs v0.3b - jQuery plugin
  * Copyright (c) 2013 Joel Birch
  *
  * Dual licensed under the MIT and GPL licenses:
  * 	http://www.opensource.org/licenses/mit-license.php
  * 	http://www.gnu.org/licenses/gpl.html
  *
+ *
+ * This plugin automatically adjusts submenu widths of suckerfish-style menus to that of
+ * their longest list item children. If you use this, please expect bugs and report them
+ * to the jQuery Google Group with the word 'Superfish' in the subject line.
+ *
  */
-(function(c){c.fn.superfish=function(d){var f=c.fn.superfish,a=f.c,g=c('<i class="'+a.arrowClass+'"></i>'),h=function(){var e=c(this),b=l(e);clearTimeout(b.sfTimer);e.showSuperfishUl().siblings().hideSuperfishUl()},j=function(e){var b=c(this),d=l(b),a=f.op,g=function(){a.retainPath=-1<c.inArray(b[0],a.$path);b.hideSuperfishUl();a.$path.length&&1>b.parents("li."+a.hoverClass).length&&(a.onIdle.call(),c.proxy(h,a.$path,e)())};"click"===e.type?g():(clearTimeout(d.sfTimer),d.sfTimer=setTimeout(g,
-    a.delay))},l=function(e){e.hasClass(a.menuClass)&&c.error("Superfish requires you to update to a version of hoverIntent that supports event-delegation, such as this one: https://github.com/joeldbirch/onHoverIntent");e=e.closest("."+a.menuClass)[0];f.op=f.o[e.serial];return e},n=function(e){var b=c(this),a=b.siblings("ul");if(0<a.length&&!a.is(":visible")&&(b.data("follow",!1),"MSPointerDown"===e.type))return b.trigger("focus"),!1},p=function(a){var b=c(this),d=b.siblings("ul"),g=!1===b.data("follow")?
-    !1:!0;if(d.length&&(f.op.useClick||!g))a.preventDefault(),d.is(":visible")?f.op.useClick&&g&&c.proxy(j,b.parent("li"),a)():c.proxy(h,b.parent("li"))()};return this.addClass(a.menuClass).each(function(){var e=this.serial=f.o.length,b=c.extend({},f.defaults,d),k=c(this),l=k.find("li:has(ul)");b.$path=k.find("li."+b.pathClass).slice(0,b.pathLevels).each(function(){c(this).addClass(b.hoverClass+" "+a.bcClass).filter("li:has(ul)").removeClass(b.pathClass)});f.o[e]=f.op=b;b.autoArrows&&l.children("a").each(function(){c(this).addClass(a.anchorClass).append(g.clone())});
-    k.css("ms-touch-action","none");if(!f.op.useClick)if(c.fn.hoverIntent&&!f.op.disableHI)k.hoverIntent(h,j,"li:has(ul)");else k.on("mouseenter","li:has(ul)",h).on("mouseleave","li:has(ul)",j);e="MSPointerDown";navigator.userAgent.toLowerCase().match(/(iphone|ipod|ipad)/)||(e+=" touchstart");k.on("focusin","li",h).on("focusout","li",j).on("click","a",p).on(e,"a",n);l.not("."+a.bcClass).children("ul").show().hide();b.onInit.call(this)})};var g=c.fn.superfish;g.o=[];g.op={};g.c={bcClass:"sf-breadcrumb",
-    menuClass:"sf-js-enabled",anchorClass:"sf-with-ul",arrowClass:"td-icon-menu-down"};g.defaults={hoverClass:"sfHover",pathClass:"overideThisToUse",pathLevels:1,delay:800,animation:{opacity:"show"},animationOut:{opacity:"hide"},speed:"normal",speedOut:"fast",autoArrows:!0,disableHI:!1,useClick:!1,onInit:function(){},onBeforeShow:function(){},onShow:function(){},onHide:function(){},onIdle:function(){}};c.fn.extend({hideSuperfishUl:function(){var d=g.op,f=this,a=!0===d.retainPath?d.$path:"";d.retainPath=
-    !1;c("li."+d.hoverClass,this).add(this).not(a).children("ul").stop(!0,!0).animate(d.animationOut,d.speedOut,function(){$ul=c(this);$ul.parent().removeClass(d.hoverClass);d.onHide.call($ul);g.op.useClick&&f.children("a").data("follow",!1)});return this},showSuperfishUl:function(){var d=g.op,f=this,a=this.children("ul");f.addClass(d.hoverClass);d.onBeforeShow.call(a);a.stop(!0,!0).animate(d.animation,d.speed,function(){d.onShow.call(a);f.children("a").data("follow",!0)});var m=c(window).width(),h=this.children("ul").first();
-    if(0<h.length){var j=this.children("ul").first().offset().left+h.width();j>m&&(h.parent().parent().hasClass("sf-menu")?h.css("left","-"+(j-m)+"px"):h.addClass("reversed").css("left","-"+(h.width()+0)+"px"))}return this}})})(jQuery);
+
+(function($){ // $ will refer to jQuery within this closure
+
+    $.fn.supersubs = function(options){
+        var opts = $.extend({}, $.fn.supersubs.defaults, options);
+        // return original object to support chaining
+        return this.each(function() {
+            // cache selections
+            var $$ = $(this);
+            // support metadata
+            var o = $.meta ? $.extend({}, opts, $$.data()) : opts;
+            // cache all ul elements and show them in preparation for measurements
+            var $ULs = $$.find('ul').show();
+            // get the font size of menu.
+            // .css('fontSize') returns various results cross-browser, so measure an em dash instead
+            var fontsize = $('<li id="menu-fontsize">&#8212;</li>').css({
+                'padding' : 0,
+                'position' : 'absolute',
+                'top' : '-999em',
+                'width' : 'auto'
+            }).appendTo($$)[0].clientWidth; //clientWidth is faster than .width()
+            // remove em dash
+            $('#menu-fontsize').remove();
+            // loop through each ul in menu
+            $ULs.each(function(i) {
+                // cache this ul
+                var $ul = $(this);
+                // get all (li) children of this ul
+                var $LIs = $ul.children();
+                // get all anchor grand-children
+                var $As = $LIs.children('a');
+                // force content to one line and save current float property
+                var liFloat = $LIs.css('white-space','nowrap').css('float');
+                // remove width restrictions and floats so elements remain vertically stacked
+                $ul.add($LIs).add($As).css({
+                    'float' : 'none',
+                    'width'	: 'auto'
+                });
+                // this ul will now be shrink-wrapped to longest li due to position:absolute
+                // so save its width as ems.
+                var emWidth = $ul[0].clientWidth / fontsize;
+                // add more width to ensure lines don't turn over at certain sizes in various browsers
+                emWidth += o.extraWidth;
+                // restrict to at least minWidth and at most maxWidth
+                if (emWidth > o.maxWidth)		{ emWidth = o.maxWidth; }
+                else if (emWidth < o.minWidth)	{ emWidth = o.minWidth; }
+                emWidth += 'em';
+                // set ul to width in ems
+                $ul.css('width',emWidth);
+                // restore li floats to avoid IE bugs
+                // set li width to full width of this ul
+                // revert white-space to normal
+                $LIs.css({
+                    'float' : liFloat,
+                    'width' : '100%',
+                    'white-space' : 'normal'
+                })
+                // update offset position of descendant ul to reflect new width of parent.
+                // set it to 100% in case it isn't already set to this in the CSS
+                    .each(function(){
+                        var $childUl = $(this).children('ul');
+                        var offsetDirection = $childUl.css('left') !== undefined ? 'left' : 'right';
+                        $childUl.css(offsetDirection,'100%');
+                    });
+            }).hide();
+
+        });
+    };
+    // expose defaults
+    $.fn.supersubs.defaults = {
+        minWidth		: 9,		// requires em unit.
+        maxWidth		: 25,		// requires em unit.
+        extraWidth		: 0			// extra width can ensure lines don't sometimes turn over due to slight browser differences in how they round-off values
+    };
+
+})(jQuery); // plugin code ends
+
 
 
 
 /*
  * iosSlider - http://iosscripts.com/iosslider/
+ *
+ * Touch Enabled, Responsive jQuery Horizontal Content Slider/Carousel/Image Gallery Plugin
+ *
+ * A jQuery plugin which allows you to integrate a customizable, cross-browser
+ * content slider into your web presence. Designed for use as a content slider, carousel,
+ * scrolling website banner, or image gallery.
+ *
+ * Copyright (c) 2013 Marc Whitbread
+ *
+ * Version: v1.3.43 (06/17/2014)
+ * Minimum requirements: jQuery v1.4+
+ *
+ * Advanced requirements:
+ * 1) jQuery bind() click event override on slide requires jQuery v1.6+
+ *
+ * Terms of use:
+ *
+ * 1) iosSlider is licensed under the Creative Commons – Attribution-NonCommercial 3.0 License.
+ * 2) You may use iosSlider free for personal or non-profit purposes, without restriction.
+ *	  Attribution is not required but always appreciated. For commercial projects, you
+ *	  must purchase a license. You may download and play with the script before deciding to
+ *	  fully implement it in your project. Making sure you are satisfied, and knowing iosSlider
+ *	  is the right script for your project is paramount.
+ * 3) You are not permitted to make the resources found on iosscripts.com available for
+ *    distribution elsewhere "as is" without prior consent. If you would like to feature
+ *    iosSlider on your site, please do not link directly to the resource zip files. Please
+ *    link to the appropriate page on iosscripts.com where users can find the download.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-(function(b){var oa=0,X=0,fa=0,T=0,Ca="ontouchstart"in window||0<navigator.msMaxTouchPoints,Da="onorientationchange"in window,ga=!1,aa=!1,Y=!1,pa=!1,ia=!1,ba="pointer",ua="pointer",ja=[],J=[],va=[],$=[],z=[],ca=[],B=[],m=[],s=[],wa=[],da=[],e={showScrollbar:function(a,e){a.scrollbarHide&&b("."+e).css({opacity:a.scrollbarOpacity,filter:"alpha(opacity:"+100*a.scrollbarOpacity+")"})},hideScrollbar:function(b,g,c,f,h,d,m,s,B,z){if(b.scrollbar&&b.scrollbarHide)for(var t=c;t<c+25;t++)g[g.length]=e.hideScrollbarIntervalTimer(10* t,f[c],(c+24-t)/24,h,d,m,s,B,z,b)},hideScrollbarInterval:function(a,g,c,f,h,d,m,B,z){T=-1*a/s[B]*(h-d-m-f);e.setSliderOffset("."+c,T);b("."+c).css({opacity:z.scrollbarOpacity*g,filter:"alpha(opacity:"+z.scrollbarOpacity*g*100+")"})},slowScrollHorizontalInterval:function(a,g,c,f,h,d,N,O,L,K,t,w,x,y,v,q,G,p,n){if(n.infiniteSlider){if(c<=-1*s[q]){var r=b(a).width();if(c<=-1*wa[q]){var u=-1*t[0];b(g).each(function(c){e.setSliderOffset(b(g)[c],u+G);c<w.length&&(w[c]=-1*u);u+=v[c]});c+=-1*w[0];m[q]=-1* w[0]+G;s[q]=m[q]+r-d;B[q]=0}else{var k=0,E=e.getSliderOffset(b(g[0]),"x");b(g).each(function(b){e.getSliderOffset(this,"x")<E&&(E=e.getSliderOffset(this,"x"),k=b)});x=m[q]+r;e.setSliderOffset(b(g)[k],x);m[q]=-1*w[1]+G;s[q]=m[q]+r-d;w.splice(0,1);w.splice(w.length,0,-1*x+G);B[q]++}}if(c>=-1*m[q]||0<=c){r=b(a).width();if(0<c)for(u=-1*t[0],b(g).each(function(c){e.setSliderOffset(b(g)[c],u+G);c<w.length&&(w[c]=-1*u);u+=v[c]}),c-=-1*w[0],m[q]=-1*w[0]+G,s[q]=m[q]+r-d,B[q]=y;0<-1*w[0]-r+G;){var A=0,I=e.getSliderOffset(b(g[0]), "x");b(g).each(function(b){e.getSliderOffset(this,"x")>I&&(I=e.getSliderOffset(this,"x"),A=b)});x=m[q]-v[A];e.setSliderOffset(b(g)[A],x);w.splice(0,0,-1*x+G);w.splice(w.length-1,1);m[q]=-1*w[0]+G;s[q]=m[q]+r-d;B[q]--;z[q]++}0>c&&(A=0,I=e.getSliderOffset(b(g[0]),"x"),b(g).each(function(b){e.getSliderOffset(this,"x")>I&&(I=e.getSliderOffset(this,"x"),A=b)}),x=m[q]-v[A],e.setSliderOffset(b(g)[A],x),w.splice(0,0,-1*x+G),w.splice(w.length-1,1),m[q]=-1*w[0]+G,s[q]=m[q]+r-d,B[q]--)}}t=!1;d=e.calcActiveOffset(n, c,w,d,B[q],y,K,q);x=(d+B[q]+y)%y;n.infiniteSlider?x!=ca[q]&&(t=!0):d!=z[q]&&(t=!0);if(t&&(y=new e.args("change",n,a,b(a).children(":eq("+x+")"),x,p),b(a).parent().data("args",y),""!=n.onSlideChange))n.onSlideChange(y);z[q]=d;ca[q]=x;c=Math.floor(c);e.setSliderOffset(a,c);n.scrollbar&&(T=Math.floor((-1*c-m[q]+G)/(s[q]-m[q]+G)*(N-O-h)),a=h-L,c>=-1*m[q]+G?(a=h-L- -1*T,e.setSliderOffset(b("."+f),0)):(c<=-1*s[q]+1&&(a=N-O-L-T),e.setSliderOffset(b("."+f),T)),b("."+f).css({width:a+"px"}))},slowScrollHorizontal:function(a, g,c,f,h,d,N,O,L,K,t,w,x,y,v,q,G,p,n,r,u){var k=e.getSliderOffset(a,"x");d=[];var E=0,A=25/1024*O;frictionCoefficient=u.frictionCoefficient;elasticFrictionCoefficient=u.elasticFrictionCoefficient;snapFrictionCoefficient=u.snapFrictionCoefficient;h>u.snapVelocityThreshold&&u.snapToChildren&&!n?E=1:h<-1*u.snapVelocityThreshold&&u.snapToChildren&&!n&&(E=-1);h<-1*A?h=-1*A:h>A&&(h=A);b(a)[0]!==b(p)[0]&&(E*=-1,h*=-2);p=B[v];if(u.infiniteSlider)var I=m[v],l=s[v];n=[];for(var A=[],F=0;F<x.length;F++)n[F]= x[F],F<g.length&&(A[F]=e.getSliderOffset(b(g[F]),"x"));for(;1<h||-1>h;){h*=frictionCoefficient;k+=h;(k>-1*m[v]||k<-1*s[v])&&!u.infiniteSlider&&(h*=elasticFrictionCoefficient,k+=h);if(u.infiniteSlider){if(k<=-1*l){for(var l=b(a).width(),J=0,P=A[0],F=0;F<A.length;F++)A[F]<P&&(P=A[F],J=F);F=I+l;A[J]=F;I=-1*n[1]+r;l=I+l-O;n.splice(0,1);n.splice(n.length,0,-1*F+r);p++}if(k>=-1*I){l=b(a).width();J=0;P=A[0];for(F=0;F<A.length;F++)A[F]>P&&(P=A[F],J=F);F=I-y[J];A[J]=F;n.splice(0,0,-1*F+r);n.splice(n.length- 1,1);I=-1*n[0]+r;l=I+l-O;p--}}d[d.length]=k}A=!1;h=e.calcActiveOffset(u,k,n,O,p,G,z[v],v);I=(h+p+G)%G;u.snapToChildren&&(u.infiniteSlider?I!=ca[v]&&(A=!0):h!=z[v]&&(A=!0),0>E&&!A?(h++,h>=x.length&&!u.infiniteSlider&&(h=x.length-1)):0<E&&!A&&(h--,0>h&&!u.infiniteSlider&&(h=0)));if(u.snapToChildren||(k>-1*m[v]||k<-1*s[v])&&!u.infiniteSlider){(k>-1*m[v]||k<-1*s[v])&&!u.infiniteSlider?d.splice(0,d.length):(d.splice(0.1*d.length,d.length),k=0<d.length?d[d.length-1]:k);for(;k<n[h]-0.5||k>n[h]+0.5;)k=(k- n[h])*snapFrictionCoefficient+n[h],d[d.length]=k;d[d.length]=n[h]}E=1;0!=d.length%2&&(E=0);for(k=0;k<c.length;k++)clearTimeout(c[k]);p=(h+p+G)%G;I=0;for(k=E;k<d.length;k+=2)if(k==E||1<Math.abs(d[k]-I)||k>=d.length-2)I=d[k],c[c.length]=e.slowScrollHorizontalIntervalTimer(10*k,a,g,d[k],f,N,O,L,K,t,h,w,x,q,G,y,v,r,p,u);I=(h+B[v]+G)%G;""!=u.onSlideComplete&&1<d.length&&(c[c.length]=e.onSlideCompleteTimer(10*(k+1),u,a,b(a).children(":eq("+I+")"),p,v));$[v]=c;e.hideScrollbar(u,c,k,d,f,N,O,K,t,v)},onSlideComplete:function(a, g,c,f,h){c=new e.args("complete",a,b(g),c,f,f);b(g).parent().data("args",c);if(""!=a.onSlideComplete)a.onSlideComplete(c)},getSliderOffset:function(a,e){var c=0;e="x"==e?4:5;if(!ga||aa||Y)c=parseInt(b(a).css("left"),10);else{for(var c=["-webkit-transform","-moz-transform","transform"],f,h=0;h<c.length;h++)if(void 0!=b(a).css(c[h])&&0<b(a).css(c[h]).length){f=b(a).css(c[h]).split(",");break}c=void 0==f[e]?0:parseInt(f[e],10)}return c},setSliderOffset:function(a,e){e=parseInt(e,10);!ga||aa||Y?b(a).css({left:e+ "px"}):b(a).css({msTransform:"matrix(1,0,0,1,"+e+",0)",webkitTransform:"matrix(1,0,0,1,"+e+",0)",MozTransform:"matrix(1,0,0,1,"+e+",0)",transform:"matrix(1,0,0,1,"+e+",0)"})},setBrowserInfo:function(){null!=navigator.userAgent.match("WebKit")?(ba="-webkit-grab",ua="-webkit-grabbing"):null!=navigator.userAgent.match("Gecko")?(ia=!0,ba="move",ua="-moz-grabbing"):null!=navigator.userAgent.match("MSIE 7")?pa=aa=!0:null!=navigator.userAgent.match("MSIE 8")?pa=Y=!0:null!=navigator.userAgent.match("MSIE 9")&& (pa=!0)},has3DTransform:function(){var a=!1,e=b("<div />").css({msTransform:"matrix(1,1,1,1,1,1)",webkitTransform:"matrix(1,1,1,1,1,1)",MozTransform:"matrix(1,1,1,1,1,1)",transform:"matrix(1,1,1,1,1,1)"});""==e.attr("style")?a=!1:ia&&21<=parseInt(navigator.userAgent.split("/")[3],10)?a=!1:void 0!=e.attr("style")&&(a=!0);return a},getSlideNumber:function(b,e,c){return(b-B[e]+c)%c},calcActiveOffset:function(b,e,c,f,h,d,m,s){h=!1;b=[];var z;e>c[0]&&(z=0);e<c[c.length-1]&&(z=d-1);for(d=0;d<c.length;d++)c[d]<= e&&c[d]>e-f&&(h||c[d]==e||(b[b.length]=c[d-1]),b[b.length]=c[d],h=!0);0==b.length&&(b[0]=c[c.length-1]);for(d=h=0;d<b.length;d++)m=Math.abs(e-b[d]),m<f&&(h=b[d],f=m);for(d=0;d<c.length;d++)h==c[d]&&(z=d);return z},changeSlide:function(a,g,c,f,h,d,m,s,L,K,t,w,x,y,v,q,G,p){e.autoSlidePause(y);for(var n=0;n<f.length;n++)clearTimeout(f[n]);var r=Math.ceil(p.autoSlideTransTimer/10)+1,u=e.getSliderOffset(g,"x"),k=w[a],E=k-u;if(p.infiniteSlider)for(a=(a-B[y]+2*q)%q,n=!1,0==a&&2==q&&(a=q,w[a]=w[a-1]-b(c).eq(0).outerWidth(!0), n=!0),k=w[a],E=k-u,k=[w[a]-b(g).width(),w[a]+b(g).width()],n&&w.splice(w.length-1,1),n=0;n<k.length;n++)Math.abs(k[n]-u)<Math.abs(E)&&(E=k[n]-u);var k=[],A;e.showScrollbar(p,h);for(n=0;n<=r;n++)A=n,A/=r,A--,A=u+E*(Math.pow(A,5)+1),k[k.length]=A;r=(a+B[y]+q)%q;for(n=u=0;n<k.length;n++){if(0==n||1<Math.abs(k[n]-u)||n>=k.length-2)u=k[n],f[n]=e.slowScrollHorizontalIntervalTimer(10*(n+1),g,c,k[n],h,d,m,s,L,K,a,t,w,v,q,x,y,G,r,p);0==n&&""!=p.onSlideStart&&(E=(z[y]+B[y]+q)%q,p.onSlideStart(new e.args("start", p,g,b(g).children(":eq("+E+")"),E,a)))}u=!1;p.infiniteSlider?r!=ca[y]&&(u=!0):a!=z[y]&&(u=!0);u&&""!=p.onSlideComplete&&(f[f.length]=e.onSlideCompleteTimer(10*(n+1),p,g,b(g).children(":eq("+r+")"),r,y));$[y]=f;e.hideScrollbar(p,f,n,k,h,d,m,L,K,y);e.autoSlide(g,c,f,h,d,m,s,L,K,t,w,x,y,v,q,G,p)},autoSlide:function(b,g,c,f,h,d,m,s,L,K,t,w,x,y,v,q,G){if(!J[x].autoSlide)return!1;e.autoSlidePause(x);ja[x]=setTimeout(function(){!G.infiniteSlider&&z[x]>t.length-1&&(z[x]-=v);e.changeSlide((z[x]+B[x]+t.length+ 1)%t.length,b,g,c,f,h,d,m,s,L,K,t,w,x,y,v,q,G);e.autoSlide(b,g,c,f,h,d,m,s,L,K,t,w,x,y,v,q,G)},G.autoSlideTimer+G.autoSlideTransTimer)},autoSlidePause:function(b){clearTimeout(ja[b])},isUnselectable:function(a,e){return""!=e.unselectableSelector&&1==b(a).closest(e.unselectableSelector).length?!0:!1},slowScrollHorizontalIntervalTimer:function(b,g,c,f,h,d,m,s,z,B,t,w,x,y,v,q,G,p,n,r){return setTimeout(function(){e.slowScrollHorizontalInterval(g,c,f,h,d,m,s,z,B,t,w,x,y,v,q,G,p,n,r)},b)},onSlideCompleteTimer:function(b, g,c,f,h,d){return setTimeout(function(){e.onSlideComplete(g,c,f,h,d)},b)},hideScrollbarIntervalTimer:function(b,g,c,f,h,d,m,s,z,B){return setTimeout(function(){e.hideScrollbarInterval(g,c,f,h,d,m,s,z,B)},b)},args:function(a,g,c,f,h,d){this.prevSlideNumber=void 0==b(c).parent().data("args")?void 0:b(c).parent().data("args").prevSlideNumber;this.prevSlideObject=void 0==b(c).parent().data("args")?void 0:b(c).parent().data("args").prevSlideObject;this.targetSlideNumber=d+1;this.targetSlideObject=b(c).children(":eq("+ d+")");this.slideChanged=!1;"load"==a?this.targetSlideObject=this.targetSlideNumber=void 0:"start"==a?this.targetSlideObject=this.targetSlideNumber=void 0:"change"==a?(this.slideChanged=!0,this.prevSlideNumber=void 0==b(c).parent().data("args")?g.startAtSlide:b(c).parent().data("args").currentSlideNumber,this.prevSlideObject=b(c).children(":eq("+this.prevSlideNumber+")")):"complete"==a&&(this.slideChanged=b(c).parent().data("args").slideChanged);this.settings=g;this.data=b(c).parent().data("iosslider"); this.sliderObject=c;this.sliderContainerObject=b(c).parent();this.currentSlideObject=f;this.currentSlideNumber=h+1;this.currentSliderOffset=-1*e.getSliderOffset(c,"x")},preventDrag:function(b){b.preventDefault()},preventClick:function(b){b.stopImmediatePropagation();return!1},enableClick:function(){return!0}};e.setBrowserInfo();var V={init:function(a,g){ga=e.has3DTransform();var c=b.extend(!0,{elasticPullResistance:0.6,frictionCoefficient:0.92,elasticFrictionCoefficient:0.6,snapFrictionCoefficient:0.92, snapToChildren:!1,snapSlideCenter:!1,startAtSlide:1,scrollbar:!1,scrollbarDrag:!1,scrollbarHide:!0,scrollbarLocation:"top",scrollbarContainer:"",scrollbarOpacity:0.4,scrollbarHeight:"4px",scrollbarBorder:"0",scrollbarMargin:"5px",scrollbarBackground:"#000",scrollbarBorderRadius:"100px",scrollbarShadow:"0 0 0 #000",scrollbarElasticPullResistance:0.9,desktopClickDrag:!1,keyboardControls:!1,tabToAdvance:!1,responsiveSlideContainer:!0,responsiveSlides:!0,navSlideSelector:"",navPrevSelector:"",navNextSelector:"", autoSlideToggleSelector:"",autoSlide:!1,autoSlideTimer:5E3,autoSlideTransTimer:750,autoSlideHoverPause:!0,infiniteSlider:!1,snapVelocityThreshold:5,slideStartVelocityThreshold:0,horizontalSlideLockThreshold:5,verticalSlideLockThreshold:3,stageCSS:{position:"relative",top:"0",left:"0",overflow:"hidden",zIndex:1},unselectableSelector:"",onSliderLoaded:"",onSliderUpdate:"",onSliderResize:"",onSlideStart:"",onSlideChange:"",onSlideComplete:""},a);void 0==g&&(g=this);return b(g).each(function(a){function g(){e.autoSlidePause(d); xa=b(C).find("a");ja=b(C).find("[onclick]");qa=b(C).find("*");b(n).css("width","");b(n).css("height","");b(C).css("width","");D=b(C).children().not("script").get();ha=[];M=[];c.responsiveSlides&&b(D).css("width","");s[d]=0;l=[];q=b(n).parent().width();r=b(n).outerWidth(!0);c.responsiveSlideContainer&&(r=b(n).outerWidth(!0)>q?q:b(n).width());b(n).css({position:c.stageCSS.position,top:c.stageCSS.top,left:c.stageCSS.left,overflow:c.stageCSS.overflow,zIndex:c.stageCSS.zIndex,webkitPerspective:1E3,webkitBackfaceVisibility:"hidden", msTouchAction:"pan-y",width:r});b(c.unselectableSelector).css({cursor:"default"});for(var a=0;a<D.length;a++){ha[a]=b(D[a]).width();M[a]=b(D[a]).outerWidth(!0);var h=M[a];c.responsiveSlides&&(M[a]>r?(h=r+-1*(M[a]-ha[a]),ha[a]=h,M[a]=r):h=ha[a],b(D[a]).css({width:h}));b(D[a]).css({webkitBackfaceVisibility:"hidden",overflow:"hidden",position:"absolute"});l[a]=-1*s[d];s[d]=s[d]+h+(M[a]-ha[a])}c.snapSlideCenter&&(p=0.5*(r-M[0]),c.responsiveSlides&&M[0]>r&&(p=0));wa[d]=2*s[d];for(a=0;a<D.length;a++)e.setSliderOffset(b(D[a]), -1*l[a]+s[d]+p),l[a]-=s[d];if(!c.infiniteSlider&&!c.snapSlideCenter){for(a=0;a<l.length&&!(l[a]<=-1*(2*s[d]-r));a++)ia=a;l.splice(ia+1,l.length);l[l.length]=-1*(2*s[d]-r)}for(a=0;a<l.length;a++)F[a]=l[a];I&&(J[d].startAtSlide=J[d].startAtSlide>l.length?l.length:J[d].startAtSlide,c.infiniteSlider?(J[d].startAtSlide=(J[d].startAtSlide-1+H)%H,z[d]=J[d].startAtSlide):(J[d].startAtSlide=0>J[d].startAtSlide-1?l.length-1:J[d].startAtSlide,z[d]=J[d].startAtSlide-1),ca[d]=z[d]);m[d]=s[d]+p;b(C).css({position:"relative", cursor:ba,webkitPerspective:"0",webkitBackfaceVisibility:"hidden",width:s[d]+"px"});R=s[d];s[d]=2*s[d]-r+2*p;(W=R+p<r||0==r?!0:!1)&&b(C).css({cursor:"default"});G=b(n).parent().outerHeight(!0);u=b(n).height();c.responsiveSlideContainer&&(u=u>G?G:u);b(n).css({height:u});e.setSliderOffset(C,l[z[d]]);if(c.infiniteSlider&&!W){a=e.getSliderOffset(b(C),"x");for(h=(B[d]+H)%H*-1;0>h;){var f=0,A=e.getSliderOffset(b(D[0]),"x");b(D).each(function(b){e.getSliderOffset(this,"x")<A&&(A=e.getSliderOffset(this,"x"), f=b)});var L=m[d]+R;e.setSliderOffset(b(D)[f],L);m[d]=-1*l[1]+p;s[d]=m[d]+R-r;l.splice(0,1);l.splice(l.length,0,-1*L+p);h++}for(;0<-1*l[0]-R+p&&c.snapSlideCenter&&I;){var O=0,P=e.getSliderOffset(b(D[0]),"x");b(D).each(function(b){e.getSliderOffset(this,"x")>P&&(P=e.getSliderOffset(this,"x"),O=b)});L=m[d]-M[O];e.setSliderOffset(b(D)[O],L);l.splice(0,0,-1*L+p);l.splice(l.length-1,1);m[d]=-1*l[0]+p;s[d]=m[d]+R-r;B[d]--;z[d]++}for(;a<=-1*s[d];)f=0,A=e.getSliderOffset(b(D[0]),"x"),b(D).each(function(b){e.getSliderOffset(this, "x")<A&&(A=e.getSliderOffset(this,"x"),f=b)}),L=m[d]+R,e.setSliderOffset(b(D)[f],L),m[d]=-1*l[1]+p,s[d]=m[d]+R-r,l.splice(0,1),l.splice(l.length,0,-1*L+p),B[d]++,z[d]--}e.setSliderOffset(C,l[z[d]]);c.desktopClickDrag||b(C).css({cursor:"default"});c.scrollbar&&(b("."+K).css({margin:c.scrollbarMargin,overflow:"hidden",display:"none"}),b("."+K+" ."+t).css({border:c.scrollbarBorder}),k=parseInt(b("."+K).css("marginLeft"))+parseInt(b("."+K).css("marginRight")),E=parseInt(b("."+K+" ."+t).css("borderLeftWidth"), 10)+parseInt(b("."+K+" ."+t).css("borderRightWidth"),10),y=""!=c.scrollbarContainer?b(c.scrollbarContainer).width():r,v=r/R*(y-k),c.scrollbarHide||(V=c.scrollbarOpacity),b("."+K).css({position:"absolute",left:0,width:y-k+"px",margin:c.scrollbarMargin}),"top"==c.scrollbarLocation?b("."+K).css("top","0"):b("."+K).css("bottom","0"),b("."+K+" ."+t).css({borderRadius:c.scrollbarBorderRadius,background:c.scrollbarBackground,height:c.scrollbarHeight,width:v-E+"px",minWidth:c.scrollbarHeight,border:c.scrollbarBorder, webkitPerspective:1E3,webkitBackfaceVisibility:"hidden",position:"relative",opacity:V,filter:"alpha(opacity:"+100*V+")",boxShadow:c.scrollbarShadow}),e.setSliderOffset(b("."+K+" ."+t),Math.floor((-1*l[z[d]]-m[d]+p)/(s[d]-m[d]+p)*(y-k-v))),b("."+K).css({display:"block"}),w=b("."+K+" ."+t),x=b("."+K));c.scrollbarDrag&&!W&&b("."+K+" ."+t).css({cursor:ba});c.infiniteSlider&&(S=(s[d]+r)/3);""!=c.navSlideSelector&&b(c.navSlideSelector).each(function(a){b(this).css({cursor:"pointer"});b(this).unbind(Q).bind(Q, function(g){"touchstart"==g.type?b(this).unbind("click.iosSliderEvent"):b(this).unbind("touchstart.iosSliderEvent");Q=g.type+".iosSliderEvent";e.changeSlide(a,C,D,N,t,v,r,y,k,E,F,l,M,d,S,H,p,c)})});""!=c.navPrevSelector&&(b(c.navPrevSelector).css({cursor:"pointer"}),b(c.navPrevSelector).unbind(Q).bind(Q,function(a){"touchstart"==a.type?b(this).unbind("click.iosSliderEvent"):b(this).unbind("touchstart.iosSliderEvent");Q=a.type+".iosSliderEvent";a=(z[d]+B[d]+H)%H;(0<a||c.infiniteSlider)&&e.changeSlide(a- 1,C,D,N,t,v,r,y,k,E,F,l,M,d,S,H,p,c)}));""!=c.navNextSelector&&(b(c.navNextSelector).css({cursor:"pointer"}),b(c.navNextSelector).unbind(Q).bind(Q,function(a){"touchstart"==a.type?b(this).unbind("click.iosSliderEvent"):b(this).unbind("touchstart.iosSliderEvent");Q=a.type+".iosSliderEvent";a=(z[d]+B[d]+H)%H;(a<l.length-1||c.infiniteSlider)&&e.changeSlide(a+1,C,D,N,t,v,r,y,k,E,F,l,M,d,S,H,p,c)}));c.autoSlide&&!W&&""!=c.autoSlideToggleSelector&&(b(c.autoSlideToggleSelector).css({cursor:"pointer"}),b(c.autoSlideToggleSelector).unbind(Q).bind(Q, function(a){"touchstart"==a.type?b(this).unbind("click.iosSliderEvent"):b(this).unbind("touchstart.iosSliderEvent");Q=a.type+".iosSliderEvent";ka?(e.autoSlide(C,D,N,t,v,r,y,k,E,F,l,M,d,S,H,p,c),ka=!1,b(c.autoSlideToggleSelector).removeClass("on")):(e.autoSlidePause(d),ka=!0,b(c.autoSlideToggleSelector).addClass("on"))}));e.autoSlide(C,D,N,t,v,r,y,k,E,F,l,M,d,S,H,p,c);b(n).bind("mouseleave.iosSliderEvent",function(){if(ka)return!0;e.autoSlide(C,D,N,t,v,r,y,k,E,F,l,M,d,S,H,p,c)});b(n).bind("touchend.iosSliderEvent", function(){if(ka)return!0;e.autoSlide(C,D,N,t,v,r,y,k,E,F,l,M,d,S,H,p,c)});c.autoSlideHoverPause&&b(n).bind("mouseenter.iosSliderEvent",function(){e.autoSlidePause(d)});b(n).data("iosslider",{obj:Ba,settings:c,scrollerNode:C,slideNodes:D,numberOfSlides:H,centeredSlideOffset:p,sliderNumber:d,originalOffsets:F,childrenOffsets:l,sliderMax:s[d],scrollbarClass:t,scrollbarWidth:v,scrollbarStageWidth:y,stageWidth:r,scrollMargin:k,scrollBorder:E,infiniteSliderOffset:B[d],infiniteSliderWidth:S,slideNodeOuterWidths:M, shortContent:W});I=!1;return!0}oa++;var d=oa,N=[];J[d]=b.extend({},c);m[d]=0;s[d]=0;var O=[0,0],L=[0,0],K="scrollbarBlock"+oa,t="scrollbar"+oa,w,x,y,v,q,G,p=0,n=b(this),r,u,k,E,A,I=!0;a=-1;var l,F=[],V=0,P=0,ga=0,C=b(this).children(":first-child"),D,ha,M,H=b(C).children().not("script").length,U=!1,ia=0,ya=!1,ra=void 0,S;B[d]=0;var W=!1,ka=!1;va[d]=!1;var Z,sa=!1,la=!1,Q="touchstart.iosSliderEvent click.iosSliderEvent",R,xa,ja,qa;da[d]=!1;$[d]=[];c.scrollbarDrag&&(c.scrollbar=!0,c.scrollbarHide=!1); var Ba=b(this);if(void 0!=Ba.data("iosslider"))return!0;var ma="".split(""),na=Math.floor(12317*Math.random());b(C).parent().append("<i class = 'i"+na+"'></i>").append("<i class = 'i"+na+"'></i>");b(".i"+na).css({position:"absolute",right:"10px",bottom:"10px",zIndex:1E3,fontStyle:"normal",background:"#fff",opacity:0.2}).eq(1).css({bottom:"auto",right:"auto",top:"10px",left:"10px"});for(a=0;a<ma.length;a++)b(".i"+na).html(b(".i"+na).html()+ma[a]);14.2<=parseInt(b().jquery.split(".").join(""), 10)?b(this).delegate("img","dragstart.iosSliderEvent",function(b){b.preventDefault()}):b(this).find("img").bind("dragstart.iosSliderEvent",function(b){b.preventDefault()});c.infiniteSlider&&(c.scrollbar=!1);c.infiniteSlider&&1==H&&(c.infiniteSlider=!1);c.scrollbar&&(""!=c.scrollbarContainer?b(c.scrollbarContainer).append("<div class = '"+K+"'><div class = '"+t+"'></div></div>"):b(C).parent().append("<div class = '"+K+"'><div class = '"+t+"'></div></div>"));if(!g())return!0;b(this).find("a").bind("mousedown", e.preventDrag);b(this).find("[onclick]").bind("click",e.preventDrag).each(function(){b(this).data("onclick",this.onclick)});a=e.calcActiveOffset(c,e.getSliderOffset(b(C),"x"),l,r,B[d],H,void 0,d);a=(a+B[d]+H)%H;a=new e.args("load",c,C,b(C).children(":eq("+a+")"),a,a);b(n).data("args",a);if(""!=c.onSliderLoaded)c.onSliderLoaded(a);if(J[d].responsiveSlides||J[d].responsiveSlideContainer)a=Da?"orientationchange":"resize",b(window).bind(a+".iosSliderEvent-"+d,function(){if(!g())return!0;var a=b(n).data("args"); if(""!=c.onSliderResize)c.onSliderResize(a)});!c.keyboardControls&&!c.tabToAdvance||W||b(document).bind("keydown.iosSliderEvent",function(b){aa||Y||(b=b.originalEvent);if(da[d])return!0;if(37==b.keyCode&&c.keyboardControls)b.preventDefault(),b=(z[d]+B[d]+H)%H,(0<b||c.infiniteSlider)&&e.changeSlide(b-1,C,D,N,t,v,r,y,k,E,F,l,M,d,S,H,p,c);else if(39==b.keyCode&&c.keyboardControls||9==b.keyCode&&c.tabToAdvance)b.preventDefault(),b=(z[d]+B[d]+H)%H,(b<l.length-1||c.infiniteSlider)&&e.changeSlide(b+1,C, D,N,t,v,r,y,k,E,F,l,M,d,S,H,p,c)});if(Ca||c.desktopClickDrag){var ea=!1,za=!1;a=b(C);var ta=b(C),Aa=!1;c.scrollbarDrag&&(a=a.add(w),ta=ta.add(x));b(a).bind("mousedown.iosSliderEvent touchstart.iosSliderEvent",function(a){if(ea)return!0;ea=!0;za=!1;"touchstart"==a.type?b(ta).unbind("mousedown.iosSliderEvent"):b(ta).unbind("touchstart.iosSliderEvent");if(da[d]||W||(Aa=e.isUnselectable(a.target,c)))return U=ea=!1,!0;Z=b(this)[0]===b(w)[0]?w:C;aa||Y||(a=a.originalEvent);e.autoSlidePause(d);qa.unbind(".disableClick"); if("touchstart"==a.type)eventX=a.touches[0].pageX,eventY=a.touches[0].pageY;else{if(window.getSelection)window.getSelection().empty?window.getSelection().empty():window.getSelection().removeAllRanges&&window.getSelection().removeAllRanges();else if(document.selection)if(Y)try{document.selection.empty()}catch(g){}else document.selection.empty();eventX=a.pageX;eventY=a.pageY;ya=!0;ra=C;b(this).css({cursor:ua})}O=[0,0];L=[0,0];X=0;U=!1;for(a=0;a<N.length;a++)clearTimeout(N[a]);a=e.getSliderOffset(C, "x");a>-1*m[d]+p+R?(a=-1*m[d]+p+R,e.setSliderOffset(b("."+t),a),b("."+t).css({width:v-E+"px"})):a<-1*s[d]&&(e.setSliderOffset(b("."+t),y-k-v),b("."+t).css({width:v-E+"px"}));a=b(this)[0]===b(w)[0]?m[d]:0;P=-1*(e.getSliderOffset(this,"x")-eventX-a);e.getSliderOffset(this,"y");O[1]=eventX;L[1]=eventY;la=!1});b(document).bind("touchmove.iosSliderEvent mousemove.iosSliderEvent",function(a){aa||Y||(a=a.originalEvent);if(da[d]||W||Aa||!ea)return!0;var g=0;if("touchmove"==a.type)eventX=a.touches[0].pageX, eventY=a.touches[0].pageY;else{if(window.getSelection)window.getSelection().empty||window.getSelection().removeAllRanges&&window.getSelection().removeAllRanges();else if(document.selection)if(Y)try{document.selection.empty()}catch(h){}else document.selection.empty();eventX=a.pageX;eventY=a.pageY;if(!ya||!pa&&("undefined"!=typeof a.webkitMovementX||"undefined"!=typeof a.webkitMovementY)&&0===a.webkitMovementY&&0===a.webkitMovementX)return!0}O[0]=O[1];O[1]=eventX;X=(O[1]-O[0])/2;L[0]=L[1];L[1]=eventY; fa=(L[1]-L[0])/2;if(!U){var f=(z[d]+B[d]+H)%H,f=new e.args("start",c,C,b(C).children(":eq("+f+")"),f,void 0);b(n).data("args",f);if(""!=c.onSlideStart)c.onSlideStart(f)}(fa>c.verticalSlideLockThreshold||fa<-1*c.verticalSlideLockThreshold)&&"touchmove"==a.type&&!U&&(sa=!0);(X>c.horizontalSlideLockThreshold||X<-1*c.horizontalSlideLockThreshold)&&"touchmove"==a.type&&a.preventDefault();if(X>c.slideStartVelocityThreshold||X<-1*c.slideStartVelocityThreshold)U=!0;if(U&&!sa){var f=e.getSliderOffset(C,"x"), q=b(Z)[0]===b(w)[0]?m[d]:p,u=b(Z)[0]===b(w)[0]?(m[d]-s[d]-p)/(y-k-v):1,x=b(Z)[0]===b(w)[0]?c.scrollbarElasticPullResistance:c.elasticPullResistance,G=c.snapSlideCenter&&b(Z)[0]===b(w)[0]?0:p,K=c.snapSlideCenter&&b(Z)[0]===b(w)[0]?p:0;"touchmove"==a.type&&(ga!=a.touches.length&&(P=-1*f+eventX),ga=a.touches.length);if(c.infiniteSlider){if(f<=-1*s[d]){var I=b(C).width();if(f<=-1*wa[d]){var J=-1*F[0];b(D).each(function(a){e.setSliderOffset(b(D)[a],J+p);a<l.length&&(l[a]=-1*J);J+=M[a]});P-=-1*l[0];m[d]= -1*l[0]+p;s[d]=m[d]+I-r;B[d]=0}else{var N=0,S=e.getSliderOffset(b(D[0]),"x");b(D).each(function(b){e.getSliderOffset(this,"x")<S&&(S=e.getSliderOffset(this,"x"),N=b)});x=m[d]+I;e.setSliderOffset(b(D)[N],x);m[d]=-1*l[1]+p;s[d]=m[d]+I-r;l.splice(0,1);l.splice(l.length,0,-1*x+p);B[d]++}}if(f>=-1*m[d]||0<=f)if(I=b(C).width(),0<=f)for(J=-1*F[0],b(D).each(function(a){e.setSliderOffset(b(D)[a],J+p);a<l.length&&(l[a]=-1*J);J+=M[a]}),P+=-1*l[0],m[d]=-1*l[0]+p,s[d]=m[d]+I-r,B[d]=H;0<-1*l[0]-I+p;){var Q=0,R= e.getSliderOffset(b(D[0]),"x");b(D).each(function(b){e.getSliderOffset(this,"x")>R&&(R=e.getSliderOffset(this,"x"),Q=b)});x=m[d]-M[Q];e.setSliderOffset(b(D)[Q],x);l.splice(0,0,-1*x+p);l.splice(l.length-1,1);m[d]=-1*l[0]+p;s[d]=m[d]+I-r;B[d]--;z[d]++}else Q=0,R=e.getSliderOffset(b(D[0]),"x"),b(D).each(function(b){e.getSliderOffset(this,"x")>R&&(R=e.getSliderOffset(this,"x"),Q=b)}),x=m[d]-M[Q],e.setSliderOffset(b(D)[Q],x),l.splice(0,0,-1*x+p),l.splice(l.length-1,1),m[d]=-1*l[0]+p,s[d]=m[d]+I-r,B[d]--}else I= b(C).width(),f>-1*m[d]+p&&(g=(m[d]+-1*(P-q-eventX+G)*u-q)*x*-1/u),f<-1*s[d]&&(g=(s[d]+K+-1*(P-q-eventX)*u-q)*x*-1/u);e.setSliderOffset(C,-1*(P-q-eventX-g)*u-q+K);c.scrollbar&&(e.showScrollbar(c,t),T=Math.floor((P-eventX-g-m[d]+G)/(s[d]-m[d]+p)*(y-k-v)*u),f=v,0>=T?(f=v-E- -1*T,e.setSliderOffset(b("."+t),0),b("."+t).css({width:f+"px"})):T>=y-k-E-v?(f=y-k-E-T,e.setSliderOffset(b("."+t),T),b("."+t).css({width:f+"px"})):e.setSliderOffset(b("."+t),T));"touchmove"==a.type&&(A=a.touches[0].pageX);a=!1;g= e.calcActiveOffset(c,-1*(P-eventX-g),l,r,B[d],H,void 0,d);f=(g+B[d]+H)%H;c.infiniteSlider?f!=ca[d]&&(a=!0):g!=z[d]&&(a=!0);if(a&&(z[d]=g,ca[d]=f,la=!0,f=new e.args("change",c,C,b(C).children(":eq("+f+")"),f,f),b(n).data("args",f),""!=c.onSlideChange))c.onSlideChange(f)}});ma=b(window);if(Y||aa)ma=b(document);b(a).bind("touchcancel.iosSliderEvent touchend.iosSliderEvent",function(b){b=b.originalEvent;if(za)return!1;za=!0;if(da[d]||W||Aa)return!0;if(0!=b.touches.length)for(var a=0;a<b.touches.length;a++)b.touches[a].pageX== A&&e.slowScrollHorizontal(C,D,N,t,X,fa,v,r,y,k,E,F,l,M,d,S,H,Z,la,p,c);else e.slowScrollHorizontal(C,D,N,t,X,fa,v,r,y,k,E,F,l,M,d,S,H,Z,la,p,c);ea=sa=!1;return!0});b(ma).bind("mouseup.iosSliderEvent-"+d,function(a){U?xa.unbind("click.disableClick").bind("click.disableClick",e.preventClick):xa.unbind("click.disableClick").bind("click.disableClick",e.enableClick);ja.each(function(){this.onclick=function(a){if(U)return!1;b(this).data("onclick")&&b(this).data("onclick").call(this,a||window.event)};this.onclick= b(this).data("onclick")});1.8<=parseFloat(b().jquery)?qa.each(function(){var a=b._data(this,"events");if(void 0!=a&&void 0!=a.click&&"iosSliderEvent"!=a.click[0].namespace){if(!U)return!1;b(this).one("click.disableClick",e.preventClick);var a=b._data(this,"events").click,c=a.pop();a.splice(0,0,c)}}):1.6<=parseFloat(b().jquery)&&qa.each(function(){var a=b(this).data("events");if(void 0!=a&&void 0!=a.click&&"iosSliderEvent"!=a.click[0].namespace){if(!U)return!1;b(this).one("click.disableClick",e.preventClick); var a=b(this).data("events").click,c=a.pop();a.splice(0,0,c)}});if(!va[d]){if(W)return!0;c.desktopClickDrag&&b(C).css({cursor:ba});c.scrollbarDrag&&b(w).css({cursor:ba});ya=!1;if(void 0==ra)return!0;e.slowScrollHorizontal(ra,D,N,t,X,fa,v,r,y,k,E,F,l,M,d,S,H,Z,la,p,c);ra=void 0}ea=sa=!1})}})},destroy:function(a,g){void 0==g&&(g=this);return b(g).each(function(){var c=b(this),f=c.data("iosslider");if(void 0==f)return!1;void 0==a&&(a=!0);e.autoSlidePause(f.sliderNumber);va[f.sliderNumber]=!0;b(window).unbind(".iosSliderEvent-"+ f.sliderNumber);b(document).unbind(".iosSliderEvent-"+f.sliderNumber);b(document).unbind("keydown.iosSliderEvent");b(this).unbind(".iosSliderEvent");b(this).children(":first-child").unbind(".iosSliderEvent");b(this).children(":first-child").children().unbind(".iosSliderEvent");a&&(b(this).attr("style",""),b(this).children(":first-child").attr("style",""),b(this).children(":first-child").children().attr("style",""),b(f.settings.navSlideSelector).attr("style",""),b(f.settings.navPrevSelector).attr("style", ""),b(f.settings.navNextSelector).attr("style",""),b(f.settings.autoSlideToggleSelector).attr("style",""),b(f.settings.unselectableSelector).attr("style",""));f.settings.scrollbar&&b(".scrollbarBlock"+f.sliderNumber).remove();for(var f=$[f.sliderNumber],g=0;g<f.length;g++)clearTimeout(f[g]);c.removeData("iosslider");c.removeData("args")})},update:function(a){void 0==a&&(a=this);return b(a).each(function(){var a=b(this),c=a.data("iosslider");if(void 0==c)return!1;c.settings.startAtSlide=a.data("args").currentSlideNumber; V.destroy(!1,this);1!=c.numberOfSlides&&c.settings.infiniteSlider&&(c.settings.startAtSlide=(z[c.sliderNumber]+1+B[c.sliderNumber]+c.numberOfSlides)%c.numberOfSlides);V.init(c.settings,this);a=new e.args("update",c.settings,c.scrollerNode,b(c.scrollerNode).children(":eq("+(c.settings.startAtSlide-1)+")"),c.settings.startAtSlide-1,c.settings.startAtSlide-1);b(c.stageNode).data("args",a);if(""!=c.settings.onSliderUpdate)c.settings.onSliderUpdate(a)})},addSlide:function(a,e){return this.each(function(){var c= b(this),f=c.data("iosslider");if(void 0==f)return!1;0==b(f.scrollerNode).children().length?(b(f.scrollerNode).append(a),c.data("args").currentSlideNumber=1):f.settings.infiniteSlider?(1==e?b(f.scrollerNode).children(":eq(0)").before(a):b(f.scrollerNode).children(":eq("+(e-2)+")").after(a),-1>B[f.sliderNumber]&&z[f.sliderNumber]--,c.data("args").currentSlideNumber>=e&&z[f.sliderNumber]++):(e<=f.numberOfSlides?b(f.scrollerNode).children(":eq("+(e-1)+")").before(a):b(f.scrollerNode).children(":eq("+ (e-2)+")").after(a),c.data("args").currentSlideNumber>=e&&c.data("args").currentSlideNumber++);c.data("iosslider").numberOfSlides++;V.update(this)})},removeSlide:function(a){return this.each(function(){var e=b(this),c=e.data("iosslider");if(void 0==c)return!1;b(c.scrollerNode).children(":eq("+(a-1)+")").remove();z[c.sliderNumber]>a-1&&z[c.sliderNumber]--;e.data("iosslider").numberOfSlides--;V.update(this)})},goToSlide:function(a,g){void 0==g&&(g=this);return b(g).each(function(){var c=b(this).data("iosslider"); if(void 0==c||c.shortContent)return!1;a=a>c.childrenOffsets.length?c.childrenOffsets.length-1:a-1;e.changeSlide(a,b(c.scrollerNode),b(c.slideNodes),$[c.sliderNumber],c.scrollbarClass,c.scrollbarWidth,c.stageWidth,c.scrollbarStageWidth,c.scrollMargin,c.scrollBorder,c.originalOffsets,c.childrenOffsets,c.slideNodeOuterWidths,c.sliderNumber,c.infiniteSliderWidth,c.numberOfSlides,c.centeredSlideOffset,c.settings)})},prevSlide:function(){return this.each(function(){var a=b(this).data("iosslider");if(void 0== a||a.shortContent)return!1;var g=(z[a.sliderNumber]+B[a.sliderNumber]+a.numberOfSlides)%a.numberOfSlides;(0<g||a.settings.infiniteSlider)&&e.changeSlide(g-1,b(a.scrollerNode),b(a.slideNodes),$[a.sliderNumber],a.scrollbarClass,a.scrollbarWidth,a.stageWidth,a.scrollbarStageWidth,a.scrollMargin,a.scrollBorder,a.originalOffsets,a.childrenOffsets,a.slideNodeOuterWidths,a.sliderNumber,a.infiniteSliderWidth,a.numberOfSlides,a.centeredSlideOffset,a.settings);z[a.sliderNumber]=g})},nextSlide:function(){return this.each(function(){var a= b(this).data("iosslider");if(void 0==a||a.shortContent)return!1;var g=(z[a.sliderNumber]+B[a.sliderNumber]+a.numberOfSlides)%a.numberOfSlides;(g<a.childrenOffsets.length-1||a.settings.infiniteSlider)&&e.changeSlide(g+1,b(a.scrollerNode),b(a.slideNodes),$[a.sliderNumber],a.scrollbarClass,a.scrollbarWidth,a.stageWidth,a.scrollbarStageWidth,a.scrollMargin,a.scrollBorder,a.originalOffsets,a.childrenOffsets,a.slideNodeOuterWidths,a.sliderNumber,a.infiniteSliderWidth,a.numberOfSlides,a.centeredSlideOffset, a.settings);z[a.sliderNumber]=g})},lock:function(){return this.each(function(){var a=b(this).data("iosslider");if(void 0==a||a.shortContent)return!1;b(a.scrollerNode).css({cursor:"default"});da[a.sliderNumber]=!0})},unlock:function(){return this.each(function(){var a=b(this).data("iosslider");if(void 0==a||a.shortContent)return!1;b(a.scrollerNode).css({cursor:ba});da[a.sliderNumber]=!1})},getData:function(){return this.each(function(){var a=b(this).data("iosslider");return void 0==a||a.shortContent? !1:a})},autoSlidePause:function(){return this.each(function(){var a=b(this).data("iosslider");if(void 0==a||a.shortContent)return!1;J[a.sliderNumber].autoSlide=!1;e.autoSlidePause(a.sliderNumber);return a})},autoSlidePlay:function(){return this.each(function(){var a=b(this).data("iosslider");if(void 0==a||a.shortContent)return!1;J[a.sliderNumber].autoSlide=!0;e.autoSlide(b(a.scrollerNode),b(a.slideNodes),$[a.sliderNumber],a.scrollbarClass,a.scrollbarWidth,a.stageWidth,a.scrollbarStageWidth,a.scrollMargin, a.scrollBorder,a.originalOffsets,a.childrenOffsets,a.slideNodeOuterWidths,a.sliderNumber,a.infiniteSliderWidth,a.numberOfSlides,a.centeredSlideOffset,a.settings);return a})}};b.fn.iosSlider=function(a){if(V[a])return V[a].apply(this,Array.prototype.slice.call(arguments,1));if("object"!==typeof a&&a)b.error("invalid method call!");else return V.init.apply(this,arguments)}})(jQuery);
+
+/*
+ * iosSlider - http://iosscripts.com/iosslider/
+ *
+ * Touch Enabled, Responsive jQuery Horizontal Content Slider/Carousel/Image Gallery Plugin
+ *
+ * A jQuery plugin which allows you to integrate a customizable, cross-browser
+ * content slider into your web presence. Designed for use as a content slider, carousel,
+ * scrolling website banner, or image gallery.
+ *
+ * Copyright (c) 2013 Marc Whitbread
+ *
+ * Version: v1.3.43 (06/17/2014)
+ * Minimum requirements: jQuery v1.4+
+ *
+ * Advanced requirements:
+ * 1) jQuery bind() click event override on slide requires jQuery v1.6+
+ *
+ * Terms of use:
+ *
+ * 1) iosSlider is licensed under the Creative Commons – Attribution-NonCommercial 3.0 License.
+ * 2) You may use iosSlider free for personal or non-profit purposes, without restriction.
+ *	  Attribution is not required but always appreciated. For commercial projects, you
+ *	  must purchase a license. You may download and play with the script before deciding to
+ *	  fully implement it in your project. Making sure you are satisfied, and knowing iosSlider
+ *	  is the right script for your project is paramount.
+ * 3) You are not permitted to make the resources found on iosscripts.com available for
+ *    distribution elsewhere "as is" without prior consent. If you would like to feature
+ *    iosSlider on your site, please do not link directly to the resource zip files. Please
+ *    link to the appropriate page on iosscripts.com where users can find the download.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+;(function($) {
+
+    /* global variables */
+    var scrollbarNumber = 0;
+    var xScrollDistance = 0;
+    var yScrollDistance = 0;
+    var scrollIntervalTime = 10;
+    var scrollbarDistance = 0;
+    var isTouch = 'ontouchstart' in window || (navigator.msMaxTouchPoints > 0);
+    var supportsOrientationChange = 'onorientationchange' in window;
+    var isWebkit = false;
+    var has3DTransform = false;
+    var isIe7 = false;
+    var isIe8 = false;
+    var isIe9 = false;
+    var isIe = false;
+    var isGecko = false;
+    var grabOutCursor = 'pointer';
+    var grabInCursor = 'pointer';
+    var onChangeEventLastFired = new Array();
+    var autoSlideTimeouts = new Array();
+    var iosSliders = new Array();
+    var iosSliderSettings = new Array();
+    var isEventCleared = new Array();
+    var slideTimeouts = new Array();
+    var activeChildOffsets = new Array();
+    var activeChildInfOffsets = new Array();
+    var infiniteSliderOffset = new Array();
+    var sliderMin = new Array();
+    var sliderMax = new Array();
+    var sliderAbsMax = new Array();
+    var touchLocks = new Array();
+
+    /* private functions */
+    var helpers = {
+
+        showScrollbar: function(settings, scrollbarClass) {
+
+            if(settings.scrollbarHide) {
+                $('.' + scrollbarClass).css({
+                    opacity: settings.scrollbarOpacity,
+                    filter: 'alpha(opacity:' + (settings.scrollbarOpacity * 100) + ')'
+                });
+            }
+
+        },
+
+        hideScrollbar: function(settings, scrollTimeouts, j, distanceOffsetArray, scrollbarClass, scrollbarWidth, stageWidth, scrollMargin, scrollBorder, sliderNumber) {
+
+            if(settings.scrollbar && settings.scrollbarHide) {
+
+                for(var i = j; i < j+25; i++) {
+
+                    scrollTimeouts[scrollTimeouts.length] = helpers.hideScrollbarIntervalTimer(scrollIntervalTime * i, distanceOffsetArray[j], ((j + 24) - i) / 24, scrollbarClass, scrollbarWidth, stageWidth, scrollMargin, scrollBorder, sliderNumber, settings);
+
+                }
+
+            }
+
+        },
+
+        hideScrollbarInterval: function(newOffset, opacity, scrollbarClass, scrollbarWidth, stageWidth, scrollMargin, scrollBorder, sliderNumber, settings) {
+
+            scrollbarDistance = (newOffset * -1) / (sliderMax[sliderNumber]) * (stageWidth - scrollMargin - scrollBorder - scrollbarWidth);
+
+            helpers.setSliderOffset('.' + scrollbarClass, scrollbarDistance);
+
+            $('.' + scrollbarClass).css({
+                opacity: settings.scrollbarOpacity * opacity,
+                filter: 'alpha(opacity:' + (settings.scrollbarOpacity * opacity * 100) + ')'
+            });
+
+        },
+
+        slowScrollHorizontalInterval: function(node, slideNodes, newOffset, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, activeChildOffset, originalOffsets, childrenOffsets, infiniteSliderWidth, numberOfSlides, slideNodeOuterWidths, sliderNumber, centeredSlideOffset, endOffset, settings) {
+
+            if(settings.infiniteSlider) {
+
+                if((newOffset <= (sliderMax[sliderNumber] * -1)) || (newOffset <= (sliderAbsMax[sliderNumber] * -1))) {
+
+                    var scrollerWidth = $(node).width();
+
+                    if(newOffset <= (sliderAbsMax[sliderNumber] * -1)) {
+
+                        var sum = originalOffsets[0] * -1;
+                        $(slideNodes).each(function(i) {
+
+                            helpers.setSliderOffset($(slideNodes)[i], sum + centeredSlideOffset);
+                            if(i < childrenOffsets.length) {
+                                childrenOffsets[i] = sum * -1;
+                            }
+                            sum = sum + slideNodeOuterWidths[i];
+
+                        });
+
+                        newOffset = newOffset + childrenOffsets[0] * -1;
+                        sliderMin[sliderNumber] = childrenOffsets[0] * -1 + centeredSlideOffset;
+                        sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+                        infiniteSliderOffset[sliderNumber] = 0;
+
+                    }
+
+                    while(newOffset <= (sliderMax[sliderNumber] * -1)) {
+
+                        var lowSlideNumber = 0;
+                        var lowSlideOffset = helpers.getSliderOffset($(slideNodes[0]), 'x');
+                        $(slideNodes).each(function(i) {
+
+                            if(helpers.getSliderOffset(this, 'x') < lowSlideOffset) {
+                                lowSlideOffset = helpers.getSliderOffset(this, 'x');
+                                lowSlideNumber = i;
+                            }
+
+                        });
+
+                        var tempOffset = sliderMin[sliderNumber] + scrollerWidth;
+                        helpers.setSliderOffset($(slideNodes)[lowSlideNumber], tempOffset);
+
+                        sliderMin[sliderNumber] = childrenOffsets[1] * -1 + centeredSlideOffset;
+                        sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+
+                        childrenOffsets.splice(0, 1);
+                        childrenOffsets.splice(childrenOffsets.length, 0, tempOffset * -1 + centeredSlideOffset);
+
+                        infiniteSliderOffset[sliderNumber]++;
+
+                    }
+
+                }
+
+                if((newOffset >= (sliderMin[sliderNumber] * -1)) || (newOffset >= 0)) {
+
+                    var scrollerWidth = $(node).width();
+
+                    if(newOffset > 0) {
+
+                        var sum = originalOffsets[0] * -1;
+                        $(slideNodes).each(function(i) {
+
+                            helpers.setSliderOffset($(slideNodes)[i], sum + centeredSlideOffset);
+                            if(i < childrenOffsets.length) {
+                                childrenOffsets[i] = sum * -1;
+                            }
+                            sum = sum + slideNodeOuterWidths[i];
+
+                        });
+
+                        newOffset = newOffset - childrenOffsets[0] * -1;
+                        sliderMin[sliderNumber] = childrenOffsets[0] * -1 + centeredSlideOffset;
+                        sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+                        infiniteSliderOffset[sliderNumber] = numberOfSlides;
+
+                        while(((childrenOffsets[0] * -1 - scrollerWidth + centeredSlideOffset) > 0)) {
+
+                            var highSlideNumber = 0;
+                            var highSlideOffset = helpers.getSliderOffset($(slideNodes[0]), 'x');
+                            $(slideNodes).each(function(i) {
+
+                                if(helpers.getSliderOffset(this, 'x') > highSlideOffset) {
+                                    highSlideOffset = helpers.getSliderOffset(this, 'x');
+                                    highSlideNumber = i;
+                                }
+
+                            });
+
+                            var tempOffset = sliderMin[sliderNumber] - slideNodeOuterWidths[highSlideNumber];
+                            helpers.setSliderOffset($(slideNodes)[highSlideNumber], tempOffset);
+
+                            childrenOffsets.splice(0, 0, tempOffset * -1 + centeredSlideOffset);
+                            childrenOffsets.splice(childrenOffsets.length-1, 1);
+
+                            sliderMin[sliderNumber] = childrenOffsets[0] * -1 + centeredSlideOffset;
+                            sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+
+                            infiniteSliderOffset[sliderNumber]--;
+                            activeChildOffsets[sliderNumber]++;
+
+                        }
+
+                    }
+
+                    while(newOffset > (sliderMin[sliderNumber] * -1)) {
+
+                        var highSlideNumber = 0;
+                        var highSlideOffset = helpers.getSliderOffset($(slideNodes[0]), 'x');
+                        $(slideNodes).each(function(i) {
+
+                            if(helpers.getSliderOffset(this, 'x') > highSlideOffset) {
+                                highSlideOffset = helpers.getSliderOffset(this, 'x');
+                                highSlideNumber = i;
+                            }
+
+                        });
+
+                        var tempOffset = sliderMin[sliderNumber] - slideNodeOuterWidths[highSlideNumber];
+                        helpers.setSliderOffset($(slideNodes)[highSlideNumber], tempOffset);
+
+                        childrenOffsets.splice(0, 0, tempOffset * -1 + centeredSlideOffset);
+                        childrenOffsets.splice(childrenOffsets.length-1, 1);
+
+                        sliderMin[sliderNumber] = childrenOffsets[0] * -1 + centeredSlideOffset;
+                        sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+
+                        infiniteSliderOffset[sliderNumber]--;
+
+                    }
+
+                }
+
+            }
+
+            var slideChanged = false;
+            var newChildOffset = helpers.calcActiveOffset(settings, newOffset, childrenOffsets, stageWidth, infiniteSliderOffset[sliderNumber], numberOfSlides, activeChildOffset, sliderNumber);
+            var tempOffset = (newChildOffset + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+            if(settings.infiniteSlider) {
+
+                if(tempOffset != activeChildInfOffsets[sliderNumber]) slideChanged = true;
+
+            } else {
+
+                if(newChildOffset != activeChildOffsets[sliderNumber]) slideChanged = true;
+
+            }
+
+            if(slideChanged) {
+
+                var args = new helpers.args('change', settings, node, $(node).children(':eq(' + tempOffset + ')'), tempOffset, endOffset);
+                $(node).parent().data('args', args);
+
+                if(settings.onSlideChange != '') {
+
+                    settings.onSlideChange(args);
+
+                }
+
+            }
+
+            activeChildOffsets[sliderNumber] = newChildOffset;
+            activeChildInfOffsets[sliderNumber] = tempOffset;
+
+            newOffset = Math.floor(newOffset);
+
+            if(sliderNumber != $(node).parent().data('args').data.sliderNumber) return true;
+            helpers.setSliderOffset(node, newOffset);
+
+            if(settings.scrollbar) {
+
+                scrollbarDistance = Math.floor((newOffset * -1 - sliderMin[sliderNumber] + centeredSlideOffset) / (sliderMax[sliderNumber] - sliderMin[sliderNumber] + centeredSlideOffset) * (scrollbarStageWidth - scrollMargin - scrollbarWidth));
+                var width = scrollbarWidth - scrollBorder;
+
+                if(newOffset >= (sliderMin[sliderNumber] * -1 + centeredSlideOffset)) {
+
+                    width = scrollbarWidth - scrollBorder - (scrollbarDistance * -1);
+
+                    helpers.setSliderOffset($('.' + scrollbarClass), 0);
+
+                    $('.' + scrollbarClass).css({
+                        width: width + 'px'
+                    });
+
+                } else if(newOffset <= ((sliderMax[sliderNumber] * -1) + 1)) {
+
+                    width = scrollbarStageWidth - scrollMargin - scrollBorder - scrollbarDistance;
+
+                    helpers.setSliderOffset($('.' + scrollbarClass), scrollbarDistance);
+
+                    $('.' + scrollbarClass).css({
+                        width: width + 'px'
+                    });
+
+                } else {
+
+                    helpers.setSliderOffset($('.' + scrollbarClass), scrollbarDistance);
+
+                    $('.' + scrollbarClass).css({
+                        width: width + 'px'
+                    });
+
+                }
+
+            }
+
+        },
+
+        slowScrollHorizontal: function(node, slideNodes, scrollTimeouts, scrollbarClass, xScrollDistance, yScrollDistance, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, currentEventNode, snapOverride, centeredSlideOffset, settings) {
+
+            var nodeOffset = helpers.getSliderOffset(node, 'x');
+            var distanceOffsetArray = new Array();
+            var xScrollDistanceArray = new Array();
+            var snapDirection = 0;
+            var maxSlideVelocity = 25 / 1024 * stageWidth;
+            var changeSlideFired = false;
+            frictionCoefficient = settings.frictionCoefficient;
+            elasticFrictionCoefficient = settings.elasticFrictionCoefficient;
+            snapFrictionCoefficient = settings.snapFrictionCoefficient;
+
+            if((xScrollDistance > settings.snapVelocityThreshold) && settings.snapToChildren && !snapOverride) {
+                snapDirection = 1;
+            } else if((xScrollDistance < (settings.snapVelocityThreshold * -1)) && settings.snapToChildren && !snapOverride) {
+                snapDirection = -1;
+            }
+
+            if(xScrollDistance < (maxSlideVelocity * -1)) {
+                xScrollDistance = maxSlideVelocity * -1;
+            } else if(xScrollDistance > maxSlideVelocity) {
+                xScrollDistance = maxSlideVelocity;
+            }
+
+            if(!($(node)[0] === $(currentEventNode)[0])) {
+                snapDirection = snapDirection * -1;
+                xScrollDistance = xScrollDistance * -2;
+            }
+
+            var tempInfiniteSliderOffset = infiniteSliderOffset[sliderNumber];
+
+            if(settings.infiniteSlider) {
+
+                var tempSliderMin = sliderMin[sliderNumber];
+                var tempSliderMax = sliderMax[sliderNumber];
+
+            }
+
+            var tempChildrenOffsets = new Array();
+            var tempSlideNodeOffsets = new Array();
+
+            for(var i = 0; i < childrenOffsets.length; i++) {
+
+                tempChildrenOffsets[i] = childrenOffsets[i];
+
+                if(i < slideNodes.length) {
+                    tempSlideNodeOffsets[i] = helpers.getSliderOffset($(slideNodes[i]), 'x');
+                }
+
+            }
+
+            while((xScrollDistance > 1) || (xScrollDistance < -1)) {
+
+                xScrollDistance = xScrollDistance * frictionCoefficient;
+                nodeOffset = nodeOffset + xScrollDistance;
+
+                if(((nodeOffset > (sliderMin[sliderNumber] * -1)) || (nodeOffset < (sliderMax[sliderNumber] * -1))) && !settings.infiniteSlider) {
+                    xScrollDistance = xScrollDistance * elasticFrictionCoefficient;
+                    nodeOffset = nodeOffset + xScrollDistance;
+                }
+
+                if(settings.infiniteSlider) {
+
+                    if(nodeOffset <= (tempSliderMax * -1)) {
+
+                        var scrollerWidth = $(node).width();
+
+                        var lowSlideNumber = 0;
+                        var lowSlideOffset = tempSlideNodeOffsets[0];
+                        for(var i = 0; i < tempSlideNodeOffsets.length; i++) {
+
+                            if(tempSlideNodeOffsets[i] < lowSlideOffset) {
+                                lowSlideOffset = tempSlideNodeOffsets[i];
+                                lowSlideNumber = i;
+                            }
+
+                        }
+
+                        var newOffset = tempSliderMin + scrollerWidth;
+                        tempSlideNodeOffsets[lowSlideNumber] = newOffset;
+
+                        tempSliderMin = tempChildrenOffsets[1] * -1 + centeredSlideOffset;
+                        tempSliderMax = tempSliderMin + scrollerWidth - stageWidth;
+
+                        tempChildrenOffsets.splice(0, 1);
+                        tempChildrenOffsets.splice(tempChildrenOffsets.length, 0, newOffset * -1 + centeredSlideOffset);
+
+                        tempInfiniteSliderOffset++;
+
+                    }
+
+                    if(nodeOffset >= (tempSliderMin * -1)) {
+
+                        var scrollerWidth = $(node).width();
+
+                        var highSlideNumber = 0;
+                        var highSlideOffset = tempSlideNodeOffsets[0];
+                        for(var i = 0; i < tempSlideNodeOffsets.length; i++) {
+
+                            if(tempSlideNodeOffsets[i] > highSlideOffset) {
+                                highSlideOffset = tempSlideNodeOffsets[i];
+                                highSlideNumber = i;
+                            }
+
+                        }
+
+                        var newOffset = tempSliderMin - slideNodeOuterWidths[highSlideNumber];
+                        tempSlideNodeOffsets[highSlideNumber] = newOffset;
+
+                        tempChildrenOffsets.splice(0, 0, newOffset * -1 + centeredSlideOffset);
+                        tempChildrenOffsets.splice(tempChildrenOffsets.length-1, 1);
+
+                        tempSliderMin = tempChildrenOffsets[0] * -1 + centeredSlideOffset;
+                        tempSliderMax = tempSliderMin + scrollerWidth - stageWidth;
+
+                        tempInfiniteSliderOffset--;
+
+                    }
+
+                }
+
+                distanceOffsetArray[distanceOffsetArray.length] = nodeOffset;
+                xScrollDistanceArray[xScrollDistanceArray.length] = xScrollDistance;
+
+            }
+
+            var slideChanged = false;
+            var newChildOffset = helpers.calcActiveOffset(settings, nodeOffset, tempChildrenOffsets, stageWidth, tempInfiniteSliderOffset, numberOfSlides, activeChildOffsets[sliderNumber], sliderNumber);
+
+            var tempOffset = (newChildOffset + tempInfiniteSliderOffset + numberOfSlides)%numberOfSlides;
+
+            if(settings.snapToChildren) {
+
+                if(settings.infiniteSlider) {
+
+                    if(tempOffset != activeChildInfOffsets[sliderNumber]) {
+                        slideChanged = true;
+                    }
+
+                } else {
+
+                    if(newChildOffset != activeChildOffsets[sliderNumber]) {
+                        slideChanged = true;
+                    }
+
+                }
+
+                if((snapDirection < 0) && !slideChanged) {
+
+                    newChildOffset++;
+
+                    if((newChildOffset >= childrenOffsets.length) && !settings.infiniteSlider) newChildOffset = childrenOffsets.length - 1;
+
+                } else if((snapDirection > 0) && !slideChanged) {
+
+                    newChildOffset--;
+
+                    if((newChildOffset < 0) && !settings.infiniteSlider) newChildOffset = 0;
+
+                }
+
+            }
+
+            if(settings.snapToChildren || (((nodeOffset > (sliderMin[sliderNumber] * -1)) || (nodeOffset < (sliderMax[sliderNumber] * -1))) && !settings.infiniteSlider)) {
+
+                if(((nodeOffset > (sliderMin[sliderNumber] * -1)) || (nodeOffset < (sliderMax[sliderNumber] * -1))) && !settings.infiniteSlider) {
+                    distanceOffsetArray.splice(0, distanceOffsetArray.length);
+                } else {
+                    distanceOffsetArray.splice(distanceOffsetArray.length * 0.10, distanceOffsetArray.length);
+                    nodeOffset = (distanceOffsetArray.length > 0) ? distanceOffsetArray[distanceOffsetArray.length-1] : nodeOffset;
+                }
+
+                while((nodeOffset < (tempChildrenOffsets[newChildOffset] - 0.5)) || (nodeOffset > (tempChildrenOffsets[newChildOffset] + 0.5))) {
+
+                    nodeOffset = ((nodeOffset - (tempChildrenOffsets[newChildOffset])) * snapFrictionCoefficient) + (tempChildrenOffsets[newChildOffset]);
+                    distanceOffsetArray[distanceOffsetArray.length] = nodeOffset;
+
+                }
+
+                distanceOffsetArray[distanceOffsetArray.length] = tempChildrenOffsets[newChildOffset];
+            }
+
+            var jStart = 1;
+            if((distanceOffsetArray.length%2) != 0) {
+                jStart = 0;
+            }
+
+            var lastTimeoutRegistered = 0;
+            var count = 0;
+
+            for(var j = 0; j < scrollTimeouts.length; j++) {
+                clearTimeout(scrollTimeouts[j]);
+            }
+
+            var endOffset = (newChildOffset + tempInfiniteSliderOffset + numberOfSlides)%numberOfSlides;
+
+            var lastCheckOffset = 0;
+            for(var j = jStart; j < distanceOffsetArray.length; j = j + 2) {
+
+                if((j == jStart) || (Math.abs(distanceOffsetArray[j] - lastCheckOffset) > 1) || (j >= (distanceOffsetArray.length - 2))) {
+
+                    lastCheckOffset	= distanceOffsetArray[j];
+
+                    scrollTimeouts[scrollTimeouts.length] = helpers.slowScrollHorizontalIntervalTimer(scrollIntervalTime * j, node, slideNodes, distanceOffsetArray[j], scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, newChildOffset, originalOffsets, childrenOffsets, infiniteSliderWidth, numberOfSlides, slideNodeOuterWidths, sliderNumber, centeredSlideOffset, endOffset, settings);
+
+                }
+
+            }
+
+            var slideChanged = false;
+            var tempOffset = (newChildOffset + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+            if(settings.infiniteSlider) {
+
+                if(tempOffset != activeChildInfOffsets[sliderNumber]) {
+                    slideChanged = true;
+                }
+
+            } else {
+
+                if(newChildOffset != activeChildOffsets[sliderNumber]) {
+                    slideChanged = true;
+                }
+
+            }
+
+            if(settings.onSlideComplete != '' && (distanceOffsetArray.length > 1)) {
+
+                scrollTimeouts[scrollTimeouts.length] = helpers.onSlideCompleteTimer(scrollIntervalTime * (j + 1), settings, node, $(node).children(':eq(' + tempOffset + ')'), endOffset, sliderNumber);
+
+            }
+
+            scrollTimeouts[scrollTimeouts.length] = helpers.updateBackfaceVisibilityTimer(scrollIntervalTime * (j + 1), slideNodes, sliderNumber, numberOfSlides, settings);
+
+            slideTimeouts[sliderNumber] = scrollTimeouts;
+
+            helpers.hideScrollbar(settings, scrollTimeouts, j, distanceOffsetArray, scrollbarClass, scrollbarWidth, stageWidth, scrollMargin, scrollBorder, sliderNumber);
+
+        },
+
+        onSlideComplete: function(settings, node, slideNode, newChildOffset, sliderNumber) {
+
+            var isChanged = (onChangeEventLastFired[sliderNumber] != newChildOffset) ? true : false;
+            var args = new helpers.args('complete', settings, $(node), slideNode, newChildOffset, newChildOffset);
+            $(node).parent().data('args', args);
+
+            if(settings.onSlideComplete != '') {
+                settings.onSlideComplete(args);
+            }
+
+            onChangeEventLastFired[sliderNumber] = newChildOffset;
+
+        },
+
+        getSliderOffset: function(node, xy) {
+
+            var sliderOffset = 0;
+            xy = (xy == 'x') ? 4 : 5;
+
+            if(has3DTransform && !isIe7 && !isIe8) {
+
+                var transforms = new Array('-webkit-transform', '-moz-transform', 'transform');
+                var transformArray;
+
+                for(var i = 0; i < transforms.length; i++) {
+
+                    if($(node).css(transforms[i]) != undefined) {
+
+                        if($(node).css(transforms[i]).length > 0) {
+
+                            transformArray = $(node).css(transforms[i]).split(',');
+
+                            break;
+
+                        }
+
+                    }
+
+                }
+
+                sliderOffset = (transformArray[xy] == undefined) ? 0 : parseInt(transformArray[xy], 10);
+
+            } else {
+
+                sliderOffset = parseInt($(node).css('left'), 10);
+
+            }
+
+            return sliderOffset;
+
+        },
+
+        setSliderOffset: function(node, sliderOffset) {
+
+            sliderOffset = parseInt(sliderOffset, 10);
+
+            if(has3DTransform && !isIe7 && !isIe8) {
+
+                $(node).css({
+                    'msTransform': 'matrix(1,0,0,1,' + sliderOffset + ',0)',
+                    'webkitTransform': 'matrix(1,0,0,1,' + sliderOffset + ',0)',
+                    'MozTransform': 'matrix(1,0,0,1,' + sliderOffset + ',0)',
+                    'transform': 'matrix(1,0,0,1,' + sliderOffset + ',0)'
+                });
+
+            } else {
+
+                $(node).css({
+                    left: sliderOffset + 'px'
+                });
+
+            }
+
+        },
+
+        setBrowserInfo: function() {
+
+            if(navigator.userAgent.match('WebKit') != null) {
+                isWebkit = true;
+                grabOutCursor = '-webkit-grab';
+                grabInCursor = '-webkit-grabbing';
+            } else if(navigator.userAgent.match('Gecko') != null) {
+                isGecko = true;
+                grabOutCursor = 'move';
+                grabInCursor = '-moz-grabbing';
+            } else if(navigator.userAgent.match('MSIE 7') != null) {
+                isIe7 = true;
+                isIe = true;
+            } else if(navigator.userAgent.match('MSIE 8') != null) {
+                isIe8 = true;
+                isIe = true;
+            } else if(navigator.userAgent.match('MSIE 9') != null) {
+                isIe9 = true;
+                isIe = true;
+            }
+
+        },
+
+        has3DTransform: function() {
+
+            var has3D = false;
+
+            var testElement = $('<div />').css({
+                'msTransform': 'matrix(1,1,1,1,1,1)',
+                'webkitTransform': 'matrix(1,1,1,1,1,1)',
+                'MozTransform': 'matrix(1,1,1,1,1,1)',
+                'transform': 'matrix(1,1,1,1,1,1)'
+            });
+
+            if(testElement.attr('style') == '') {
+                has3D = false;
+            } else if(isGecko && (parseInt(navigator.userAgent.split('/')[3], 10) >= 21)) {
+                //bug in v21+ which does not render slides properly in 3D
+                has3D = false;
+            } else if(testElement.attr('style') != undefined) {
+                has3D = true;
+            }
+
+            return has3D;
+
+        },
+
+        getSlideNumber: function(slide, sliderNumber, numberOfSlides) {
+
+            return (slide - infiniteSliderOffset[sliderNumber] + numberOfSlides) % numberOfSlides;
+
+        },
+
+        calcActiveOffset: function(settings, offset, childrenOffsets, stageWidth, infiniteSliderOffset, numberOfSlides, activeChildOffset, sliderNumber) {
+
+            var isFirst = false;
+            var arrayOfOffsets = new Array();
+            var newChildOffset;
+
+            if(offset > childrenOffsets[0]) newChildOffset = 0;
+            if(offset < (childrenOffsets[childrenOffsets.length-1])) newChildOffset = numberOfSlides - 1;
+
+            for(var i = 0; i < childrenOffsets.length; i++) {
+
+                if((childrenOffsets[i] <= offset) && (childrenOffsets[i] > (offset - stageWidth))) {
+
+                    if(!isFirst && (childrenOffsets[i] != offset)) {
+
+                        arrayOfOffsets[arrayOfOffsets.length] = childrenOffsets[i-1];
+
+                    }
+
+                    arrayOfOffsets[arrayOfOffsets.length] = childrenOffsets[i];
+
+                    isFirst = true;
+
+                }
+
+            }
+
+            if(arrayOfOffsets.length == 0) {
+                arrayOfOffsets[0] = childrenOffsets[childrenOffsets.length - 1];
+            }
+
+            var distance = stageWidth;
+            var closestChildOffset = 0;
+
+            for(var i = 0; i < arrayOfOffsets.length; i++) {
+
+                var newDistance = Math.abs(offset - arrayOfOffsets[i]);
+
+                if(newDistance < distance) {
+                    closestChildOffset = arrayOfOffsets[i];
+                    distance = newDistance;
+                }
+
+            }
+
+            for(var i = 0; i < childrenOffsets.length; i++) {
+
+                if(closestChildOffset == childrenOffsets[i]) {
+                    newChildOffset = i;
+
+                }
+
+            }
+
+            return newChildOffset;
+
+        },
+
+        changeSlide: function(slide, node, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings) {
+
+            helpers.autoSlidePause(sliderNumber);
+
+            for(var j = 0; j < scrollTimeouts.length; j++) {
+                clearTimeout(scrollTimeouts[j]);
+            }
+
+            var steps = Math.ceil(settings.autoSlideTransTimer / 10) + 1;
+            var startOffset = helpers.getSliderOffset(node, 'x');
+            var endOffset = childrenOffsets[slide];
+            var offsetDiff = endOffset - startOffset;
+            var direction = slide - (activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+            if(settings.infiniteSlider) {
+
+                slide = (slide - infiniteSliderOffset[sliderNumber] + numberOfSlides * 2)%numberOfSlides;
+
+                var appendArray = false;
+                if((slide == 0) && (numberOfSlides == 2)) {
+
+                    slide = numberOfSlides;
+                    childrenOffsets[slide] = childrenOffsets[slide-1] - $(slideNodes).eq(0).outerWidth(true);
+                    appendArray = true;
+
+                }
+
+                endOffset = childrenOffsets[slide];
+                offsetDiff = endOffset - startOffset;
+
+                var offsets = new Array(childrenOffsets[slide] - $(node).width(), childrenOffsets[slide] + $(node).width());
+
+                if(appendArray) {
+                    childrenOffsets.splice(childrenOffsets.length-1, 1);
+                }
+
+                for(var i = 0; i < offsets.length; i++) {
+
+                    if(Math.abs(offsets[i] - startOffset) < Math.abs(offsetDiff)) {
+                        offsetDiff = (offsets[i] - startOffset);
+                    }
+
+                }
+
+            }
+
+            if((offsetDiff < 0) && (direction == -1)) {
+                offsetDiff += $(node).width();
+            } else if((offsetDiff > 0) && (direction == 1)) {
+                offsetDiff -= $(node).width();
+            }
+
+            var stepArray = new Array();
+            var t;
+            var nextStep;
+
+            helpers.showScrollbar(settings, scrollbarClass);
+
+            for(var i = 0; i <= steps; i++) {
+
+                t = i;
+                t /= steps;
+                t--;
+                nextStep = startOffset + offsetDiff*(Math.pow(t,5) + 1);
+
+                stepArray[stepArray.length] = nextStep;
+
+            }
+
+            var tempOffset = (slide + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+            var lastCheckOffset = 0;
+            for(var i = 0; i < stepArray.length; i++) {
+
+                if((i == 0) || (Math.abs(stepArray[i] - lastCheckOffset) > 1) || (i >= (stepArray.length - 2))) {
+
+                    lastCheckOffset	= stepArray[i];
+
+                    scrollTimeouts[i] = helpers.slowScrollHorizontalIntervalTimer(scrollIntervalTime * (i + 1), node, slideNodes, stepArray[i], scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, slide, originalOffsets, childrenOffsets, infiniteSliderWidth, numberOfSlides, slideNodeOuterWidths, sliderNumber, centeredSlideOffset, tempOffset, settings);
+
+                }
+
+                if((i == 0) && (settings.onSlideStart != '')) {
+
+                    var tempOffset2 = (activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+                    settings.onSlideStart(new helpers.args('start', settings, node, $(node).children(':eq(' + tempOffset2 + ')'), tempOffset2, slide));
+
+                }
+
+            }
+
+            var slideChanged = false;
+
+            if(settings.infiniteSlider) {
+
+                if(tempOffset != activeChildInfOffsets[sliderNumber]) {
+                    slideChanged = true;
+                }
+
+            } else {
+
+                if(slide != activeChildOffsets[sliderNumber]) {
+                    slideChanged = true;
+                }
+
+            }
+
+            if(slideChanged && (settings.onSlideComplete != '')) {
+
+                scrollTimeouts[scrollTimeouts.length] = helpers.onSlideCompleteTimer(scrollIntervalTime * (i + 1), settings, node, $(node).children(':eq(' + tempOffset + ')'), tempOffset, sliderNumber);
+
+            }
+
+            /*scrollTimeouts[scrollTimeouts.length] = setTimeout(function() {
+             activeChildOffsets[sliderNumber] = activeChildOffsets[sliderNumber];
+             }, scrollIntervalTime * (i + 1));*/
+
+            slideTimeouts[sliderNumber] = scrollTimeouts;
+
+            helpers.hideScrollbar(settings, scrollTimeouts, i, stepArray, scrollbarClass, scrollbarWidth, stageWidth, scrollMargin, scrollBorder, sliderNumber);
+
+            helpers.autoSlide(node, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+
+        },
+
+        changeOffset: function(endOffset, node, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings) {
+
+            helpers.autoSlidePause(sliderNumber);
+
+            for(var j = 0; j < scrollTimeouts.length; j++) {
+                clearTimeout(scrollTimeouts[j]);
+            }
+
+            if(!settings.infiniteSlider) {
+                endOffset = (endOffset > (sliderMin[sliderNumber] * -1 + centeredSlideOffset)) ? sliderMin[sliderNumber] * -1 + centeredSlideOffset : endOffset;
+                endOffset = (endOffset < (sliderMax[sliderNumber] * -1)) ? sliderMax[sliderNumber] * -1 : endOffset;
+            }
+
+            var steps = Math.ceil(settings.autoSlideTransTimer / 10) + 1;
+            var startOffset = helpers.getSliderOffset(node, 'x');
+            var slide = (helpers.calcActiveOffset(settings, endOffset, childrenOffsets, stageWidth, infiniteSliderOffset, numberOfSlides, activeChildOffsets[sliderNumber], sliderNumber) + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+            var testOffsets = childrenOffsets.slice();
+
+            if(settings.snapToChildren && !settings.infiniteSlider) {
+                endOffset = childrenOffsets[slide];
+            } else if(settings.infiniteSlider && settings.snapToChildren) {
+                while(endOffset >= testOffsets[0]) {
+                    testOffsets.splice(0, 0, testOffsets[numberOfSlides-1] + $(node).width());
+                    testOffsets.splice(numberOfSlides, 1);
+                }
+
+                while(endOffset <= testOffsets[numberOfSlides-1]) {
+                    testOffsets.splice(numberOfSlides, 0, testOffsets[0] - $(node).width());
+                    testOffsets.splice(0, 1);
+                }
+
+                slide = helpers.calcActiveOffset(settings, endOffset, testOffsets, stageWidth, infiniteSliderOffset, numberOfSlides, activeChildOffsets[sliderNumber], sliderNumber);
+                endOffset = testOffsets[slide];
+
+            }
+
+            var offsetDiff = endOffset - startOffset;
+
+            var stepArray = new Array();
+            var t;
+            var nextStep;
+
+            helpers.showScrollbar(settings, scrollbarClass);
+
+            for(var i = 0; i <= steps; i++) {
+
+                t = i;
+                t /= steps;
+                t--;
+                nextStep = startOffset + offsetDiff*(Math.pow(t,5) + 1);
+
+                stepArray[stepArray.length] = nextStep;
+
+            }
+
+            var tempOffset = (slide + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+            var lastCheckOffset = 0;
+            for(var i = 0; i < stepArray.length; i++) {
+
+                if((i == 0) || (Math.abs(stepArray[i] - lastCheckOffset) > 1) || (i >= (stepArray.length - 2))) {
+
+                    lastCheckOffset	= stepArray[i];
+
+                    scrollTimeouts[i] = helpers.slowScrollHorizontalIntervalTimer(scrollIntervalTime * (i + 1), node, slideNodes, stepArray[i], scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, slide, originalOffsets, childrenOffsets, infiniteSliderWidth, numberOfSlides, slideNodeOuterWidths, sliderNumber, centeredSlideOffset, tempOffset, settings);
+
+                }
+
+                if((i == 0) && (settings.onSlideStart != '')) {
+                    var tempOffset = (activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+                    settings.onSlideStart(new helpers.args('start', settings, node, $(node).children(':eq(' + tempOffset + ')'), tempOffset, slide));
+                }
+
+            }
+
+            var slideChanged = false;
+
+            if(settings.infiniteSlider) {
+
+                if(tempOffset != activeChildInfOffsets[sliderNumber]) {
+                    slideChanged = true;
+                }
+
+            } else {
+
+                if(slide != activeChildOffsets[sliderNumber]) {
+                    slideChanged = true;
+                }
+
+            }
+
+            if(slideChanged && (settings.onSlideComplete != '')) {
+
+                scrollTimeouts[scrollTimeouts.length] = helpers.onSlideCompleteTimer(scrollIntervalTime * (i + 1), settings, node, $(node).children(':eq(' + tempOffset + ')'), tempOffset, sliderNumber);
+            }
+
+            slideTimeouts[sliderNumber] = scrollTimeouts;
+
+            helpers.hideScrollbar(settings, scrollTimeouts, i, stepArray, scrollbarClass, scrollbarWidth, stageWidth, scrollMargin, scrollBorder, sliderNumber);
+
+            helpers.autoSlide(node, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+
+        },
+
+        autoSlide: function(scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings) {
+
+            if(!iosSliderSettings[sliderNumber].autoSlide) return false;
+
+            helpers.autoSlidePause(sliderNumber);
+
+            autoSlideTimeouts[sliderNumber] = setTimeout(function() {
+
+                if(!settings.infiniteSlider && (activeChildOffsets[sliderNumber] > childrenOffsets.length-1)) {
+                    activeChildOffsets[sliderNumber] = activeChildOffsets[sliderNumber] - numberOfSlides;
+                }
+
+                var nextSlide = activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + 1;
+
+                helpers.changeSlide(nextSlide, scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+
+                helpers.autoSlide(scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+
+            }, settings.autoSlideTimer + settings.autoSlideTransTimer);
+
+        },
+
+        autoSlidePause: function(sliderNumber) {
+
+            clearTimeout(autoSlideTimeouts[sliderNumber]);
+
+        },
+
+        isUnselectable: function(node, settings) {
+
+            if(settings.unselectableSelector != '') {
+                if($(node).closest(settings.unselectableSelector).length == 1) return true;
+            }
+
+            return false;
+
+        },
+
+        /* timers */
+        slowScrollHorizontalIntervalTimer: function(scrollIntervalTime, node, slideNodes, step, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, slide, originalOffsets, childrenOffsets, infiniteSliderWidth, numberOfSlides, slideNodeOuterWidths, sliderNumber, centeredSlideOffset, endOffset, settings) {
+
+            var scrollTimeout = setTimeout(function() {
+                helpers.slowScrollHorizontalInterval(node, slideNodes, step, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, slide, originalOffsets, childrenOffsets, infiniteSliderWidth, numberOfSlides, slideNodeOuterWidths, sliderNumber, centeredSlideOffset, endOffset, settings);
+            }, scrollIntervalTime);
+
+            return scrollTimeout;
+
+        },
+
+        onSlideCompleteTimer: function(scrollIntervalTime, settings, node, slideNode, slide, scrollbarNumber) {
+
+            var scrollTimeout = setTimeout(function() {
+                helpers.onSlideComplete(settings, node, slideNode, slide, scrollbarNumber);
+            }, scrollIntervalTime);
+
+            return scrollTimeout;
+
+        },
+
+        hideScrollbarIntervalTimer: function(scrollIntervalTime, newOffset, opacity, scrollbarClass, scrollbarWidth, stageWidth, scrollMargin, scrollBorder, sliderNumber, settings) {
+
+            var scrollTimeout = setTimeout(function() {
+                helpers.hideScrollbarInterval(newOffset, opacity, scrollbarClass, scrollbarWidth, stageWidth, scrollMargin, scrollBorder, sliderNumber, settings);
+            }, scrollIntervalTime);
+
+            return scrollTimeout;
+
+        },
+
+        updateBackfaceVisibilityTimer: function(scrollIntervalTime, slideNodes, sliderNumber, numberOfSlides, settings) {
+
+            var scrollTimeout = setTimeout(function() {
+                helpers.updateBackfaceVisibility(slideNodes, sliderNumber, numberOfSlides, settings);
+            }, scrollIntervalTime);
+
+            return scrollTimeout;
+
+        },
+
+        updateBackfaceVisibility: function(slideNodes, sliderNumber, numberOfSlides, settings) {
+
+            var slide = (activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+            var usedSlideArray = Array();
+
+            //loop through buffered slides
+            for(var i = 0; i < (settings.hardwareAccelBuffer * 2); i++) {
+
+                var slide_eq = helpers.mod(slide+i-settings.hardwareAccelBuffer, numberOfSlides);
+
+                //check if backface visibility applied
+                if($(slideNodes).eq(slide_eq).css('-webkit-backface-visibility') == 'visible') {
+
+                    usedSlideArray[usedSlideArray.length] = slide_eq;
+
+                    var eq_h = helpers.mod(slide_eq+settings.hardwareAccelBuffer*2, numberOfSlides);
+                    var eq_l = helpers.mod(slide_eq-settings.hardwareAccelBuffer*2, numberOfSlides);
+
+                    //buffer backface visibility
+                    $(slideNodes).eq(slide_eq).css('-webkit-backface-visibility', 'hidden');
+
+                    if(usedSlideArray.indexOf(eq_l) == -1)
+                        $(slideNodes).eq(eq_l).css('-webkit-backface-visibility', '');
+
+                    if(usedSlideArray.indexOf(eq_h) == -1)
+                        $(slideNodes).eq(eq_h).css('-webkit-backface-visibility', '');
+
+                }
+
+            }
+
+        },
+
+        mod: function(x, mod) {
+
+            var rem = x % mod;
+
+            return rem < 0 ? rem + mod : rem;
+
+        },
+
+        args: function(func, settings, node, activeSlideNode, newChildOffset, targetSlideOffset) {
+
+            this.prevSlideNumber = ($(node).parent().data('args') == undefined) ? undefined : $(node).parent().data('args').prevSlideNumber;
+            this.prevSlideObject = ($(node).parent().data('args') == undefined) ? undefined : $(node).parent().data('args').prevSlideObject;
+            this.targetSlideNumber = targetSlideOffset + 1;
+            this.targetSlideObject = $(node).children(':eq(' + targetSlideOffset + ')');
+            this.slideChanged = false;
+
+            if(func == 'load') {
+                this.targetSlideNumber = undefined;
+                this.targetSlideObject = undefined;
+            } else if(func == 'start') {
+                this.targetSlideNumber = undefined;
+                this.targetSlideObject = undefined;
+            } else if(func == 'change') {
+                this.slideChanged = true;
+                this.prevSlideNumber = ($(node).parent().data('args') == undefined) ? settings.startAtSlide : $(node).parent().data('args').currentSlideNumber;
+                this.prevSlideObject = $(node).children(':eq(' + this.prevSlideNumber + ')');
+            } else if(func == 'complete') {
+                this.slideChanged = $(node).parent().data('args').slideChanged;
+            }
+
+            this.settings = settings;
+            this.data = $(node).parent().data('iosslider');
+            this.sliderObject = node;
+            this.sliderContainerObject = $(node).parent();
+
+            this.currentSlideObject = activeSlideNode;
+            this.currentSlideNumber = newChildOffset + 1;
+            this.currentSliderOffset = helpers.getSliderOffset(node, 'x') * -1;
+
+        },
+
+        preventDrag: function(event) {
+            event.preventDefault();
+        },
+
+        preventClick: function(event) {
+            event.stopImmediatePropagation();
+            return false;
+        },
+
+        enableClick: function() {
+            return true;
+        }
+
+    }
+
+    helpers.setBrowserInfo();
+
+    var methods = {
+
+        init: function(options, node) {
+
+            has3DTransform = helpers.has3DTransform();
+
+            var settings = $.extend(true, {
+                'elasticPullResistance': 0.6,
+                'frictionCoefficient': 0.92,
+                'elasticFrictionCoefficient': 0.6,
+                'snapFrictionCoefficient': 0.92,
+                'snapToChildren': false,
+                'snapSlideCenter': false,
+                'startAtSlide': 1,
+                'scrollbar': false,
+                'scrollbarDrag': false,
+                'scrollbarHide': true,
+                'scrollbarPaging': false,
+                'scrollbarLocation': 'top',
+                'scrollbarContainer': '',
+                'scrollbarOpacity': 0.4,
+                'scrollbarHeight': '4px',
+                'scrollbarBorder': '0',
+                'scrollbarMargin': '5px',
+                'scrollbarBackground': '#000',
+                'scrollbarBorderRadius': '100px',
+                'scrollbarShadow': '0 0 0 #000',
+                'scrollbarElasticPullResistance': 0.9,
+                'desktopClickDrag': false,
+                'keyboardControls': false,
+                'tabToAdvance': false,
+                'responsiveSlideContainer': true,
+                'responsiveSlides': true,
+                'navSlideSelector': '',
+                'navPrevSelector': '',
+                'navNextSelector': '',
+                'autoSlideToggleSelector': '',
+                'autoSlide': false,
+                'autoSlideTimer': 5000,
+                'autoSlideTransTimer': 750,
+                'autoSlideHoverPause': true,
+                'infiniteSlider': false,
+                'snapVelocityThreshold': 5,
+                'slideStartVelocityThreshold': 0,
+                'horizontalSlideLockThreshold': 5,
+                'verticalSlideLockThreshold': 3,
+                'hardwareAccelBuffer': 5,
+                'stageCSS': {
+                    position: 'relative',
+                    top: '0',
+                    left: '0',
+                    overflow: 'hidden',
+                    zIndex: 1
+                },
+                'unselectableSelector': '',
+                'onSliderLoaded': '',
+                'onSliderUpdate': '',
+                'onSliderResize': '',
+                'onSlideStart': '',
+                'onSlideChange': '',
+                'onSlideComplete': ''
+            }, options);
+
+            if(node == undefined) {
+                node = this;
+            }
+
+            return $(node).each(function(i) {
+
+                scrollbarNumber++;
+                var sliderNumber = scrollbarNumber;
+                var scrollTimeouts = new Array();
+                iosSliderSettings[sliderNumber] = $.extend({}, settings);
+                sliderMin[sliderNumber] = 0;
+                sliderMax[sliderNumber] = 0;
+                var minTouchpoints = 0;
+                var xCurrentScrollRate = new Array(0, 0);
+                var yCurrentScrollRate = new Array(0, 0);
+                var scrollbarBlockClass = 'scrollbarBlock' + scrollbarNumber;
+                var scrollbarClass = 'scrollbar' + scrollbarNumber;
+                var scrollbarNode;
+                var scrollbarBlockNode;
+                var scrollbarStageWidth;
+                var scrollbarWidth;
+                var containerWidth;
+                var containerHeight;
+                var centeredSlideOffset = 0;
+                var stageNode = $(this);
+                var stageWidth;
+                var stageHeight;
+                var slideWidth;
+                var scrollMargin;
+                var scrollBorder;
+                var lastTouch;
+                var isFirstInit = true;
+                var newChildOffset = -1;
+                var webkitTransformArray = new Array();
+                var childrenOffsets;
+                var originalOffsets = new Array();
+                var scrollbarStartOpacity = 0;
+                var xScrollStartPosition = 0;
+                var yScrollStartPosition = 0;
+                var currentTouches = 0;
+                var scrollerNode = $(this).children(':first-child');
+                var slideNodes;
+                var slideNodeWidths;
+                var slideNodeOuterWidths;
+                var numberOfSlides = $(scrollerNode).children().not('script').length;
+                var xScrollStarted = false;
+                var lastChildOffset = 0;
+                var isMouseDown = false;
+                var currentSlider = undefined;
+                var sliderStopLocation = 0;
+                var infiniteSliderWidth;
+                infiniteSliderOffset[sliderNumber] = 0;
+                var shortContent = false;
+                onChangeEventLastFired[sliderNumber] = -1;
+                var isAutoSlideToggleOn = false;
+                iosSliders[sliderNumber] = stageNode;
+                isEventCleared[sliderNumber] = false;
+                var currentEventNode;
+                var intermediateChildOffset = 0;
+                var tempInfiniteSliderOffset = 0;
+                var preventXScroll = false;
+                var snapOverride = false;
+                var clickEvent = 'touchstart.iosSliderEvent click.iosSliderEvent';
+                var scrollerWidth;
+                var anchorEvents;
+                var onclickEvents;
+                var allScrollerNodeChildren;
+                touchLocks[sliderNumber] = false;
+                slideTimeouts[sliderNumber] = new Array();
+                if(settings.scrollbarDrag) {
+                    settings.scrollbar = true;
+                    settings.scrollbarHide = false;
+                }
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if(data != undefined) return true;
+
+                if(parseInt($().jquery.split('.').join(''), 10) >= 14.2) {
+                    $(this).delegate('img', 'dragstart.iosSliderEvent', function(event) { event.preventDefault(); });
+                } else {
+                    $(this).find('img').bind('dragstart.iosSliderEvent', function(event) { event.preventDefault(); });
+                }
+
+                if(settings.infiniteSlider) {
+                    settings.scrollbar = false;
+                }
+
+                if(settings.infiniteSlider && (numberOfSlides == 1)) {
+                    settings.infiniteSlider = false;
+                }
+
+                if(settings.scrollbar) {
+
+                    if(settings.scrollbarContainer != '') {
+                        $(settings.scrollbarContainer).append("<div class = '" + scrollbarBlockClass + "'><div class = '" + scrollbarClass + "'></div></div>");
+                    } else {
+                        $(scrollerNode).parent().append("<div class = '" + scrollbarBlockClass + "'><div class = '" + scrollbarClass + "'></div></div>");
+                    }
+
+                }
+
+                if(!init()) return true;
+
+                $(this).find('a').bind('mousedown', helpers.preventDrag);
+                $(this).find("[onclick]").bind('click', helpers.preventDrag).each(function() {
+
+                    $(this).data('onclick', this.onclick);
+
+                });
+
+                var newChildOffset = helpers.calcActiveOffset(settings, helpers.getSliderOffset($(scrollerNode), 'x'), childrenOffsets, stageWidth, infiniteSliderOffset[sliderNumber], numberOfSlides, undefined, sliderNumber);
+                var tempOffset = (newChildOffset + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+                var args = new helpers.args('load', settings, scrollerNode, $(scrollerNode).children(':eq(' + tempOffset + ')'), tempOffset, tempOffset);
+                $(stageNode).data('args', args);
+
+                if(settings.onSliderLoaded != '') {
+
+                    settings.onSliderLoaded(args);
+
+                }
+
+                onChangeEventLastFired[sliderNumber] = tempOffset;
+
+                function init() {
+
+                    helpers.autoSlidePause(sliderNumber);
+
+                    anchorEvents = $(scrollerNode).find('a');
+                    onclickEvents = $(scrollerNode).find('[onclick]');
+                    allScrollerNodeChildren = $(scrollerNode).find('*');
+
+                    $(stageNode).css('width', '');
+                    $(stageNode).css('height', '');
+                    $(scrollerNode).css('width', '');
+                    slideNodes = $(scrollerNode).children().not('script').get();
+                    slideNodeWidths = new Array();
+                    slideNodeOuterWidths = new Array();
+
+                    if(settings.responsiveSlides) {
+                        $(slideNodes).css('width', '100%');
+                    }
+
+                    sliderMax[sliderNumber] = 0;
+                    childrenOffsets = new Array();
+                    containerWidth = $(stageNode).parent().width();
+                    stageWidth = $(stageNode).outerWidth(true);
+
+                    if(settings.responsiveSlideContainer) {
+                        stageWidth = ($(stageNode).outerWidth(true) > containerWidth) ? containerWidth : $(stageNode).width();
+                    }
+
+                    $(stageNode).css({
+                        position: settings.stageCSS.position,
+                        top: settings.stageCSS.top,
+                        left: settings.stageCSS.left,
+                        overflow: settings.stageCSS.overflow,
+                        zIndex: settings.stageCSS.zIndex,
+                        'webkitPerspective': 1000,
+                        'webkitBackfaceVisibility': 'hidden',
+                        'msTouchAction': 'pan-y',
+                        width: stageWidth
+                    });
+
+                    $(settings.unselectableSelector).css({
+                        cursor: 'default'
+                    });
+
+                    for(var j = 0; j < slideNodes.length; j++) {
+
+                        slideNodeWidths[j] = $(slideNodes[j]).width();
+                        slideNodeOuterWidths[j] = $(slideNodes[j]).outerWidth(true);
+                        var newWidth = slideNodeOuterWidths[j];
+
+                        if(settings.responsiveSlides) {
+
+                            if(slideNodeOuterWidths[j] > stageWidth) {
+
+                                newWidth = stageWidth + (slideNodeOuterWidths[j] - slideNodeWidths[j]) * -1;
+                                slideNodeWidths[j] = newWidth;
+                                slideNodeOuterWidths[j] = stageWidth;
+
+                            } else {
+
+                                newWidth = slideNodeWidths[j];
+
+                            }
+
+                            $(slideNodes[j]).css({
+                                width: newWidth
+                            });
+
+                        }
+
+                        $(slideNodes[j]).css({
+                            overflow: 'hidden',
+                            position: 'absolute'
+                        });
+
+                        childrenOffsets[j] = sliderMax[sliderNumber] * -1;
+
+                        sliderMax[sliderNumber] = sliderMax[sliderNumber] + newWidth + (slideNodeOuterWidths[j] - slideNodeWidths[j]);
+
+                    }
+
+                    if(settings.snapSlideCenter) {
+                        centeredSlideOffset = (stageWidth - slideNodeOuterWidths[0]) * 0.5;
+
+                        if(settings.responsiveSlides && (slideNodeOuterWidths[0] > stageWidth)) {
+                            centeredSlideOffset = 0;
+                        }
+                    }
+
+                    sliderAbsMax[sliderNumber] = sliderMax[sliderNumber] * 2;
+
+                    for(var j = 0; j < slideNodes.length; j++) {
+
+                        helpers.setSliderOffset($(slideNodes[j]), childrenOffsets[j] * -1 + sliderMax[sliderNumber] + centeredSlideOffset);
+
+                        childrenOffsets[j] = childrenOffsets[j] - sliderMax[sliderNumber];
+
+                    }
+
+                    if(!settings.infiniteSlider && !settings.snapSlideCenter) {
+
+                        for(var i = 0; i < childrenOffsets.length; i++) {
+
+                            if(childrenOffsets[i] <= ((sliderMax[sliderNumber] * 2 - stageWidth) * -1)) {
+                                break;
+                            }
+
+                            lastChildOffset = i;
+
+                        }
+
+                        childrenOffsets.splice(lastChildOffset + 1, childrenOffsets.length);
+                        childrenOffsets[childrenOffsets.length] = (sliderMax[sliderNumber] * 2 - stageWidth) * -1;
+
+                    }
+
+                    for(var i = 0; i < childrenOffsets.length; i++) {
+                        originalOffsets[i] = childrenOffsets[i];
+                    }
+
+                    if(isFirstInit) {
+
+                        iosSliderSettings[sliderNumber].startAtSlide = (iosSliderSettings[sliderNumber].startAtSlide > childrenOffsets.length) ? childrenOffsets.length : iosSliderSettings[sliderNumber].startAtSlide;
+                        if(settings.infiniteSlider) {
+                            iosSliderSettings[sliderNumber].startAtSlide = (iosSliderSettings[sliderNumber].startAtSlide - 1 + numberOfSlides)%numberOfSlides;
+                            activeChildOffsets[sliderNumber] = (iosSliderSettings[sliderNumber].startAtSlide);
+                        } else {
+                            iosSliderSettings[sliderNumber].startAtSlide = ((iosSliderSettings[sliderNumber].startAtSlide - 1) < 0) ? childrenOffsets.length-1 : iosSliderSettings[sliderNumber].startAtSlide;
+                            activeChildOffsets[sliderNumber] = (iosSliderSettings[sliderNumber].startAtSlide-1);
+                        }
+                        activeChildInfOffsets[sliderNumber] = activeChildOffsets[sliderNumber];
+                    }
+
+                    sliderMin[sliderNumber] = sliderMax[sliderNumber] + centeredSlideOffset;
+
+                    $(scrollerNode).css({
+                        position: 'relative',
+                        cursor: grabOutCursor,
+                        'webkitPerspective': '0',
+                        'webkitBackfaceVisibility': 'hidden',
+                        width: sliderMax[sliderNumber] + 'px'
+                    });
+
+                    scrollerWidth = sliderMax[sliderNumber];
+                    sliderMax[sliderNumber] = sliderMax[sliderNumber] * 2 - stageWidth + centeredSlideOffset * 2;
+
+                    shortContent = (((scrollerWidth + centeredSlideOffset) < stageWidth) || (stageWidth == 0)) ? true : false;
+
+                    if(shortContent) {
+
+                        $(scrollerNode).css({
+                            cursor: 'default'
+                        });
+
+                    }
+
+                    containerHeight = $(stageNode).parent().outerHeight(true);
+                    stageHeight = $(stageNode).height();
+
+                    if(settings.responsiveSlideContainer) {
+                        stageHeight = (stageHeight > containerHeight) ? containerHeight : stageHeight;
+                    }
+
+                    $(stageNode).css({
+                        height: stageHeight
+                    });
+
+                    helpers.setSliderOffset(scrollerNode, childrenOffsets[activeChildOffsets[sliderNumber]]);
+
+                    if(settings.infiniteSlider && !shortContent) {
+
+                        var currentScrollOffset = helpers.getSliderOffset($(scrollerNode), 'x');
+                        var count = (infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides * -1;
+
+                        while(count < 0) {
+
+                            var lowSlideNumber = 0;
+                            var lowSlideOffset = helpers.getSliderOffset($(slideNodes[0]), 'x');
+                            $(slideNodes).each(function(i) {
+
+                                if(helpers.getSliderOffset(this, 'x') < lowSlideOffset) {
+                                    lowSlideOffset = helpers.getSliderOffset(this, 'x');
+                                    lowSlideNumber = i;
+                                }
+
+                            });
+
+                            var newOffset = sliderMin[sliderNumber] + scrollerWidth;
+                            helpers.setSliderOffset($(slideNodes)[lowSlideNumber], newOffset);
+
+                            sliderMin[sliderNumber] = childrenOffsets[1] * -1 + centeredSlideOffset;
+                            sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+
+                            childrenOffsets.splice(0, 1);
+                            childrenOffsets.splice(childrenOffsets.length, 0, newOffset * -1 + centeredSlideOffset);
+
+                            count++;
+
+                        }
+
+                        while(((childrenOffsets[0] * -1 - scrollerWidth + centeredSlideOffset) > 0) && settings.snapSlideCenter && isFirstInit) {
+
+                            var highSlideNumber = 0;
+                            var highSlideOffset = helpers.getSliderOffset($(slideNodes[0]), 'x');
+                            $(slideNodes).each(function(i) {
+
+                                if(helpers.getSliderOffset(this, 'x') > highSlideOffset) {
+                                    highSlideOffset = helpers.getSliderOffset(this, 'x');
+                                    highSlideNumber = i;
+                                }
+
+                            });
+
+                            var newOffset = sliderMin[sliderNumber] - slideNodeOuterWidths[highSlideNumber];
+                            helpers.setSliderOffset($(slideNodes)[highSlideNumber], newOffset);
+
+                            childrenOffsets.splice(0, 0, newOffset * -1 + centeredSlideOffset);
+                            childrenOffsets.splice(childrenOffsets.length-1, 1);
+
+                            sliderMin[sliderNumber] = childrenOffsets[0] * -1 + centeredSlideOffset;
+                            sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+
+                            infiniteSliderOffset[sliderNumber]--;
+                            activeChildOffsets[sliderNumber]++;
+
+                        }
+
+                        while(currentScrollOffset <= (sliderMax[sliderNumber] * -1)) {
+
+                            var lowSlideNumber = 0;
+                            var lowSlideOffset = helpers.getSliderOffset($(slideNodes[0]), 'x');
+                            $(slideNodes).each(function(i) {
+
+                                if(helpers.getSliderOffset(this, 'x') < lowSlideOffset) {
+                                    lowSlideOffset = helpers.getSliderOffset(this, 'x');
+                                    lowSlideNumber = i;
+                                }
+
+                            });
+
+                            var newOffset = sliderMin[sliderNumber] + scrollerWidth;
+                            helpers.setSliderOffset($(slideNodes)[lowSlideNumber], newOffset);
+
+                            sliderMin[sliderNumber] = childrenOffsets[1] * -1 + centeredSlideOffset;
+                            sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+
+                            childrenOffsets.splice(0, 1);
+                            childrenOffsets.splice(childrenOffsets.length, 0, newOffset * -1 + centeredSlideOffset);
+
+                            infiniteSliderOffset[sliderNumber]++;
+                            activeChildOffsets[sliderNumber]--;
+
+                        }
+
+                    }
+
+                    helpers.setSliderOffset(scrollerNode, childrenOffsets[activeChildOffsets[sliderNumber]]);
+
+                    helpers.updateBackfaceVisibility(slideNodes, sliderNumber, numberOfSlides, settings);
+
+                    if(!settings.desktopClickDrag) {
+
+                        $(scrollerNode).css({
+                            cursor: 'default'
+                        });
+
+                    }
+
+                    if(settings.scrollbar) {
+
+                        $('.' + scrollbarBlockClass).css({
+                            margin: settings.scrollbarMargin,
+                            overflow: 'hidden',
+                            display: 'none'
+                        });
+
+                        $('.' + scrollbarBlockClass + ' .' + scrollbarClass).css({
+                            border: settings.scrollbarBorder
+                        });
+
+                        scrollMargin = parseInt($('.' + scrollbarBlockClass).css('marginLeft')) + parseInt($('.' + scrollbarBlockClass).css('marginRight'));
+                        scrollBorder = parseInt($('.' + scrollbarBlockClass + ' .' + scrollbarClass).css('borderLeftWidth'), 10) + parseInt($('.' + scrollbarBlockClass + ' .' + scrollbarClass).css('borderRightWidth'), 10);
+                        scrollbarStageWidth = (settings.scrollbarContainer != '') ? $(settings.scrollbarContainer).width() : stageWidth;
+                        scrollbarWidth = (stageWidth / scrollerWidth) * (scrollbarStageWidth - scrollMargin);
+
+                        if(!settings.scrollbarHide) {
+                            scrollbarStartOpacity = settings.scrollbarOpacity;
+                        }
+
+                        $('.' + scrollbarBlockClass).css({
+                            position: 'absolute',
+                            left: 0,
+                            width: scrollbarStageWidth - scrollMargin + 'px',
+                            margin: settings.scrollbarMargin
+                        });
+
+                        if(settings.scrollbarLocation == 'top') {
+                            $('.' + scrollbarBlockClass).css('top', '0');
+                        } else {
+                            $('.' + scrollbarBlockClass).css('bottom', '0');
+                        }
+
+                        $('.' + scrollbarBlockClass + ' .' + scrollbarClass).css({
+                            borderRadius: settings.scrollbarBorderRadius,
+                            background: settings.scrollbarBackground,
+                            height: settings.scrollbarHeight,
+                            width: scrollbarWidth - scrollBorder + 'px',
+                            minWidth: settings.scrollbarHeight,
+                            border: settings.scrollbarBorder,
+                            'webkitPerspective': 1000,
+                            'webkitBackfaceVisibility': 'hidden',
+                            'position': 'relative',
+                            opacity: scrollbarStartOpacity,
+                            filter: 'alpha(opacity:' + (scrollbarStartOpacity * 100) + ')',
+                            boxShadow: settings.scrollbarShadow
+                        });
+
+                        helpers.setSliderOffset($('.' + scrollbarBlockClass + ' .' + scrollbarClass), Math.floor((childrenOffsets[activeChildOffsets[sliderNumber]] * -1 - sliderMin[sliderNumber] + centeredSlideOffset) / (sliderMax[sliderNumber] - sliderMin[sliderNumber] + centeredSlideOffset) * (scrollbarStageWidth - scrollMargin - scrollbarWidth)));
+
+                        $('.' + scrollbarBlockClass).css({
+                            display: 'block'
+                        });
+
+                        scrollbarNode = $('.' + scrollbarBlockClass + ' .' + scrollbarClass);
+                        scrollbarBlockNode = $('.' + scrollbarBlockClass);
+
+                    }
+
+                    if(settings.scrollbarDrag && !shortContent) {
+                        $('.' + scrollbarBlockClass + ' .' + scrollbarClass).css({
+                            cursor: grabOutCursor
+                        });
+                    }
+
+                    if(settings.infiniteSlider) {
+
+                        infiniteSliderWidth = (sliderMax[sliderNumber] + stageWidth) / 3;
+
+                    }
+
+                    if(settings.navSlideSelector != '') {
+
+                        $(settings.navSlideSelector).each(function(j) {
+
+                            $(this).css({
+                                cursor: 'pointer'
+                            });
+
+                            $(this).unbind(clickEvent).bind(clickEvent, function(e) {
+
+                                if(e.type == 'touchstart') {
+                                    $(this).unbind('click.iosSliderEvent');
+                                } else {
+                                    $(this).unbind('touchstart.iosSliderEvent');
+                                }
+                                clickEvent = e.type + '.iosSliderEvent';
+
+                                helpers.changeSlide(j, scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+
+                            });
+
+                        });
+
+                    }
+
+                    if(settings.navPrevSelector != '') {
+
+                        $(settings.navPrevSelector).css({
+                            cursor: 'pointer'
+                        });
+
+                        $(settings.navPrevSelector).unbind(clickEvent).bind(clickEvent, function(e) {
+
+                            if(e.type == 'touchstart') {
+                                $(this).unbind('click.iosSliderEvent');
+                            } else {
+                                $(this).unbind('touchstart.iosSliderEvent');
+                            }
+                            clickEvent = e.type + '.iosSliderEvent';
+
+                            var slide = (activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+                            if((slide > 0) || settings.infiniteSlider) {
+                                helpers.changeSlide(slide - 1, scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+                            }
+                        });
+
+                    }
+
+                    if(settings.navNextSelector != '') {
+
+                        $(settings.navNextSelector).css({
+                            cursor: 'pointer'
+                        });
+
+                        $(settings.navNextSelector).unbind(clickEvent).bind(clickEvent, function(e) {
+
+                            if(e.type == 'touchstart') {
+                                $(this).unbind('click.iosSliderEvent');
+                            } else {
+                                $(this).unbind('touchstart.iosSliderEvent');
+                            }
+                            clickEvent = e.type + '.iosSliderEvent';
+
+                            var slide = (activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+                            if((slide < childrenOffsets.length-1) || settings.infiniteSlider) {
+                                helpers.changeSlide(slide + 1, scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+                            }
+                        });
+
+                    }
+
+                    if(settings.autoSlide && !shortContent) {
+
+                        if(settings.autoSlideToggleSelector != '') {
+
+                            $(settings.autoSlideToggleSelector).css({
+                                cursor: 'pointer'
+                            });
+
+                            $(settings.autoSlideToggleSelector).unbind(clickEvent).bind(clickEvent, function(e) {
+
+                                if(e.type == 'touchstart') {
+                                    $(this).unbind('click.iosSliderEvent');
+                                } else {
+                                    $(this).unbind('touchstart.iosSliderEvent');
+                                }
+                                clickEvent = e.type + '.iosSliderEvent';
+
+                                if(!isAutoSlideToggleOn) {
+
+                                    helpers.autoSlidePause(sliderNumber);
+                                    isAutoSlideToggleOn = true;
+
+                                    $(settings.autoSlideToggleSelector).addClass('on');
+
+                                } else {
+
+                                    helpers.autoSlide(scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+
+                                    isAutoSlideToggleOn = false;
+
+                                    $(settings.autoSlideToggleSelector).removeClass('on');
+
+                                }
+
+                            });
+
+                        }
+
+                    }
+
+                    helpers.autoSlide(scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+
+                    $(stageNode).bind('mouseleave.iosSliderEvent', function() {
+
+                        if(isAutoSlideToggleOn) return true;
+
+                        helpers.autoSlide(scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+
+                    });
+
+                    $(stageNode).bind('touchend.iosSliderEvent', function() {
+
+                        if(isAutoSlideToggleOn) return true;
+
+                        helpers.autoSlide(scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+
+                    });
+
+                    if(settings.autoSlideHoverPause) {
+                        $(stageNode).bind('mouseenter.iosSliderEvent', function() {
+                            helpers.autoSlidePause(sliderNumber);
+                        });
+                    }
+
+                    $(stageNode).data('iosslider', {
+                        obj: $this,
+                        settings: settings,
+                        scrollerNode: scrollerNode,
+                        slideNodes: slideNodes,
+                        numberOfSlides: numberOfSlides,
+                        centeredSlideOffset: centeredSlideOffset,
+                        sliderNumber: sliderNumber,
+                        originalOffsets: originalOffsets,
+                        childrenOffsets: childrenOffsets,
+                        sliderMax: sliderMax[sliderNumber],
+                        scrollbarClass: scrollbarClass,
+                        scrollbarWidth: scrollbarWidth,
+                        scrollbarStageWidth: scrollbarStageWidth,
+                        stageWidth: stageWidth,
+                        scrollMargin: scrollMargin,
+                        scrollBorder: scrollBorder,
+                        infiniteSliderOffset: infiniteSliderOffset[sliderNumber],
+                        infiniteSliderWidth: infiniteSliderWidth,
+                        slideNodeOuterWidths: slideNodeOuterWidths,
+                        shortContent: shortContent
+                    });
+
+                    isFirstInit = false;
+
+                    return true;
+
+                }
+
+                if(settings.scrollbarPaging && settings.scrollbar && !shortContent) {
+
+                    $(scrollbarBlockNode).css('cursor', 'pointer');
+
+                    $(scrollbarBlockNode).bind('click.iosSliderEvent', function(e) {
+
+                        if(this == e.target) {
+
+                            if(e.pageX > $(scrollbarNode).offset().left) {
+                                methods.nextPage(stageNode);
+                            } else {
+                                methods.prevPage(stageNode);
+                            }
+
+                        }
+
+                    });
+
+                }
+
+                if(iosSliderSettings[sliderNumber].responsiveSlides || iosSliderSettings[sliderNumber].responsiveSlideContainer) {
+
+                    var orientationEvent = supportsOrientationChange ? 'orientationchange' : 'resize';
+
+                    $(window).bind(orientationEvent + '.iosSliderEvent-' + sliderNumber, function() {
+
+                        if(!init()) return true;
+
+                        var args = $(stageNode).data('args');
+
+                        if(settings.onSliderResize != '') {
+                            settings.onSliderResize(args);
+                        }
+
+                    });
+
+                }
+
+                if((settings.keyboardControls || settings.tabToAdvance) && !shortContent) {
+
+                    $(document).bind('keydown.iosSliderEvent', function(e) {
+
+                        if((!isIe7) && (!isIe8)) {
+                            var e = e.originalEvent;
+                        }
+
+                        if(e.target.nodeName == 'INPUT') return true;
+
+                        if(touchLocks[sliderNumber]) return true;
+
+                        if((e.keyCode == 37) && settings.keyboardControls) {
+
+                            e.preventDefault();
+
+                            var slide = (activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+                            if((slide > 0) || settings.infiniteSlider) {
+                                helpers.changeSlide(slide - 1, scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+                            }
+
+                        } else if(((e.keyCode == 39) && settings.keyboardControls) || ((e.keyCode == 9) && settings.tabToAdvance)) {
+
+                            e.preventDefault();
+
+                            var slide = (activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+                            if((slide < childrenOffsets.length-1) || settings.infiniteSlider) {
+                                helpers.changeSlide(slide + 1, scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, centeredSlideOffset, settings);
+                            }
+
+                        }
+
+                    });
+
+                }
+
+                if(isTouch || settings.desktopClickDrag) {
+
+                    var touchStartFlag = false;
+                    var touchEndFlag = false;
+                    var touchSelection = $(scrollerNode);
+                    var touchSelectionMove = $(scrollerNode);
+                    var preventDefault = null;
+                    var isUnselectable = false;
+
+                    if(settings.scrollbarDrag) {
+
+                        touchSelection = touchSelection.add(scrollbarNode);
+                        touchSelectionMove = touchSelectionMove.add(scrollbarBlockNode);
+
+                    }
+
+                    $(touchSelection).bind('mousedown.iosSliderEvent touchstart.iosSliderEvent', function(e) {
+
+                        //if scroll starts, unbind dom from slider touch override
+                        $(window).one('scroll.iosSliderEvent', function(e) { touchStartFlag = false; });
+
+                        if(touchStartFlag) return true;
+                        touchStartFlag = true;
+                        touchEndFlag = false;
+
+                        if(e.type == 'touchstart') {
+                            $(touchSelectionMove).unbind('mousedown.iosSliderEvent');
+                        } else {
+                            $(touchSelectionMove).unbind('touchstart.iosSliderEvent');
+                        }
+
+                        if(touchLocks[sliderNumber] || shortContent) {
+                            touchStartFlag = false;
+                            xScrollStarted = false;
+                            return true;
+                        }
+
+                        isUnselectable = helpers.isUnselectable(e.target, settings);
+
+                        if(isUnselectable) {
+                            touchStartFlag = false;
+                            xScrollStarted = false;
+                            return true;
+                        }
+
+                        currentEventNode = ($(this)[0] === $(scrollbarNode)[0]) ? scrollbarNode : scrollerNode;
+
+                        if((!isIe7) && (!isIe8)) {
+                            var e = e.originalEvent;
+                        }
+
+                        helpers.autoSlidePause(sliderNumber);
+
+                        allScrollerNodeChildren.unbind('.disableClick');
+
+                        if(e.type == 'touchstart') {
+
+                            eventX = e.touches[0].pageX;
+                            eventY = e.touches[0].pageY;
+
+                        } else {
+
+                            if (window.getSelection) {
+                                if (window.getSelection().empty) {
+                                    window.getSelection().empty();
+                                } else if (window.getSelection().removeAllRanges) {
+                                    window.getSelection().removeAllRanges();
+                                }
+                            } else if (document.selection) {
+                                if(isIe8) {
+                                    try { document.selection.empty(); } catch(e) { /* absorb ie8 bug */ }
+                                } else {
+                                    document.selection.empty();
+                                }
+                            }
+
+                            eventX = e.pageX;
+                            eventY = e.pageY;
+
+                            isMouseDown = true;
+                            currentSlider = scrollerNode;
+
+                            $(this).css({
+                                cursor: grabInCursor
+                            });
+
+                        }
+
+                        xCurrentScrollRate = new Array(0, 0);
+                        yCurrentScrollRate = new Array(0, 0);
+                        xScrollDistance = 0;
+                        xScrollStarted = false;
+
+                        for(var j = 0; j < scrollTimeouts.length; j++) {
+                            clearTimeout(scrollTimeouts[j]);
+                        }
+
+                        var scrollPosition = helpers.getSliderOffset(scrollerNode, 'x');
+
+                        if(scrollPosition > (sliderMin[sliderNumber] * -1 + centeredSlideOffset + scrollerWidth)) {
+
+                            scrollPosition = sliderMin[sliderNumber] * -1 + centeredSlideOffset + scrollerWidth;
+
+                            helpers.setSliderOffset($('.' + scrollbarClass), scrollPosition);
+
+                            $('.' + scrollbarClass).css({
+                                width: (scrollbarWidth - scrollBorder) + 'px'
+                            });
+
+                        } else if(scrollPosition < (sliderMax[sliderNumber] * -1)) {
+
+                            scrollPosition = sliderMax[sliderNumber] * -1;
+
+                            helpers.setSliderOffset($('.' + scrollbarClass), (scrollbarStageWidth - scrollMargin - scrollbarWidth));
+
+                            $('.' + scrollbarClass).css({
+                                width: (scrollbarWidth - scrollBorder) + 'px'
+                            });
+
+                        }
+
+                        var scrollbarSubtractor = ($(this)[0] === $(scrollbarNode)[0]) ? (sliderMin[sliderNumber]) : 0;
+
+                        xScrollStartPosition = (helpers.getSliderOffset(this, 'x') - eventX - scrollbarSubtractor) * -1;
+                        yScrollStartPosition = (helpers.getSliderOffset(this, 'y') - eventY) * -1;
+
+                        xCurrentScrollRate[1] = eventX;
+                        yCurrentScrollRate[1] = eventY;
+
+                        snapOverride = false;
+
+                    });
+
+                    $(document).bind('touchmove.iosSliderEvent mousemove.iosSliderEvent', function(e) {
+
+                        if((!isIe7) && (!isIe8)) {
+                            var e = e.originalEvent;
+                        }
+
+                        if(touchLocks[sliderNumber] || shortContent || isUnselectable || !touchStartFlag) return true;
+
+                        var edgeDegradation = 0;
+
+                        if(e.type == 'touchmove') {
+
+                            eventX = e.touches[0].pageX;
+                            eventY = e.touches[0].pageY;
+
+                        } else {
+
+                            if(window.getSelection) {
+                                if(window.getSelection().empty) {
+                                    //window.getSelection().empty(); /* removed to enable input fields within the slider */
+                                } else if(window.getSelection().removeAllRanges) {
+                                    window.getSelection().removeAllRanges();
+                                }
+                            } else if(document.selection) {
+                                if(isIe8) {
+                                    try { document.selection.empty(); } catch(e) { /* absorb ie8 bug */ }
+                                } else {
+                                    document.selection.empty();
+                                }
+                            }
+
+                            eventX = e.pageX;
+                            eventY = e.pageY;
+
+                            if(!isMouseDown) {
+                                return true;
+                            }
+
+                            if(!isIe) {
+                                if((typeof e.webkitMovementX != 'undefined' || typeof e.webkitMovementY != 'undefined') && e.webkitMovementY === 0 && e.webkitMovementX === 0) {
+                                    return true;
+                                }
+                            }
+
+                        }
+
+                        xCurrentScrollRate[0] = xCurrentScrollRate[1];
+                        xCurrentScrollRate[1] = eventX;
+                        xScrollDistance = (xCurrentScrollRate[1] - xCurrentScrollRate[0]) / 2;
+
+                        yCurrentScrollRate[0] = yCurrentScrollRate[1];
+                        yCurrentScrollRate[1] = eventY;
+                        yScrollDistance = (yCurrentScrollRate[1] - yCurrentScrollRate[0]) / 2;
+
+                        if(!xScrollStarted) {
+
+                            var slide = (activeChildOffsets[sliderNumber] + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+                            var args = new helpers.args('start', settings, scrollerNode, $(scrollerNode).children(':eq(' + slide + ')'), slide, undefined);
+                            $(stageNode).data('args', args);
+
+                            if(settings.onSlideStart != '') {
+                                settings.onSlideStart(args);
+                            }
+
+                        }
+
+                        if(((yScrollDistance > settings.verticalSlideLockThreshold) || (yScrollDistance < (settings.verticalSlideLockThreshold * -1))) && (e.type == 'touchmove') && (!xScrollStarted)) {
+
+                            preventXScroll = true;
+
+                        }
+
+                        if(((xScrollDistance > settings.horizontalSlideLockThreshold) || (xScrollDistance < (settings.horizontalSlideLockThreshold * -1))) && (e.type == 'touchmove')) {
+
+                            e.preventDefault();
+
+                        }
+
+                        if(((xScrollDistance > settings.slideStartVelocityThreshold) || (xScrollDistance < (settings.slideStartVelocityThreshold * -1)))) {
+
+                            xScrollStarted = true;
+
+                        }
+
+                        if(xScrollStarted && !preventXScroll) {
+
+                            var scrollPosition = helpers.getSliderOffset(scrollerNode, 'x');
+                            var scrollbarSubtractor = ($(currentEventNode)[0] === $(scrollbarNode)[0]) ? (sliderMin[sliderNumber]) : centeredSlideOffset;
+                            var scrollbarMultiplier = ($(currentEventNode)[0] === $(scrollbarNode)[0]) ? ((sliderMin[sliderNumber] - sliderMax[sliderNumber] - centeredSlideOffset) / (scrollbarStageWidth - scrollMargin - scrollbarWidth)) : 1;
+                            var elasticPullResistance = ($(currentEventNode)[0] === $(scrollbarNode)[0]) ? settings.scrollbarElasticPullResistance : settings.elasticPullResistance;
+                            var snapCenteredSlideOffset = (settings.snapSlideCenter && ($(currentEventNode)[0] === $(scrollbarNode)[0])) ? 0 : centeredSlideOffset;
+                            var snapCenteredSlideOffsetScrollbar = (settings.snapSlideCenter && ($(currentEventNode)[0] === $(scrollbarNode)[0])) ? centeredSlideOffset : 0;
+
+                            if(e.type == 'touchmove') {
+                                if(currentTouches != e.touches.length) {
+                                    xScrollStartPosition = (scrollPosition * -1) + eventX;
+                                }
+
+                                currentTouches = e.touches.length;
+                            }
+
+                            if(settings.infiniteSlider) {
+
+                                if(scrollPosition <= (sliderMax[sliderNumber] * -1)) {
+
+                                    var scrollerWidth = $(scrollerNode).width();
+
+                                    if(scrollPosition <= (sliderAbsMax[sliderNumber] * -1)) {
+
+                                        var sum = originalOffsets[0] * -1;
+                                        $(slideNodes).each(function(i) {
+
+                                            helpers.setSliderOffset($(slideNodes)[i], sum + centeredSlideOffset);
+                                            if(i < childrenOffsets.length) {
+                                                childrenOffsets[i] = sum * -1;
+                                            }
+                                            sum = sum + slideNodeOuterWidths[i];
+
+                                        });
+
+                                        xScrollStartPosition = xScrollStartPosition - childrenOffsets[0] * -1;
+                                        sliderMin[sliderNumber] = childrenOffsets[0] * -1 + centeredSlideOffset;
+                                        sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+                                        infiniteSliderOffset[sliderNumber] = 0;
+
+                                    } else {
+
+                                        var lowSlideNumber = 0;
+                                        var lowSlideOffset = helpers.getSliderOffset($(slideNodes[0]), 'x');
+                                        $(slideNodes).each(function(i) {
+
+                                            if(helpers.getSliderOffset(this, 'x') < lowSlideOffset) {
+                                                lowSlideOffset = helpers.getSliderOffset(this, 'x');
+                                                lowSlideNumber = i;
+                                            }
+
+                                        });
+
+                                        var newOffset = sliderMin[sliderNumber] + scrollerWidth;
+                                        helpers.setSliderOffset($(slideNodes)[lowSlideNumber], newOffset);
+
+                                        sliderMin[sliderNumber] = childrenOffsets[1] * -1 + centeredSlideOffset;
+                                        sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+
+                                        childrenOffsets.splice(0, 1);
+                                        childrenOffsets.splice(childrenOffsets.length, 0, newOffset * -1 + centeredSlideOffset);
+
+                                        infiniteSliderOffset[sliderNumber]++;
+
+                                    }
+
+                                }
+
+                                if((scrollPosition >= (sliderMin[sliderNumber] * -1)) || (scrollPosition >= 0)) {
+
+                                    var scrollerWidth = $(scrollerNode).width();
+
+                                    if(scrollPosition >= 0) {
+
+                                        var sum = originalOffsets[0] * -1;
+                                        $(slideNodes).each(function(i) {
+
+                                            helpers.setSliderOffset($(slideNodes)[i], sum + centeredSlideOffset);
+                                            if(i < childrenOffsets.length) {
+                                                childrenOffsets[i] = sum * -1;
+                                            }
+                                            sum = sum + slideNodeOuterWidths[i];
+
+                                        });
+
+                                        xScrollStartPosition = xScrollStartPosition + childrenOffsets[0] * -1;
+                                        sliderMin[sliderNumber] = childrenOffsets[0] * -1 + centeredSlideOffset;
+                                        sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+                                        infiniteSliderOffset[sliderNumber] = numberOfSlides;
+
+                                        while(((childrenOffsets[0] * -1 - scrollerWidth + centeredSlideOffset) > 0)) {
+
+                                            var highSlideNumber = 0;
+                                            var highSlideOffset = helpers.getSliderOffset($(slideNodes[0]), 'x');
+                                            $(slideNodes).each(function(i) {
+
+                                                if(helpers.getSliderOffset(this, 'x') > highSlideOffset) {
+                                                    highSlideOffset = helpers.getSliderOffset(this, 'x');
+                                                    highSlideNumber = i;
+                                                }
+
+                                            });
+
+                                            var newOffset = sliderMin[sliderNumber] - slideNodeOuterWidths[highSlideNumber];
+                                            helpers.setSliderOffset($(slideNodes)[highSlideNumber], newOffset);
+
+                                            childrenOffsets.splice(0, 0, newOffset * -1 + centeredSlideOffset);
+                                            childrenOffsets.splice(childrenOffsets.length-1, 1);
+
+                                            sliderMin[sliderNumber] = childrenOffsets[0] * -1 + centeredSlideOffset;
+                                            sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+
+                                            infiniteSliderOffset[sliderNumber]--;
+                                            activeChildOffsets[sliderNumber]++;
+
+                                        }
+
+                                    } else {
+
+                                        var highSlideNumber = 0;
+                                        var highSlideOffset = helpers.getSliderOffset($(slideNodes[0]), 'x');
+                                        $(slideNodes).each(function(i) {
+
+                                            if(helpers.getSliderOffset(this, 'x') > highSlideOffset) {
+                                                highSlideOffset = helpers.getSliderOffset(this, 'x');
+                                                highSlideNumber = i;
+                                            }
+
+                                        });
+
+                                        var newOffset = sliderMin[sliderNumber] - slideNodeOuterWidths[highSlideNumber];
+                                        helpers.setSliderOffset($(slideNodes)[highSlideNumber], newOffset);
+
+                                        childrenOffsets.splice(0, 0, newOffset * -1 + centeredSlideOffset);
+                                        childrenOffsets.splice(childrenOffsets.length-1, 1);
+
+                                        sliderMin[sliderNumber] = childrenOffsets[0] * -1 + centeredSlideOffset;
+                                        sliderMax[sliderNumber] = sliderMin[sliderNumber] + scrollerWidth - stageWidth;
+
+                                        infiniteSliderOffset[sliderNumber]--;
+
+                                    }
+
+                                }
+
+                            } else {
+
+                                var scrollerWidth = $(scrollerNode).width();
+
+                                if(scrollPosition > (sliderMin[sliderNumber] * -1 + centeredSlideOffset)) {
+
+                                    edgeDegradation = (sliderMin[sliderNumber] + ((xScrollStartPosition - scrollbarSubtractor - eventX + snapCenteredSlideOffset) * -1 * scrollbarMultiplier) - scrollbarSubtractor) * elasticPullResistance * -1 / scrollbarMultiplier;
+
+                                }
+
+                                if(scrollPosition < (sliderMax[sliderNumber] * -1)) {
+
+                                    edgeDegradation = (sliderMax[sliderNumber] + snapCenteredSlideOffsetScrollbar + ((xScrollStartPosition - scrollbarSubtractor - eventX) * -1 * scrollbarMultiplier) - scrollbarSubtractor) * elasticPullResistance * -1 / scrollbarMultiplier;
+
+                                }
+
+                            }
+
+                            helpers.setSliderOffset(scrollerNode, ((xScrollStartPosition - scrollbarSubtractor - eventX - edgeDegradation) * -1 * scrollbarMultiplier) - scrollbarSubtractor + snapCenteredSlideOffsetScrollbar);
+
+                            if(settings.scrollbar) {
+
+                                helpers.showScrollbar(settings, scrollbarClass);
+
+                                scrollbarDistance = Math.floor((xScrollStartPosition - eventX - edgeDegradation - sliderMin[sliderNumber] + snapCenteredSlideOffset) / (sliderMax[sliderNumber] - sliderMin[sliderNumber] + centeredSlideOffset) * (scrollbarStageWidth - scrollMargin - scrollbarWidth) * scrollbarMultiplier);
+
+                                var width = scrollbarWidth;
+
+                                if(scrollbarDistance <= 0) {
+
+                                    width = scrollbarWidth - scrollBorder - (scrollbarDistance * -1);
+
+                                    helpers.setSliderOffset($('.' + scrollbarClass), 0);
+
+                                    $('.' + scrollbarClass).css({
+                                        width: width + 'px'
+                                    });
+
+                                } else if(scrollbarDistance >= (scrollbarStageWidth - scrollMargin - scrollBorder - scrollbarWidth)) {
+
+                                    width = scrollbarStageWidth - scrollMargin - scrollBorder - scrollbarDistance;
+
+                                    helpers.setSliderOffset($('.' + scrollbarClass), scrollbarDistance);
+
+                                    $('.' + scrollbarClass).css({
+                                        width: width + 'px'
+                                    });
+
+                                } else {
+
+                                    helpers.setSliderOffset($('.' + scrollbarClass), scrollbarDistance);
+
+                                }
+
+                            }
+
+                            if(e.type == 'touchmove') {
+                                lastTouch = e.touches[0].pageX;
+                            }
+
+                            var slideChanged = false;
+                            var newChildOffset = helpers.calcActiveOffset(settings, (xScrollStartPosition - eventX - edgeDegradation) * -1, childrenOffsets, stageWidth, infiniteSliderOffset[sliderNumber], numberOfSlides, undefined, sliderNumber);
+                            var tempOffset = (newChildOffset + infiniteSliderOffset[sliderNumber] + numberOfSlides)%numberOfSlides;
+
+                            if(settings.infiniteSlider) {
+
+                                if(tempOffset != activeChildInfOffsets[sliderNumber]) {
+                                    slideChanged = true;
+                                }
+
+                            } else {
+
+                                if(newChildOffset != activeChildOffsets[sliderNumber]) {
+                                    slideChanged = true;
+                                }
+
+                            }
+
+                            if(slideChanged) {
+
+                                activeChildOffsets[sliderNumber] = newChildOffset;
+                                activeChildInfOffsets[sliderNumber] = tempOffset;
+                                snapOverride = true;
+
+                                var args = new helpers.args('change', settings, scrollerNode, $(scrollerNode).children(':eq(' + tempOffset + ')'), tempOffset, tempOffset);
+                                $(stageNode).data('args', args);
+
+                                if(settings.onSlideChange != '') {
+                                    settings.onSlideChange(args);
+                                }
+
+                                helpers.updateBackfaceVisibility(slideNodes, sliderNumber, numberOfSlides, settings);
+
+                            }
+
+                        }
+
+                    });
+
+                    var eventObject = $(window);
+
+                    if(isIe8 || isIe7) {
+                        var eventObject = $(document);
+                    }
+
+                    $(touchSelection).bind('touchcancel.iosSliderEvent touchend.iosSliderEvent', function(e) {
+
+                        var e = e.originalEvent;
+
+                        if(touchEndFlag) return false;
+                        touchEndFlag = true;
+
+                        if(touchLocks[sliderNumber] || shortContent) return true;
+
+                        if(isUnselectable) return true;
+
+                        if(e.touches.length != 0) {
+
+                            for(var j = 0; j < e.touches.length; j++) {
+
+                                if(e.touches[j].pageX == lastTouch) {
+                                    helpers.slowScrollHorizontal(scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, xScrollDistance, yScrollDistance, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, currentEventNode, snapOverride, centeredSlideOffset, settings);
+                                }
+
+                            }
+
+                        } else {
+
+                            helpers.slowScrollHorizontal(scrollerNode, slideNodes, scrollTimeouts, scrollbarClass, xScrollDistance, yScrollDistance, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, currentEventNode, snapOverride, centeredSlideOffset, settings);
+
+                        }
+
+                        preventXScroll = false;
+                        touchStartFlag = false;
+
+                        return true;
+
+                    });
+
+                    $(eventObject).bind('mouseup.iosSliderEvent-' + sliderNumber, function(e) {
+
+                        if(xScrollStarted) {
+                            anchorEvents.unbind('click.disableClick').bind('click.disableClick', helpers.preventClick);
+                        } else {
+                            anchorEvents.unbind('click.disableClick').bind('click.disableClick', helpers.enableClick);
+                        }
+
+                        onclickEvents.each(function() {
+
+                            this.onclick = function(event) {
+                                if(xScrollStarted) {
+                                    return false;
+                                }
+
+                                if($(this).data('onclick')) $(this).data('onclick').call(this, event || window.event);
+                            }
+
+                            this.onclick = $(this).data('onclick');
+
+                        });
+
+                        if(parseFloat($().jquery) >= 1.8) {
+
+                            allScrollerNodeChildren.each(function() {
+
+                                var clickObject = $._data(this, 'events');
+
+                                if(clickObject != undefined) {
+                                    if(clickObject.click != undefined) {
+
+                                        if(clickObject.click[0].namespace != 'iosSliderEvent') {
+
+                                            if(!xScrollStarted) {
+                                                return false;
+                                            }
+
+                                            $(this).one('click.disableClick', helpers.preventClick);
+                                            var handlers = $._data(this, 'events').click;
+                                            var handler = handlers.pop();
+                                            handlers.splice(0, 0, handler);
+
+                                        }
+
+                                    }
+                                }
+
+                            });
+
+                        } else if(parseFloat($().jquery) >= 1.6) {
+
+                            allScrollerNodeChildren.each(function() {
+
+                                var clickObject = $(this).data('events');
+
+                                if(clickObject != undefined) {
+                                    if(clickObject.click != undefined) {
+
+                                        if(clickObject.click[0].namespace != 'iosSliderEvent') {
+
+                                            if(!xScrollStarted) {
+                                                return false;
+                                            }
+
+                                            $(this).one('click.disableClick', helpers.preventClick);
+                                            var handlers = $(this).data('events').click;
+                                            var handler = handlers.pop();
+                                            handlers.splice(0, 0, handler);
+
+                                        }
+
+                                    }
+                                }
+
+                            });
+
+                        }
+
+                        if(!isEventCleared[sliderNumber]) {
+
+                            if(shortContent) return true;
+
+                            if(settings.desktopClickDrag) {
+                                $(scrollerNode).css({
+                                    cursor: grabOutCursor
+                                });
+                            }
+
+                            if(settings.scrollbarDrag) {
+                                $(scrollbarNode).css({
+                                    cursor: grabOutCursor
+                                });
+                            }
+
+                            isMouseDown = false;
+
+                            if(currentSlider == undefined) {
+                                return true;
+                            }
+
+                            helpers.slowScrollHorizontal(currentSlider, slideNodes, scrollTimeouts, scrollbarClass, xScrollDistance, yScrollDistance, scrollbarWidth, stageWidth, scrollbarStageWidth, scrollMargin, scrollBorder, originalOffsets, childrenOffsets, slideNodeOuterWidths, sliderNumber, infiniteSliderWidth, numberOfSlides, currentEventNode, snapOverride, centeredSlideOffset, settings);
+
+                            currentSlider = undefined;
+
+                        }
+
+                        preventXScroll = false;
+                        touchStartFlag = false;
+
+                    });
+
+                }
+
+            });
+
+        },
+
+        destroy: function(clearStyle, node) {
+
+            if(node == undefined) {
+                node = this;
+            }
+
+            return $(node).each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if(data == undefined) return false;
+
+                if(clearStyle == undefined) {
+                    clearStyle = true;
+                }
+
+                helpers.autoSlidePause(data.sliderNumber);
+                isEventCleared[data.sliderNumber] = true;
+                $(window).unbind('.iosSliderEvent-' + data.sliderNumber);
+                $(document).unbind('.iosSliderEvent-' + data.sliderNumber);
+                $(document).unbind('keydown.iosSliderEvent');
+                $(this).unbind('.iosSliderEvent');
+                $(this).children(':first-child').unbind('.iosSliderEvent');
+                $(this).children(':first-child').children().unbind('.iosSliderEvent');
+                $(data.settings.scrollbarBlockNode).unbind('.iosSliderEvent');
+
+                if(clearStyle) {
+                    $(this).attr('style', '');
+                    $(this).children(':first-child').attr('style', '');
+                    $(this).children(':first-child').children().attr('style', '');
+
+                    $(data.settings.navSlideSelector).attr('style', '');
+                    $(data.settings.navPrevSelector).attr('style', '');
+                    $(data.settings.navNextSelector).attr('style', '');
+                    $(data.settings.autoSlideToggleSelector).attr('style', '');
+                    $(data.settings.unselectableSelector).attr('style', '');
+                }
+
+                if(data.settings.scrollbar) {
+                    $('.scrollbarBlock' + data.sliderNumber).remove();
+                }
+
+                var scrollTimeouts = slideTimeouts[data.sliderNumber];
+
+                for(var i = 0; i < scrollTimeouts.length; i++) {
+                    clearTimeout(scrollTimeouts[i]);
+                }
+
+                $this.removeData('iosslider');
+                $this.removeData('args');
+
+            });
+
+        },
+
+        update: function(node) {
+
+            if(node == undefined) {
+                node = this;
+            }
+
+            return $(node).each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if(data == undefined) return false;
+
+                data.settings.startAtSlide = $this.data('args').currentSlideNumber;
+
+                methods.destroy(false, this);
+
+                if((data.numberOfSlides != 1) && data.settings.infiniteSlider) {
+                    data.settings.startAtSlide = (activeChildOffsets[data.sliderNumber] + 1 + infiniteSliderOffset[data.sliderNumber] + data.numberOfSlides)%data.numberOfSlides;
+                }
+
+                methods.init(data.settings, this);
+
+                var args = new helpers.args('update', data.settings, data.scrollerNode, $(data.scrollerNode).children(':eq(' + (data.settings.startAtSlide - 1) + ')'), data.settings.startAtSlide - 1, data.settings.startAtSlide - 1);
+                $(data.stageNode).data('args', args);
+
+                if(data.settings.onSliderUpdate != '') {
+                    data.settings.onSliderUpdate(args);
+                }
+
+            });
+
+        },
+
+        addSlide: function(slideNode, slidePosition) {
+
+            return this.each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if(data == undefined) return false;
+
+                if($(data.scrollerNode).children().length == 0) {
+
+                    $(data.scrollerNode).append(slideNode);
+                    $this.data('args').currentSlideNumber = 1;
+
+                } else if(!data.settings.infiniteSlider) {
+
+                    if(slidePosition <= data.numberOfSlides) {
+                        $(data.scrollerNode).children(':eq(' + (slidePosition - 1) + ')').before(slideNode);
+                    } else {
+                        $(data.scrollerNode).children(':eq(' + (slidePosition - 2) + ')').after(slideNode);
+                    }
+
+                    if($this.data('args').currentSlideNumber >= slidePosition) {
+                        $this.data('args').currentSlideNumber++;
+                    }
+
+                } else {
+
+                    if(slidePosition == 1) {
+                        $(data.scrollerNode).children(':eq(0)').before(slideNode);
+                    } else {
+                        $(data.scrollerNode).children(':eq(' + (slidePosition - 2) + ')').after(slideNode);
+                    }
+
+                    if((infiniteSliderOffset[data.sliderNumber] < -1) && (true)) {
+                        activeChildOffsets[data.sliderNumber]--;
+                    }
+
+                    if($this.data('args').currentSlideNumber >= slidePosition) {
+                        activeChildOffsets[data.sliderNumber]++;
+                    }
+
+                }
+
+                $this.data('iosslider').numberOfSlides++;
+
+                methods.update(this);
+
+            });
+
+        },
+
+        removeSlide: function(slideNumber) {
+
+            return this.each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if(data == undefined) return false;
+
+                $(data.scrollerNode).children(':eq(' + (slideNumber - 1) + ')').remove();
+                if(activeChildOffsets[data.sliderNumber] > (slideNumber - 1)) {
+                    activeChildOffsets[data.sliderNumber]--;
+                }
+
+                $this.data('iosslider').numberOfSlides--;
+
+                methods.update(this);
+
+            });
+
+        },
+
+        goToSlide: function(slide, duration, node) {
+
+            if(node == undefined) {
+                node = this;
+            }
+
+            return $(node).each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+
+                if((data == undefined) || data.shortContent) return false;
+
+                slide = (slide > data.childrenOffsets.length) ? data.childrenOffsets.length - 1 : slide - 1;
+
+                if(duration != undefined)
+                    data.settings.autoSlideTransTimer = duration;
+
+                helpers.changeSlide(slide, $(data.scrollerNode), $(data.slideNodes), slideTimeouts[data.sliderNumber], data.scrollbarClass, data.scrollbarWidth, data.stageWidth, data.scrollbarStageWidth, data.scrollMargin, data.scrollBorder, data.originalOffsets, data.childrenOffsets, data.slideNodeOuterWidths, data.sliderNumber, data.infiniteSliderWidth, data.numberOfSlides, data.centeredSlideOffset, data.settings);
+
+            });
+
+        },
+
+        prevSlide: function(duration) {
+
+            return this.each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if((data == undefined) || data.shortContent) return false;
+
+                var slide = (activeChildOffsets[data.sliderNumber] + infiniteSliderOffset[data.sliderNumber] + data.numberOfSlides)%data.numberOfSlides;
+
+                if(duration != undefined)
+                    data.settings.autoSlideTransTimer = duration;
+
+                if((slide > 0) || data.settings.infiniteSlider) {
+                    helpers.changeSlide(slide - 1, $(data.scrollerNode), $(data.slideNodes), slideTimeouts[data.sliderNumber], data.scrollbarClass, data.scrollbarWidth, data.stageWidth, data.scrollbarStageWidth, data.scrollMargin, data.scrollBorder, data.originalOffsets, data.childrenOffsets, data.slideNodeOuterWidths, data.sliderNumber, data.infiniteSliderWidth, data.numberOfSlides, data.centeredSlideOffset, data.settings);
+                }
+
+                activeChildOffsets[data.sliderNumber] = slide;
+
+            });
+
+        },
+
+        nextSlide: function(duration) {
+
+            return this.each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if((data == undefined) || data.shortContent) return false;
+
+                var slide = (activeChildOffsets[data.sliderNumber] + infiniteSliderOffset[data.sliderNumber] + data.numberOfSlides)%data.numberOfSlides;
+
+                if(duration != undefined)
+                    data.settings.autoSlideTransTimer = duration;
+
+                if((slide < data.childrenOffsets.length-1) || data.settings.infiniteSlider) {
+                    helpers.changeSlide(slide + 1, $(data.scrollerNode), $(data.slideNodes), slideTimeouts[data.sliderNumber], data.scrollbarClass, data.scrollbarWidth, data.stageWidth, data.scrollbarStageWidth, data.scrollMargin, data.scrollBorder, data.originalOffsets, data.childrenOffsets, data.slideNodeOuterWidths, data.sliderNumber, data.infiniteSliderWidth, data.numberOfSlides, data.centeredSlideOffset, data.settings);
+                }
+
+                activeChildOffsets[data.sliderNumber] = slide;
+
+            });
+
+        },
+
+        prevPage: function(duration, node) {
+
+            if(node == undefined) {
+                node = this;
+            }
+
+            return $(node).each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if(data == undefined) return false;
+
+                var newOffset = helpers.getSliderOffset(data.scrollerNode, 'x') + data.stageWidth;
+
+                if(duration != undefined)
+                    data.settings.autoSlideTransTimer = duration;
+
+                helpers.changeOffset(newOffset, $(data.scrollerNode), $(data.slideNodes), slideTimeouts[data.sliderNumber], data.scrollbarClass, data.scrollbarWidth, data.stageWidth, data.scrollbarStageWidth, data.scrollMargin, data.scrollBorder, data.originalOffsets, data.childrenOffsets, data.slideNodeOuterWidths, data.sliderNumber, data.infiniteSliderWidth, data.numberOfSlides, data.centeredSlideOffset, data.settings);
+
+            });
+
+        },
+
+        nextPage: function(duration, node) {
+
+            if(node == undefined) {
+                node = this;
+            }
+
+            return $(node).each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if(data == undefined) return false;
+
+                var newOffset = helpers.getSliderOffset(data.scrollerNode, 'x') - data.stageWidth;
+
+                if(duration != undefined)
+                    data.settings.autoSlideTransTimer = duration;
+
+                helpers.changeOffset(newOffset, $(data.scrollerNode), $(data.slideNodes), slideTimeouts[data.sliderNumber], data.scrollbarClass, data.scrollbarWidth, data.stageWidth, data.scrollbarStageWidth, data.scrollMargin, data.scrollBorder, data.originalOffsets, data.childrenOffsets, data.slideNodeOuterWidths, data.sliderNumber, data.infiniteSliderWidth, data.numberOfSlides, data.centeredSlideOffset, data.settings);
+
+            });
+
+        },
+
+        lock: function() {
+
+            return this.each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if((data == undefined) || data.shortContent) return false;
+
+                $(data.scrollerNode).css({
+                    cursor: 'default'
+                });
+                touchLocks[data.sliderNumber] = true;
+
+            });
+
+        },
+
+        unlock: function() {
+
+            return this.each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if((data == undefined) || data.shortContent) return false;
+
+                $(data.scrollerNode).css({
+                    cursor: grabOutCursor
+                });
+                touchLocks[data.sliderNumber] = false;
+
+            });
+
+        },
+
+        getData: function() {
+
+            return this.each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if((data == undefined) || data.shortContent) return false;
+
+                return data;
+
+            });
+
+        },
+
+        autoSlidePause: function() {
+
+            return this.each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if((data == undefined) || data.shortContent) return false;
+
+                iosSliderSettings[data.sliderNumber].autoSlide = false;
+
+                helpers.autoSlidePause(data.sliderNumber);
+
+                return data;
+
+            });
+
+        },
+
+        autoSlidePlay: function() {
+
+            return this.each(function() {
+
+                var $this = $(this);
+                var data = $this.data('iosslider');
+                if((data == undefined) || data.shortContent) return false;
+
+                iosSliderSettings[data.sliderNumber].autoSlide = true;
+
+                helpers.autoSlide($(data.scrollerNode), $(data.slideNodes), slideTimeouts[data.sliderNumber], data.scrollbarClass, data.scrollbarWidth, data.stageWidth, data.scrollbarStageWidth, data.scrollMargin, data.scrollBorder, data.originalOffsets, data.childrenOffsets, data.slideNodeOuterWidths, data.sliderNumber, data.infiniteSliderWidth, data.numberOfSlides, data.centeredSlideOffset, data.settings);
+
+                return data;
+
+            });
+
+        }
+
+    }
+
+    /* public functions */
+    $.fn.iosSlider = function(method) {
+
+        if(methods[method]) {
+            return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === 'object' || !method) {
+            return methods.init.apply(this, arguments);
+        } else {
+            $.error('invalid method call!');
+        }
+
+    };
+
+}) (jQuery);
+
+
 
 
 
@@ -86,46 +3090,6 @@ jQuery.extend(jQuery.easing,{def:"easeOutQuad",swing:function(e,a,c,b,d){return 
     function(a){clearTimeout(a)})})();
 
 
-function td_smooth_scroll() {
-    // SmoothScroll v1.2.1
-    // Licensed under the terms of the MIT license.
-
-    // People involved
-    //  - Balazs Galambosi (maintainer)
-    //  - Patrick Brunner  (original idea)
-    //  - Michael Herf     (Pulse Algorithm)
-
-    var defaultOptions={frameRate:150,animationTime:600,stepSize:120,pulseAlgorithm:!0,pulseScale:8,pulseNormalize:1,accelerationDelta:20,accelerationMax:1,keyboardSupport:!0,arrowScroll:50,touchpadSupport:!0,fixedBackground:!0,excluded:""},options=defaultOptions,isExcluded=!1,isFrame=!1,direction={x:0,y:0},initDone=!1,root=document.documentElement,activeElement,observer,deltaBuffer=[120,120,120],key={left:37,up:38,right:39,down:40,spacebar:32,pageup:33,pagedown:34,end:35,home:36};
-    "undefined"!==typeof chrome&&"undefined"!==typeof chrome.storage&&chrome.storage.sync.get(defaultOptions,function(a){options=a;initTest()});
-    function initTest(){var a=!1;-1<document.URL.indexOf("google.com/reader/view")&&(a=!0);if(options.excluded){var b=options.excluded.split(/[,\n] ?/);b.push("mail.google.com");for(var c=b.length;c--;)if(-1<document.URL.indexOf(b[c])){observer&&observer.disconnect();removeEvent("mousewheel",wheel);isExcluded=a=!0;break}}a&&removeEvent("keydown",keydown);options.keyboardSupport&&!a&&addEvent("keydown",keydown)}
-    function init(){if(document.body){var a=document.body,b=document.documentElement,c=window.innerHeight,d=a.scrollHeight;root=0<=document.compatMode.indexOf("CSS")?b:a;activeElement=a;initTest();initDone=!0;if(top!=self)isFrame=!0;else if(d>c&&(a.offsetHeight<=c||b.offsetHeight<=c)){var e=!1,d=function(){e||b.scrollHeight==document.height||(e=!0,setTimeout(function(){b.style.height=document.height+"px";e=!1},500))};b.style.height="auto";setTimeout(d,10);observer=new MutationObserver(d);observer.observe(a,
-        {attributes:!0,childList:!0,characterData:!1});root.offsetHeight<=c&&(c=document.createElement("div"),c.style.clear="both",a.appendChild(c))}-1<document.URL.indexOf("mail.google.com")?(c=document.createElement("style"),c.innerHTML=".iu { visibility: hidden }",(document.getElementsByTagName("head")[0]||b).appendChild(c)):-1<document.URL.indexOf("www.facebook.com")&&(c=document.getElementById("home_stream"))&&(c.style.webkitTransform="translateZ(0)");options.fixedBackground||isExcluded||(a.style.backgroundAttachment=
-        "scroll",b.style.backgroundAttachment="scroll")}}var que=[],pending=!1,lastScroll=+new Date;
-    function scrollArray(a,b,c,d){d||(d=1E3);directionCheck(b,c);if(1!=options.accelerationMax){var e=+new Date-lastScroll;e<options.accelerationDelta&&(e=(1+30/e)/2,1<e&&(e=Math.min(e,options.accelerationMax),b*=e,c*=e));lastScroll=+new Date}que.push({x:b,y:c,lastX:0>b?.99:-.99,lastY:0>c?.99:-.99,start:+new Date});if(!pending){var q=a===document.body,p=function(e){e=+new Date;for(var h=0,k=0,l=0;l<que.length;l++){var f=que[l],m=e-f.start,n=m>=options.animationTime,g=n?1:m/options.animationTime;options.pulseAlgorithm&&
-    (g=pulse(g));m=f.x*g-f.lastX>>0;g=f.y*g-f.lastY>>0;h+=m;k+=g;f.lastX+=m;f.lastY+=g;n&&(que.splice(l,1),l--)}q?window.scrollBy(h,k):(h&&(a.scrollLeft+=h),k&&(a.scrollTop+=k));b||c||(que=[]);que.length?requestFrame(p,a,d/options.frameRate+1):pending=!1};requestFrame(p,a,0);pending=!0}}
-    function wheel(a){initDone||init();var b=a.target,c=overflowingAncestor(b);if(!c||a.defaultPrevented||isNodeName(activeElement,"embed")||isNodeName(b,"embed")&&/\.pdf/i.test(b.src))return!0;var b=a.wheelDeltaX||0,d=a.wheelDeltaY||0;b||d||(d=a.wheelDelta||0);if(!options.touchpadSupport&&isTouchpad(d))return!0;1.2<Math.abs(b)&&(b*=options.stepSize/120);1.2<Math.abs(d)&&(d*=options.stepSize/120);scrollArray(c,-b,-d);a.preventDefault()}
-    function keydown(a){var b=a.target,c=a.ctrlKey||a.altKey||a.metaKey||a.shiftKey&&a.keyCode!==key.spacebar;if(/input|textarea|select|embed/i.test(b.nodeName)||b.isContentEditable||a.defaultPrevented||c||isNodeName(b,"button")&&a.keyCode===key.spacebar)return!0;var d;d=b=0;var c=overflowingAncestor(activeElement),e=c.clientHeight;c==document.body&&(e=window.innerHeight);switch(a.keyCode){case key.up:d=-options.arrowScroll;break;case key.down:d=options.arrowScroll;break;case key.spacebar:d=a.shiftKey?
-        1:-1;d=-d*e*.9;break;case key.pageup:d=.9*-e;break;case key.pagedown:d=.9*e;break;case key.home:d=-c.scrollTop;break;case key.end:e=c.scrollHeight-c.scrollTop-e;d=0<e?e+10:0;break;case key.left:b=-options.arrowScroll;break;case key.right:b=options.arrowScroll;break;default:return!0}scrollArray(c,b,d);a.preventDefault()}function mousedown(a){activeElement=a.target}var cache={};setInterval(function(){cache={}},1E4);var uniqueID=function(){var a=0;return function(b){return b.uniqueID||(b.uniqueID=a++)}}();
-    function setCache(a,b){for(var c=a.length;c--;)cache[uniqueID(a[c])]=b;return b}function overflowingAncestor(a){var b=[],c=root.scrollHeight;do{var d=cache[uniqueID(a)];if(d)return setCache(b,d);b.push(a);if(c===a.scrollHeight){if(!isFrame||root.clientHeight+10<c)return setCache(b,document.body)}else if(a.clientHeight+10<a.scrollHeight&&(overflow=getComputedStyle(a,"").getPropertyValue("overflow-y"),"scroll"===overflow||"auto"===overflow))return setCache(b,a)}while(a=a.parentNode)}
-    function addEvent(a,b,c){window.addEventListener(a,b,c||!1)}function removeEvent(a,b,c){window.removeEventListener(a,b,c||!1)}function isNodeName(a,b){return(a.nodeName||"").toLowerCase()===b.toLowerCase()}function directionCheck(a,b){a=0<a?1:-1;b=0<b?1:-1;if(direction.x!==a||direction.y!==b)direction.x=a,direction.y=b,que=[],lastScroll=0}var deltaBufferTimer;
-    function isTouchpad(a){if(a){a=Math.abs(a);deltaBuffer.push(a);deltaBuffer.shift();clearTimeout(deltaBufferTimer);deltaBufferTimer=setTimeout(function(){chrome.storage.local.set({deltaBuffer:deltaBuffer})},1E3);a=deltaBuffer[0]==deltaBuffer[1]&&deltaBuffer[1]==deltaBuffer[2];var b=isDivisible(deltaBuffer[0],120)&&isDivisible(deltaBuffer[1],120)&&isDivisible(deltaBuffer[2],120);return!(a||b)}}function isDivisible(a,b){return Math.floor(a/b)==a/b}
-    "undefined"!==typeof chrome&&"undefined"!==typeof chrome.storage&&chrome.storage.local.get("deltaBuffer",function(a){a.deltaBuffer&&(deltaBuffer=a.deltaBuffer)});var requestFrame=function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(a,b,c){window.setTimeout(a,c||1E3/60)}}(),MutationObserver=window.MutationObserver||window.WebKitMutationObserver;
-    function pulse_(a){var b;a*=options.pulseScale;1>a?b=a-(1-Math.exp(-a)):(b=Math.exp(-1),--a,a=1-Math.exp(-a),b+=a*(1-b));return b*options.pulseNormalize}function pulse(a){if(1<=a)return 1;if(0>=a)return 0;1==options.pulseNormalize&&(options.pulseNormalize/=pulse_(1));return pulse_(a)}addEvent("mousedown",mousedown);addEvent("mousewheel",wheel);addEvent("load",init);
-} //end smooth scroll
-/**
- *   ___________________________________________
- *  |   __  _ ___  _   _   __  __ __  __   __   |
- *  |  |  \| | __|| | | |/' _/|  V  |/  \ / _]  |
- *  |  | | ' | _| | 'V' |`._`.| \_/ | /\ | [/\  |
- *  |  |_|\__|___|!_/ \_!|___/|_| |_|_||_|\__/  |
- *  |___________________________________________|
- *
- * Our portfolio:  http://themeforest.net/user/tagDiv/portfolio
- * by tagDiv  2014
- * Thanks for your interest in our theme! :)
- *
- *
- */
 /* global jQuery:false */
 
 
@@ -483,68 +3447,422 @@ var tdViewport = {};
 /* global jQuery:{} */
 /* global tdDetect:{} */
 
+//top menu works only on 1 level, the other submenus are hidden from css
+//on tablets, wide level 3 submenus may go out of screen
 
+var tdMenu = {};
 (function(){
     'use strict';
 
-    // top menu
+    tdMenu = {
 
-    if (tdDetect.isTouchDevice) {
-        //touch
-        jQuery('.td-header-sp-top-menu .top-header-menu').superfish({
-            delay:300,
-            speed:'fast',
-            useClick:true
-        });
+        //submenu items (used on unbind)
+        _itemsWithSubmenu: null,
+        //main menu (used on unbind)
+        _mainMenu: null,
 
-    } else {
+        //on touch - when you click outside the menu it will close all menus
+        _outsideClickArea: null,
+        _outsideClickExcludedAreas: '#td-header-menu .sf-menu, #td-header-menu .sf-menu *, .menu-top-container, .menu-top-container *',
 
-        //not touch
-        jQuery('.td-header-sp-top-menu .top-header-menu').superfish({
-            delay:600,
-            speed:200,
-            useClick:false
-        });
-    }
-
-/*  ----------------------------------------------------------------------------
- On load
- */
-
-    // header menu
-    jQuery('#td-header-menu .sf-menu').supersubs({
-        minWidth: 10, // minimum width of sub-menus in em units
-        maxWidth: 40, // maximum width of sub-menus in em units
-        extraWidth: 1 // extra width can ensure lines don't sometimes turn over
-    });
+        //added when menu is open
+        _openMenuClass: 'sfHover',
+        _openMenuBodyClass: 'td-open-menu',
 
 
 
-    if (tdDetect.isTouchDevice) {
-        //touch
-        jQuery('#td-header-menu .sf-menu').superfish({
-            delay:300,
-            speed:'fast',
-            useClick:true
-        });
+        /*
+         * initialize menu
+         */
+        init: function() {
+            //get menu items
+            var mainMenu = jQuery('#td-header-menu .sf-menu'),
+                menus = jQuery('#td-header-menu .sf-menu, .top-header-menu'),
+                menuLinks = menus.find('.menu-item-has-children > a, .td-mega-menu > a');
 
-    } else {
+            //add dropdown arrow on items with submenu
+            menuLinks.append('<i class="td-icon-menu-down"></i>');
 
-        //not touch
-        jQuery('#td-header-menu .sf-menu').superfish({
-            delay:600,
-            speed:200,
-            useClick:false
-        });
-    }
+            //main menu width adjustment (top menu will use css)
+            mainMenu.supersubs({
+                minWidth: 10, // minimum width of sub-menus in em units
+                maxWidth: 20, // maximum width of sub-menus in em units
+                extraWidth: 1 // extra width can ensure lines don't sometimes turn over
+            });
+
+            //add sf-with-ul class to all anchors
+            menuLinks.addClass('sf-with-ul');
+            //add sf-js-enabled class
+            menus.addClass('sf-js-enabled');
+            //hide all submenus
+            menuLinks.parent().find('ul').first().css('display', 'none');
+
+            //set unbind items
+            tdMenu._mainMenu = mainMenu;
+            tdMenu._itemsWithSubmenu = menuLinks;
+            tdMenu._outsideClickArea = jQuery(window).not(tdMenu._outsideClickExcludedAreas);
+            //initialize menu
+            tdMenu._setHover(menuLinks, mainMenu);
+        },
+
+
+
+
+        /**
+         * adjust submenu position - if it goes out of window move it to the left
+         * @param item - submenu item
+         * @private
+         */
+        _getSubmenuPosition: function(item) {
+            var windowWidth = jQuery(window).width(),
+                submenuElement = item.children("ul").first();
+            if (submenuElement.length > 0) {
+                var submenuOffsetWidth = submenuElement.offset().left + submenuElement.width();
+                if (submenuOffsetWidth > windowWidth) {
+                    if (submenuElement.parent().parent().hasClass("sf-menu")) {
+                        //main menu
+                        submenuElement.css("left", "-" + (submenuOffsetWidth - windowWidth) + "px");
+                    } else {
+                        //submenu
+                        submenuElement.addClass("reversed").css("left", "-" + (submenuElement.width() + 0) + "px");
+                    }
+                }
+            }
+        },
+
+
+
+        /**
+         * calculate mouse direction
+         * @param x1 - old x position
+         * @param y1 - old y position
+         * @param x2 - current x position
+         * @param y2 - current y position
+         * @returns {number}
+         * @private
+         */
+        _getMouseAngleDirection: function(x1, y1, x2, y2) {
+            var dx = x2 - x1,
+                dy = y2 - y1;
+
+            return Math.atan2(dx, dy) / Math.PI * 180;
+        },
+
+
+
+        /**
+         * set menu functionality for desktop and touch devices
+         * @param menuLinks - submenu links (anchors)
+         * @param mainMenu - main menu
+         * @private
+         */
+        _setHover: function(menuLinks, mainMenu) {
+
+            /* TOUCH DEVICES */
+            if (tdDetect.isTouchDevice) {
+
+                //close menu when you tap outside of it
+                jQuery(document).on('touchstart', 'body', function(e) {
+                    var menuItems = menuLinks.parent(),
+                        pageBody = jQuery('body');
+                        //check if a menu is open and if the target is outside the menu
+                        if (pageBody.hasClass(tdMenu._openMenuBodyClass) && !menuItems.is(e.target) && menuItems.has(e.target).length === 0) {
+                            menuItems.removeClass(tdMenu._openMenuClass);
+                            menuItems.children('ul').hide();
+                            //remove open menu class from <body>
+                            pageBody.removeClass(tdMenu._openMenuBodyClass);
+                        }
+                });
+
+                //open-close the menu on touch
+                menuLinks.on('touchstart',
+                    function(event){
+                        event.preventDefault();
+                        event.stopPropagation();
+                        var currentMenuLink = jQuery(this),
+                            currentMenu = currentMenuLink.parent(),
+                            pageBody = jQuery('body');
+
+                        //menu is open
+                        if (currentMenu.hasClass(tdMenu._openMenuClass)) {
+                            //has a link, open it
+                            if (currentMenuLink.attr('href') !== null && currentMenuLink.attr('href') !== '#') {
+                                window.location.href = currentMenuLink.attr('href');
+
+                            //no link - close it
+                            } else {
+                                //if it's a main menu remove the body class
+                                if (currentMenu.parent().hasClass('sf-menu') || currentMenu.parent().hasClass('top-header-menu')) {
+                                    pageBody.removeClass(tdMenu._openMenuBodyClass);
+                                }
+                                currentMenu.removeClass(tdMenu._openMenuClass);
+                                //close submenus
+                                currentMenu.find('ul').hide();
+                                currentMenu.find('li').removeClass(tdMenu._openMenuClass);
+                            }
+
+                        //menu is not open
+                        } else {
+                            //a sibling may be open and we have to close it
+                            if (currentMenu.parent().hasClass('sf-menu') || currentMenu.parent().hasClass('top-header-menu')) {
+                                //main menu - close all menus
+                                menuLinks.parent().removeClass(tdMenu._openMenuClass);
+                                menuLinks.parent().children('ul').hide();
+                            } else {
+                                //submenu - close all siblings-submenus and open the current one
+                                var currentMenuSiblings = currentMenu.siblings();
+                                currentMenuSiblings.removeClass(tdMenu._openMenuClass);
+                                //close siblings
+                                currentMenuSiblings.find('ul').hide();
+                                currentMenuSiblings.find('li').removeClass(tdMenu._openMenuClass);
+                            }
+                            //open current
+                            currentMenu.addClass(tdMenu._openMenuClass);
+                            currentMenu.children('ul').show();
+                            //adjust menu position
+                            tdMenu._getSubmenuPosition(currentMenu);
+                            //add body class
+                            pageBody.addClass(tdMenu._openMenuBodyClass);
+                        }
+                    }
+                );
+
+             /* DESKTOP */
+            } else {
+
+                var lastMenuOpen = {},
+                    newMenuTimeout,
+                    timeoutCleared = true;
+
+                mainMenu.on('mouseleave', function() {
+                    //close all menus
+                    menuLinks.parent().removeClass(tdMenu._openMenuClass);
+                    menuLinks.parent().children('ul').hide();
+                    //reset last menu
+                    lastMenuOpen = {};
+
+                });
+
+                //apply hover only to main menu (top menu uses css)
+                mainMenu.find('.menu-item').hover(
+                    function(){
+
+                        //open the new menu element
+                        var currentMenu = jQuery(this),
+                            currentMenuSiblings = '',
+                            sensitivity = 5, //measure direction after x pixels
+                            pixelCount,
+                            oldX,
+                            oldY,
+                            mouseDirection;
+
+                        //menu has submenus
+                        if (currentMenu.hasClass('menu-item-has-children') ||  currentMenu.hasClass('td-mega-menu')) {
+
+                            //main menu
+                            if (currentMenu.parent().hasClass('sf-menu')) {
+                                //no menu is open - instantly open the current one
+                                if (jQuery.isEmptyObject(lastMenuOpen)) {
+                                    currentMenu.addClass(tdMenu._openMenuClass);
+                                    currentMenu.children('ul').show();
+                                    //set the last open menu
+                                    lastMenuOpen = currentMenu;
+
+                                //menu is open
+                                } else {
+
+                                    //execute only if it's a new menu
+                                    if (currentMenu[0] !== lastMenuOpen[0]) {
+
+                                        //initialize variables used for calculating mouse direction
+                                        pixelCount = 0;
+                                        oldX = 0;
+                                        oldY = 0;
+                                        mouseDirection = null;
+
+                                        //add timeout - when you enter a new menu
+                                        if (timeoutCleared === true) {
+                                            timeoutCleared = false;
+                                            newMenuTimeout = setTimeout(function() {
+                                                //close previous menus
+                                                menuLinks.parent().removeClass(tdMenu._openMenuClass);
+                                                menuLinks.parent().children('ul').hide();
+                                                //open current menu
+                                                currentMenu.addClass(tdMenu._openMenuClass);
+                                                currentMenu.children('ul').show();
+                                                //set the last open menu
+                                                lastMenuOpen = currentMenu;
+                                            }, 400);
+                                        }
+
+                                        currentMenu.on('mousemove', function(e) {
+                                            //reset pixeCount, calculate direction and define old x and y
+                                            if (pixelCount >= sensitivity) {
+                                                pixelCount = 0;
+                                                mouseDirection = tdMenu._getMouseAngleDirection(oldX, oldY, e.pageX, e.pageY);
+                                                oldX = e.pageX;
+                                                oldY = e.pageY;
+                                            } else {
+                                                pixelCount++;
+                                                //set the first x and y
+                                                if (oldX === 0 && oldY === 0) {
+                                                    oldX = e.pageX;
+                                                    oldY = e.pageY;
+                                                }
+                                            }
+
+                                            //debug mouse direction
+                                            //console.log(mouseDirection);
+
+                                            //current menu is different than the last one
+                                            if (mouseDirection !== null && (mouseDirection > 85 || mouseDirection < -85)) {
+                                                //close previous menus
+                                                menuLinks.parent().removeClass(tdMenu._openMenuClass);
+                                                menuLinks.parent().children('ul').hide();
+                                                //open current menu
+                                                currentMenu.addClass(tdMenu._openMenuClass);
+                                                currentMenu.children('ul').show();
+
+                                                //unbind mousemove event - menu is open, there's no need for it
+                                                currentMenu.off('mousemove');
+                                                //clear timeout - menu is open
+                                                clearTimeout(newMenuTimeout);
+                                                timeoutCleared = true;
+                                                //set the last open menu
+                                                lastMenuOpen = currentMenu;
+                                            }
+                                        });
+                                    }
+                                }
+
+                            //submenu
+                            } else {
+                                //submenu - close all siblings-submenus
+                                currentMenuSiblings = currentMenu.siblings();
+                                currentMenuSiblings.removeClass(tdMenu._openMenuClass);
+                                //close submenus
+                                currentMenuSiblings.find('ul').hide();
+                                currentMenuSiblings.find('li').removeClass(tdMenu._openMenuClass);
+                                //open current menu
+                                currentMenu.addClass(tdMenu._openMenuClass);
+                                currentMenu.children('ul').show();
+                                //adjust menu position
+                                tdMenu._getSubmenuPosition(currentMenu);
+                            }
+
+                        //menu item doesn't have submenu
+                        } else {
+                            //main menu
+                            if (currentMenu.parent().hasClass('sf-menu') || currentMenu.parent().hasClass('top-header-menu')) {
+                                //execute only if another menu is open
+                                if (!jQuery.isEmptyObject(lastMenuOpen)) {
+
+                                    //initialize variables used for calculating mouse direction
+                                    pixelCount = 0;
+                                    oldX = 0;
+                                    oldY = 0;
+                                    mouseDirection = null;
+
+                                    //add timeout - when you enter a new menu
+                                    if (timeoutCleared === true) {
+                                        timeoutCleared = false;
+                                        newMenuTimeout = setTimeout(function() {
+                                            //close previous menus
+                                            menuLinks.parent().removeClass(tdMenu._openMenuClass);
+                                            menuLinks.parent().children('ul').hide();
+                                            lastMenuOpen = {};
+                                        }, 400);
+                                    }
+
+                                    currentMenu.on('mousemove', function(e) {
+                                        //reset pixeCount, calculate direction and define old x and y
+                                        if (pixelCount >= sensitivity) {
+                                            pixelCount = 0;
+                                            mouseDirection = tdMenu._getMouseAngleDirection(oldX, oldY, e.pageX, e.pageY);
+                                            oldX = e.pageX;
+                                            oldY = e.pageY;
+                                        } else {
+                                            pixelCount++;
+                                            //set the first x and y
+                                            if (oldX === 0 && oldY === 0) {
+                                                oldX = e.pageX;
+                                                oldY = e.pageY;
+                                            }
+                                        }
+
+                                        //current menu is different than the last one
+                                        if (mouseDirection !== null && (mouseDirection > 85 || mouseDirection < -85)) {
+                                            //close previous menus
+                                            menuLinks.parent().removeClass(tdMenu._openMenuClass);
+                                            menuLinks.parent().children('ul').hide();
+                                            //unbind mousemove event - menu is open, there's no need for it
+                                            currentMenu.off('mousemove');
+                                            //clear timeout - menu is open
+                                            clearTimeout(newMenuTimeout);
+                                            timeoutCleared = true;
+                                            //set the last open menu
+                                            lastMenuOpen = {};
+                                        }
+                                    });
+                                }
+                            //submenu
+                            } else {
+                                //close all siblings-submenus
+                                lastMenuOpen = currentMenu.parent();
+                                currentMenuSiblings = currentMenu.siblings();
+                                currentMenuSiblings.removeClass(tdMenu._openMenuClass);
+                                //close siblings submenus
+                                currentMenuSiblings.find('ul').hide();
+                                currentMenuSiblings.find('li').removeClass(tdMenu._openMenuClass);
+                            }
+                        }
+                    },
+
+
+                    //mouseleave
+                    function(){
+
+                        var currentMenu = jQuery(this);
+
+                        //clear menu timeout
+                        if (timeoutCleared === false) {
+                            clearTimeout(newMenuTimeout);
+                            timeoutCleared = true;
+                        }
+                        //unbind mousemove event
+                        currentMenu.off('mousemove');
+                    }
+                );
+            }
+
+        },
+
+
+
+        /**
+         * unbind menu events
+         */
+        unsetHover: function() {
+            if (tdMenu._itemsWithSubmenu !== null) {
+                tdMenu._itemsWithSubmenu.off();
+            }
+            //unbind outside click area events
+            if (tdMenu._outsideClickArea !== null) {
+                tdMenu._outsideClickArea.off();
+            }
+        }
+
+    };
 })();
 
 
+jQuery().ready(function() {
 
+    'use strict';
 
-
-
-
+    //initialize menu
+    tdMenu.init();
+});
 /*
  td_util.js
  v2.0
@@ -561,6 +3879,8 @@ var tdUtil = {};
 
     tdUtil = {
 
+        //patern to check emails
+        email_pattern : /^[a-zA-Z0-9][a-zA-Z0-9_\.-]{0,}[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9_\.-]{0,}[a-z0-9][\.][a-z0-9]{2,4}$/,
 
         /**
          * stop propagation of an event - we should check this if we can remove window.event.cancelBubble - possible
@@ -576,12 +3896,21 @@ var tdUtil = {};
         },
 
         /**
+         * checks if a form input field value is a valid email address
+         * @param val
+         * @returns {boolean}
+         */
+        isEmail: function( val ) {
+            return tdUtil.email_pattern.test(val);
+        },
+
+        /**
          * utility function, used by td_post_images.js
          * @param classSelector
          */
         imageMoveClassToFigure: function ( classSelector ) {
             jQuery('figure .' + classSelector).each( function() {
-                jQuery(this).parent().parent().addClass(classSelector);
+                jQuery(this).parents('figure:first').addClass(classSelector);
                 jQuery(this).removeClass(classSelector);
             });
         },
@@ -849,20 +4178,22 @@ var tdAffix = {};
 
             // a computation before jquery.ready is necessary for firefox, where tdEvents.scroll comes before
             if ( tdDetect.isFirefox ) {
-                tdAffix.compute_top();
                 tdAffix.compute_wrapper();
+                tdAffix.compute_top();
+
             }
 
             jQuery().ready(function() {
                 //compute on semi dom ready
-                tdAffix.compute_top();
                 tdAffix.compute_wrapper();
+                tdAffix.compute_top();
+
             });
 
             //recompute when all the page + logos are loaded
             jQuery( window ).load(function() {
-                tdAffix.compute_top();
                 tdAffix.compute_wrapper();
+                tdAffix.compute_top();
 
                 //recompute after 1 sec for retarded phones
                 setTimeout(function(){
@@ -963,8 +4294,8 @@ var tdAffix = {};
 
             /*  ---------------------------------------------------------------------------- */
 
-            // show the logo on sticky menu if is always snap setting
-            if ( 'snap' === tdAffix.tds_snap_menu && '' !== tdAffix.tds_snap_menu_logo ) {
+            // show the logo on sticky menu
+            if ( '' !== tdAffix.tds_snap_menu && '' !== tdAffix.tds_snap_menu_logo ) {
                 jQuery( '.td-main-menu-logo' ).addClass( 'td-logo-sticky' );
             }
 
@@ -1197,8 +4528,9 @@ var tdAffix = {};
                 //make the menu normal
                 jQuery( tdAffix.menu_selector ).removeClass( 'td-affix' );
 
+                //console.log(tdAffix.tds_snap_menu_logo);
                 //hide the logo from sticky menu when the menu is not affix
-                if( '' !== tdAffix.tds_snap_menu_logo ) {
+                if( '' === tdAffix.tds_snap_menu_logo ) {
                     jQuery( '.td-main-menu-logo' ).removeClass( 'td-logo-sticky' );
                 }
 
@@ -1234,6 +4566,7 @@ var tdAffix = {};
 /* global jQuery:false */
 /* global tdUtil:false */
 /* global tdModalImageLastEl:{} */
+/* global tdEvents:{} */
 
 
 "use strict";
@@ -1253,7 +4586,7 @@ jQuery().ready(function jQuery_ready() {
 
 
     // the mobile pull left menu (off canvas)
-    td_mobile_menu();
+    //td_mobile_menu();
 
     //handles the toogle efect on mobile menu
     td_mobile_menu_toogle();
@@ -1274,7 +4607,21 @@ jQuery().ready(function jQuery_ready() {
     //smart list drop down pagination
     td_smart_list_dropdown();
 
+    // the top menu date
+    if (typeof tdsDateFormat !== 'undefined') {
 
+        // php time() equivalent - js deals in milliseconds and php in seconds
+        var tdsDateTimestamp = Math.floor(new Date().getTime() / 1000);
+
+        // replace the date
+        var tdNewDateI18n = td_date_i18n(tdsDateFormat, tdsDateTimestamp);
+        jQuery('.td_data_time').text(tdNewDateI18n);
+    }
+
+    setMenuMinHeight();
+
+    // prevents comments form submission without filing the required form fields
+    td_comments_form_validation();
 
 }); //end on load
 
@@ -1431,16 +4778,29 @@ function td_resize_videos() {
     });
 
 
-    //wordpress embedded
-    jQuery(document).find(".wp-video-shortcode").each(function() {
-        var td_video = jQuery(this);
+    //facebook in content
+    //jQuery(document).find('iframe[src*="facebook.com/plugins/video.php"]').each(function() {
+    //    var td_video = jQuery(this);
+    //    if ( td_video.parent().hasClass('wpb_video_wrapper') ) {
+    //        td_video.attr('width', '100%');
+    //        var td_video_width = td_video.width();
+    //        td_video.css('height', td_video_width * 0.5625, 'important');
+    //    } else {
+    //        td_video.css('max-width', '100%');
+    //    }
+    //});
 
-        var td_video_width = td_video.width() + 3;
-        jQuery(this).parent().css('height', td_video_width * 0.56, 'important');
-        //td_video.css('height', td_video_width * 0.6, 'important')
-        td_video.css('width', '100%', 'important');
-        td_video.css('height', '100%', 'important');
-    })
+
+    //wordpress embedded
+    //jQuery(document).find(".wp-video-shortcode").each(function() {
+    //    var td_video = jQuery(this);
+    //
+    //    var td_video_width = td_video.width() + 3;
+    //    jQuery(this).parent().css('height', td_video_width * 0.56, 'important');
+    //    //td_video.css('height', td_video_width * 0.6, 'important')
+    //    td_video.css('width', '100%', 'important');
+    //    td_video.css('height', '100%', 'important');
+    //})
 }
 
 
@@ -1450,68 +4810,110 @@ function td_resize_videos() {
 
 //handles mobile menu
 function td_mobile_menu() {
-    jQuery('#td-top-mobile-toggle a, .td-mobile-close a').click(function(){
-        if(jQuery('body').hasClass('td-menu-mob-open-menu')) {
-            jQuery('body').removeClass('td-menu-mob-open-menu');
-        } else {
-            if (tdDetect.isMobileDevice) {
-                // on mobile devices scroll to top instantly and wait a bit and open the menu
-                window.scrollTo(0, 0);
-                setTimeout(function(){
-                    jQuery('body').addClass('td-menu-mob-open-menu');
-                }, 100);
-            } else {
-                // on desktop open it with full animations
-                jQuery('body').addClass('td-menu-mob-open-menu');
-                setTimeout(function(){
-                    tdUtil.scrollToPosition(0, 1200);
-                }, 200);
-            }
-        }
-    });
+    //jQuery('#td-top-mobile-toggle a, .td-mobile-close a').click(function(){
+    //    if(jQuery('body').hasClass('td-menu-mob-open-menu')) {
+    //        jQuery('body').removeClass('td-menu-mob-open-menu');
+    //    } else {
+    //        if (tdDetect.isMobileDevice) {
+    //            // on mobile devices scroll to top instantly and wait a bit and open the menu
+    //            window.scrollTo(0, 0);
+    //            setTimeout(function(){
+    //                jQuery('body').addClass('td-menu-mob-open-menu');
+    //            }, 100);
+    //        } else {
+    //            // on desktop open it with full animations
+    //            jQuery('body').addClass('td-menu-mob-open-menu');
+    //            setTimeout(function(){
+    //                tdUtil.scrollToPosition(0, 1200);
+    //            }, 200);
+    //        }
+    //    }
+    //});
 }
 
 
 //handles open/close mobile menu
 function td_mobile_menu_toogle() {
 
-    jQuery('#td-mobile-nav .menu-item-has-children ul').hide();
+    //jQuery('#td-mobile-nav .menu-item-has-children ul').hide();
+    //
+    ////move thru all the menu and find the item with sub-menues to atach a custom class to them
+    //jQuery(document).find('#td-mobile-nav .menu-item-has-children').each(function(i) {
+    //
+    //    var class_name = 'td_mobile_elem_with_submenu_' + i;
+    //    jQuery(this).addClass(class_name);
+    //
+    //    //add an element to click on
+    //    //jQuery(this).children("a").append('<div class="td-element-after" data-parent-class="' + class_name + '"></div>');
+    //    jQuery(this).children("a").append('<i class="td-icon-menu-down td-element-after" data-parent-class="' + class_name + '"></i>');
+    //
+    //
+    //    //click on link elements with #
+    //    jQuery(this).children("a").addClass("td-link-element-after").attr("data-parent-class", class_name);
+    //});
+    //
+    //jQuery(".td-element-after, .td-link-element-after").click(function(event) {
+    //
+    //    if(jQuery(this).hasClass("td-element-after") || jQuery(this).attr("href") == "#" ){
+    //        event.preventDefault();
+    //        event.stopPropagation();
+    //    }
+    //
+    //
+    //    //take the li parent class
+    //    var parent_class = jQuery(this).data('parent-class');
+    //
+    //    //target the sub-menu to open
+    //    var target_to_open = '#td-mobile-nav .' + parent_class + ' > a + ul';
+    //    if(jQuery(target_to_open).css('display') == 'none') {
+    //        jQuery(target_to_open).show();
+    //    } else {
+    //        jQuery(target_to_open).hide();
+    //    }
+    //
+    //
+    //});
 
-    //move thru all the menu and find the item with sub-menues to atach a custom class to them
-    jQuery(document).find('#td-mobile-nav .menu-item-has-children').each(function(i) {
-
-        var class_name = 'td_mobile_elem_with_submenu_' + i;
-        jQuery(this).addClass(class_name);
-
-        //add an element to click on
-        //jQuery(this).children("a").append('<div class="td-element-after" data-parent-class="' + class_name + '"></div>');
-        jQuery(this).children("a").append('<i class="td-icon-menu-down td-element-after" data-parent-class="' + class_name + '"></i>');
-
-
-        //click on link elements with #
-        jQuery(this).children("a").addClass("td-link-element-after").attr("data-parent-class", class_name);
+    jQuery( '#td-top-mobile-toggle a, .td-mobile-close a' ).click(function(){
+        if ( jQuery( 'body' ).hasClass( 'td-menu-mob-open-menu' ) ) {
+            jQuery( 'body' ).removeClass( 'td-menu-mob-open-menu' );
+        } else {
+            jQuery( 'body' ).addClass( 'td-menu-mob-open-menu' );
+        }
     });
 
-    jQuery(".td-element-after, .td-link-element-after").click(function(event) {
 
-        if(jQuery(this).hasClass("td-element-after") || jQuery(this).attr("href") == "#" ){
-            event.preventDefault();
-            event.stopPropagation();
-        }
+    //handles open/close mobile menu
 
+    //move thru all the menu and find the item with sub-menues to atach a custom class to them
+    jQuery( document ).find( '#td-mobile-nav .menu-item-has-children' ).each(function( i ) {
 
-        //take the li parent class
-        var parent_class = jQuery(this).data('parent-class');
+        var class_name = 'td_mobile_elem_with_submenu_' + i;
+        jQuery(this).addClass( class_name );
 
-        //target the sub-menu to open
-        var target_to_open = '#td-mobile-nav .' + parent_class + ' > a + ul';
-        if(jQuery(target_to_open).css('display') == 'none') {
-            jQuery(target_to_open).show();
-        } else {
-            jQuery(target_to_open).hide();
-        }
+        //click on link elements with #
+        jQuery(this).children('a').addClass( 'td-link-element-after' );
 
+        jQuery(this).click(function( event ) {
 
+            /**
+             * currentTarget - the li element
+             * target - the element clicked inside of the currentTarget
+             */
+
+            var jQueryTarget = jQuery( event.target );
+
+            // html i element
+            if ( jQueryTarget.length &&
+                ( ( jQueryTarget.hasClass( 'td-element-after') || jQueryTarget.hasClass( 'td-link-element-after') ) &&
+                ( '#' === jQueryTarget.attr( 'href' ) || undefined === jQueryTarget.attr( 'href' ) ) ) ) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                jQuery( this ).toggleClass( 'td-sub-menu-open' );
+            }
+        });
     });
 }
 
@@ -1564,13 +4966,13 @@ if(!tdDetect.isTouchDevice && tdUtil.getBackendVar('td_ad_background_click_link'
 
         var target_jquery_obj = jQuery(target);
 
-        // td-content-wrap for NEWSMAG and td-boxex-layout for NEWSPAPER
-        if (target_jquery_obj.hasClass('td-content-wrap') || target_jquery_obj.hasClass('td-boxed-layout')) {
+        // td-outer-container for NEWSMAG and td-boxex-layout for NEWSPAPER
+        if (target_jquery_obj.hasClass('td-outer-container') || target_jquery_obj.hasClass('td-theme-wrap') || target_jquery_obj.hasClass('td-header-wrap')) {
 
             //open the link ad page
             if(td_ad_background_click_target == '_blank') {
                 //open in a new window
-                window.open(td_ad_background_click_link)
+                window.open(td_ad_background_click_link);
             } else {
                 //open in the same window
                 location.href = td_ad_background_click_link;
@@ -1616,7 +5018,7 @@ function td_set_cookies_life(td_time_cookie_array) {
     expiry.setTime(expiry.getTime() + td_time_cookie_array[2]);
 
     // Date()'s toGMTSting() method will format the date correctly for a cookie
-    document.cookie = td_time_cookie_array[0] + "=" + td_time_cookie_array[1] + "; expires=" + expiry.toGMTString();
+    document.cookie = td_time_cookie_array[0] + "=" + td_time_cookie_array[1] + "; expires=" + expiry.toGMTString() + "; path=/";
 }
 
 
@@ -1803,7 +5205,7 @@ function td_post_template_6_title() {
 //used for smart lists
 function td_smart_lists_magnific_popup() {
     //magnific popup
-    jQuery(".td-slide-smart-list-figure").magnificPopup({
+    jQuery(".td-lightbox-enabled").magnificPopup({
         delegate: "a",
         type: "image",
         tLoading: "Loading image #%curr%...",
@@ -1851,6 +5253,7 @@ function td_smart_lists_magnific_popup() {
             },
             beforeClose: function() {
                 if (tdModalImageLastEl != '') {
+
                     tdUtil.scrollIntoView(tdModalImageLastEl);
                 }
             }
@@ -1897,6 +5300,119 @@ function td_get_document_height() {
 }
 
 
+/*  ----------------------------------------------------------------------------
+ Set the mobile menu min-height property
+
+ This is usually used to force vertical scroll bar appearance from the beginning.
+ Without it, on some mobile devices (ex Android), at scroll bar appearance there are some
+ visual issues.
+
+ */
+function setMenuMinHeight() {
+
+    if ( 'undefined' === typeof tdEvents.previousWindowInnerWidth ) {
+
+        // Save the previous width
+        tdEvents.previousWindowInnerWidth = tdEvents.window_innerWidth;
+
+    } else if ( tdEvents.previousWindowInnerWidth === tdEvents.window_innerWidth ) {
+
+        // Stop if the width has not been modified
+        return;
+    }
+
+    tdEvents.previousWindowInnerWidth = tdEvents.window_innerWidth;
+
+    var $tdMobileMenu = jQuery( '#td-mobile-nav' ),
+        cssHeight = tdEvents.window_innerHeight + 1;
+
+    if ( $tdMobileMenu.length ) {
+        $tdMobileMenu.css( 'min-height' , cssHeight + 'px' );
+    }
+
+    // Stop if we are not on mobile
+    if ( ! tdDetect.isMobileDevice ) {
+        return;
+    }
+
+    var $tdMobileBg = jQuery( '.td-menu-background' ),
+        $tdMobileBgSearch = jQuery( '.td-search-background' );
+
+    if ( $tdMobileBg.length ) {
+        $tdMobileBg.css( 'height' , ( cssHeight + 70 ) + 'px' );
+    }
+
+    if ( $tdMobileBgSearch.length ) {
+        $tdMobileBgSearch.css( 'height' , ( cssHeight + 70 ) + 'px' );
+    }
+
+
+}
+
+/**
+ * Used on comments form to prevent comments form submission without filing the required fields
+ */
+
+function td_comments_form_validation() {
+
+    //on form submit
+    jQuery('.comment-form').submit( function(event) {
+
+        jQuery('form#commentform :input').each( function() {
+
+            var current_input_field = jQuery(this);
+            var form = jQuery(this).parent().parent();
+
+            if (current_input_field.attr('aria-required')){
+                if (current_input_field.val() == '') {
+                    event.preventDefault();
+                    form.addClass('td-comment-form-warnings');
+
+                    if (current_input_field.attr('id') == 'comment') {
+                        form.find('.td-warning-comment').show(200);
+                        current_input_field.css('border', '1px solid #ff7a7a');
+                    } else if (current_input_field.attr('id') == 'author') {
+                        form.find('.td-warning-author').show(200);
+                        current_input_field.css('border', '1px solid #ff7a7a');
+                    } else if (current_input_field.attr('id') == 'email') {
+                        form.find('.td-warning-email').show(200);
+                        current_input_field.css('border', '1px solid #ff7a7a');
+                    }
+                } else if ( current_input_field.attr('id') == 'email' && tdUtil.isEmail( current_input_field.val() ) === false ) {
+                    event.preventDefault();
+                    form.addClass('td-comment-form-warnings');
+                    form.find('.td-warning-email-error').show(200);
+                }
+            }
+        });
+
+    });
+
+    //on form input fields focus
+    jQuery('form#commentform :input').each( function() {
+
+        var form = jQuery(this).parent().parent();
+        var current_input_field = jQuery(this);
+
+        current_input_field.focus( function(){
+
+            if (current_input_field.attr('id') == 'comment') {
+                form.find('.td-warning-comment').hide(200);
+                current_input_field.css('border', '1px solid #e1e1e1');
+
+            } else if (current_input_field.attr('id') == 'author') {
+                form.find('.td-warning-author').hide(200);
+                current_input_field.css('border', '1px solid #e1e1e1');
+
+
+            } else if (current_input_field.attr('id') == 'email') {
+                form.find('.td-warning-email').hide(200);
+                form.find('.td-warning-email-error').hide(200);
+                current_input_field.css('border', '1px solid #e1e1e1');
+            }
+        });
+    })
+}
 /* global jQuery:false */
 /* global tdUtil:false */
 
@@ -1949,14 +5465,14 @@ var tdLoadingBox = {};
 
                 var rgbaString = "rgba(" + colRgba.r + ", " + colRgba.g + ", " + colRgba.b + ", ";
 
-                tdLoadingBox.arrayColors[7] = rgbaString + " 1)";
-                tdLoadingBox.arrayColors[6] = rgbaString + " 0.6)";
+                tdLoadingBox.arrayColors[7] = rgbaString + " 0.9)";
+                tdLoadingBox.arrayColors[6] = rgbaString + " 0.7)";
                 tdLoadingBox.arrayColors[5] = rgbaString + " 0.5)";
                 tdLoadingBox.arrayColors[4] = rgbaString + " 0.3)";
-                tdLoadingBox.arrayColors[3] = rgbaString + " 0.2)";
-                tdLoadingBox.arrayColors[2] = rgbaString + " 0.08)";
-                tdLoadingBox.arrayColors[1] = rgbaString + " 0.05)";
-                tdLoadingBox.arrayColors[0] = rgbaString + " 0)";
+                tdLoadingBox.arrayColors[3] = rgbaString + " 0.15)";
+                tdLoadingBox.arrayColors[2] = rgbaString + " 0.15)";
+                tdLoadingBox.arrayColors[1] = rgbaString + " 0.15)";
+                tdLoadingBox.arrayColors[0] = rgbaString + " 0.15)";
 
             } else {
                 //default array
@@ -2042,304 +5558,424 @@ var tdLoadingBox = {};
 
 
 
-/*  ----------------------------------------------------------------------------
-    On load
- */
+/* global jQuery:{} */
+/* global tdDetect:{} */
+/* global tdLocalCache:{} */
+/* global td_ajax_url:{} */
+
+var tdAjaxSearch = {};
+
 jQuery().ready(function() {
-    td_ajax_search.init();
+
+    'use strict';
+
+    tdAjaxSearch.init();
+
 });
 
+(function() {
 
-var td_ajax_search = {
+    'use strict';
 
-    // private vars
-    _current_selection_index:0,
-    _last_request_results_count:0,
-    _first_down_up:true,
-    _is_search_open:false,
+    tdAjaxSearch = {
 
-
-    /**
-     * init the class
-     */
-    init: function init() {
+        // private vars
+        _current_selection_index: 0,
+        _last_request_results_count: 0,
+        _first_down_up: true,
+        _is_search_open: false,
 
 
-        // hide the drop down if we click outside of it
-        jQuery(document).click(function(e) {
-            if(
-                e.target.className !== "td-icon-search"
-                && e.target.id !== "td-header-search"
-                && e.target.id !== "td-header-search-top"
-                && td_ajax_search._is_search_open === true
-            ) {
-                td_ajax_search.hide_search_box();
-            }
-        });
+        /**
+         * init the class
+         */
+        init: function init() {
 
-
-        // show and hide the drop down on the search icon
-        jQuery('#td-header-search-button').click(function(event){
-            event.preventDefault();
-            if (td_ajax_search._is_search_open === true) {
-                td_ajax_search.hide_search_box();
-
-            } else {
-                td_ajax_search.show_search_box();
-            }
-        });
-
-
-        // keydown on the text box
-        jQuery('#td-header-search').keydown(function(event) {
-            if (
-                (event.which && event.which == 39)
-                || (event.keyCode && event.keyCode == 39)
-                || (event.which && event.which == 37)
-                || (event.keyCode && event.keyCode == 37))
-            {
-                //do nothing on left and right arrows
-                td_ajax_search.td_aj_search_input_focus();
-                return;
-            }
-
-
-
-
-            if ((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) {
-                // on enter
-                var td_aj_cur_element = jQuery('.td-aj-cur-element');
-                if (td_aj_cur_element.length > 0) {
-                    //alert('ra');
-                    var td_go_to_url = td_aj_cur_element.find('.entry-title a').attr('href');
-                    window.location = td_go_to_url;
-                } else {
-                    jQuery(this).parent().parent().submit();
+            // hide the drop down if we click outside of it
+            jQuery(document).click(function(e) {
+                if (
+                    'td-icon-search' !== e.target.className &&
+                    'td-header-search' !== e.target.id &&
+                    'td-header-search-top' !== e.target.id &&
+                    true === tdAjaxSearch._is_search_open
+                ) {
+                    tdAjaxSearch.hide_search_box();
                 }
-                return false; //redirect for search on enter
-            } else {
+            });
 
-                if ((event.which && event.which == 40) || (event.keyCode && event.keyCode == 40)) {
-                    // down
-                    td_ajax_search.td_aj_search_move_prompt_down();
-                    return false; //disable the envent
 
-                } else if((event.which && event.which == 38) || (event.keyCode && event.keyCode == 38)) {
-                    //up
-                    td_ajax_search.td_aj_search_move_prompt_up();
-                    return false; //disable the envent
+            // show and hide the drop down on the search icon
+            jQuery( '#td-header-search-button' ).click(function(event){
+                event.preventDefault();
+                if (tdAjaxSearch._is_search_open === true) {
+                    tdAjaxSearch.hide_search_box();
+
                 } else {
+                    tdAjaxSearch.show_search_box();
+                }
+            });
 
+
+            // show and hide the drop down on the search icon for mobile
+            jQuery( '#td-header-search-button-mob' ).click(function(event){
+                jQuery( 'body' ).addClass( 'td-search-opened' );
+
+                var search_input = jQuery('#td-header-search-mob');
+
+                /**
+                 * Note: the autofocus does not work for iOS and windows phone devices as it's considered bad user experience
+                 */
+                    //autofocus
+                setTimeout(function(){
+                    search_input.focus();
+                }, 1300);
+
+                var current_query = search_input.val().trim();
+                if ( current_query.length > 0 ) {
+                    tdAjaxSearch.do_ajax_call_mob();
+                }
+            });
+
+
+            //close the search
+            jQuery( '.td-search-close a' ).click(function(){
+                jQuery( 'body' ).removeClass( 'td-search-opened' );
+            });
+
+
+            // keydown on the text box
+            jQuery( '#td-header-search' ).keydown(function(event) {
+                if (
+                    ( event.which && 39 === event.which ) ||
+                    ( event.keyCode && 39 === event.keyCode ) ||
+                    ( event.which && 37 === event.which ) ||
+                    ( event.keyCode && 37 === event.keyCode ) )
+                {
+                    //do nothing on left and right arrows
+                    tdAjaxSearch.td_aj_search_input_focus();
+                    return;
+                }
+
+                if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
+                    // on enter
+                    var td_aj_cur_element = jQuery('.td-aj-cur-element');
+                    if (td_aj_cur_element.length > 0) {
+                        //alert('ra');
+                        var td_go_to_url = td_aj_cur_element.find('.entry-title a').attr('href');
+                        window.location = td_go_to_url;
+                    } else {
+                        jQuery(this).parent().parent().submit();
+                    }
+                    return false; //redirect for search on enter
+
+                } else if ( ( event.which && 40 === event.which ) || ( event.keyCode && 40 === event.keyCode ) ) {
+                    // down
+                    tdAjaxSearch.move_prompt_down();
+                    return false; //disable the envent
+
+                } else if ( ( event.which && 38 === event.which ) || ( event.keyCode && 38 === event.keyCode ) ) {
+                    //up
+                    tdAjaxSearch.move_prompt_up();
+                    return false; //disable the envent
+
+                } else {
                     //for backspace we have to check if the search query is empty and if so, clear the list
-                    if ((event.which && event.which == 8) || (event.keyCode && event.keyCode == 8)) {
+                    if ( ( event.which && 8 === event.which ) || ( event.keyCode && 8 === event.keyCode ) ) {
                         //if we have just one character left, that means it will be deleted now and we also have to clear the search results list
                         var search_query = jQuery(this).val();
-                        if (search_query.length == 1) {
+                        if ( 1 === search_query.length ) {
                             jQuery('#td-aj-search').empty();
                         }
-
                     }
 
                     //various keys
-                    td_ajax_search.td_aj_search_input_focus();
+                    tdAjaxSearch.td_aj_search_input_focus();
                     //jQuery('#td-aj-search').empty();
                     setTimeout(function(){
-                        td_ajax_search.do_ajax_call();
+                        tdAjaxSearch.do_ajax_call();
                     }, 100);
                 }
                 return true;
+            });
+
+            // keydown on the text box
+            jQuery('#td-header-search-mob').keydown(function(event) {
+
+                if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
+                    // on enter
+                    var td_aj_cur_element = jQuery('.td-aj-cur-element');
+                    if (td_aj_cur_element.length > 0) {
+                        //alert('ra');
+                        var td_go_to_url = td_aj_cur_element.find( '.entry-title a' ).attr( 'href' );
+                        window.location = td_go_to_url;
+                    } else {
+                        jQuery(this).parent().parent().submit();
+                    }
+                    return false; //redirect for search on enter
+                } else {
+
+                    //for backspace we have to check if the search query is empty and if so, clear the list
+                    if ( ( event.which && 8 === event.which ) || ( event.keyCode && 8 === event.keyCode ) ) {
+                        //if we have just one character left, that means it will be deleted now and we also have to clear the search results list
+                        var search_query = jQuery(this).val();
+                        if ( 1 === search_query.length ) {
+                            jQuery('#td-aj-search-mob').empty();
+                        }
+                    }
+
+                    setTimeout(function(){
+                        tdAjaxSearch.do_ajax_call_mob();
+                    }, 100);
+
+                    return true;
+                }
+            });
+        },
+
+
+        show_search_box: function() {
+            jQuery( '.td-drop-down-search' ).addClass( 'td-drop-down-search-open' );
+            // do not try to autofocus on ios. It's still buggy as of 18 march 2015
+            if ( true !== tdDetect.isIos ) {
+                setTimeout(function(){
+                    document.getElementById( 'td-header-search' ).focus();
+                }, 200);
             }
-
-        });
-
-    },
+            tdAjaxSearch._is_search_open = true;
+        },
 
 
-    show_search_box: function open_search_box() {
-        jQuery(".td-drop-down-search").addClass('td-drop-down-search-open');
-        // do not try to autofocus on ios. It's still buggy as of 18 march 2015
-        if (tdDetect.isIos !== true) {
-            setTimeout(function(){
-                document.getElementById("td-header-search").focus();
-            }, 200);
-        }
-        td_ajax_search._is_search_open = true;
-    },
-
-
-    hide_search_box: function hide_search_box() {
-        jQuery(".td-drop-down-search").removeClass('td-drop-down-search-open');
-        td_ajax_search._is_search_open = false;
-    },
+        hide_search_box: function hide_search_box() {
+            jQuery(".td-drop-down-search").removeClass('td-drop-down-search-open');
+            tdAjaxSearch._is_search_open = false;
+        },
 
 
 
-    /**
-     * moves the select up
-     */
-    td_aj_search_move_prompt_up: function td_aj_search_move_prompt_up() {
-        if (td_ajax_search._first_down_up === true) {
-            td_ajax_search._first_down_up = false;
-            if (td_ajax_search._current_selection_index === 0) {
-                td_ajax_search._current_selection_index = td_ajax_search._last_request_results_count - 1;
-            } else {
-                td_ajax_search._current_selection_index--;
-            }
-        } else {
-            if (td_ajax_search._current_selection_index === 0) {
-                td_ajax_search._current_selection_index = td_ajax_search._last_request_results_count;
-            } else {
-                td_ajax_search._current_selection_index--;
-            }
-        }
-        jQuery('.td_module_wrap').removeClass('td-aj-cur-element');
-        if (td_ajax_search._current_selection_index  > td_ajax_search._last_request_results_count -1) {
-            //the input is selected
-            jQuery('.td-search-form').fadeTo(100, 1);
-        } else {
-            td_ajax_search.td_aj_search_input_remove_focus();
-            jQuery('.td_module_wrap').eq(td_ajax_search._current_selection_index).addClass('td-aj-cur-element');
-        }
-    },
-
-
-
-    /**
-     * moves the select prompt down
-     */
-    td_aj_search_move_prompt_down: function td_aj_search_move_prompt_down() {
-        if (td_ajax_search._first_down_up === true) {
-            td_ajax_search._first_down_up = false;
-        } else {
-            if (td_ajax_search._current_selection_index === td_ajax_search._last_request_results_count) {
-                td_ajax_search._current_selection_index = 0;
-            } else {
-                td_ajax_search._current_selection_index++;
-            }
-        }
-        jQuery('.td_module_wrap').removeClass('td-aj-cur-element');
-        if (td_ajax_search._current_selection_index > td_ajax_search._last_request_results_count - 1 ) {
-            //the input is selected
-            jQuery('.td-search-form').fadeTo(100, 1);
-        } else {
-            td_ajax_search.td_aj_search_input_remove_focus();
-            jQuery('.td_module_wrap').eq(td_ajax_search._current_selection_index).addClass('td-aj-cur-element');
-        }
-    },
-
-
-
-    /**
-     * puts the focus on the input box
-     */
-    td_aj_search_input_focus: function td_aj_search_input_focus() {
-        td_ajax_search._current_selection_index = 0;
-        td_ajax_search._first_down_up = true;
-        jQuery('.td-search-form').fadeTo(100, 1);
-        jQuery('.td_module_wrap').removeClass('td-aj-cur-element');
-    },
-
-
-
-    /**
-     * removes the focus from the input box
-     */
-    td_aj_search_input_remove_focus: function td_aj_search_input_remove_focus() {
-        if (td_ajax_search._last_request_results_count !== 0) {
-            jQuery('.td-search-form').css('opacity', 0.5);
-        }
-    },
-
-
-
-    /**
-     * AJAX: process the response from the server
-     */
-    process_ajax_response: function (data) {
-        var current_query = jQuery('#td-header-search').val();
-
-        //the search is empty - drop results
-        if (current_query == '') {
-            jQuery('#td-aj-search').empty();
-            return;
-        }
-
-        var td_data_object = jQuery.parseJSON(data); //get the data object
-        //drop the result - it's from a old query
-        if (td_data_object.td_search_query !== current_query) {
-            return;
-        }
-
-        //reset the current selection and total posts
-        td_ajax_search._current_selection_index = 0;
-        td_ajax_search._last_request_results_count = td_data_object.td_total_in_list;
-        td_ajax_search._first_down_up = true;
-
-
-        //update the query
-        jQuery('#td-aj-search').html(td_data_object.td_data);
-
-        /*
-         td_data_object.td_data
-         td_data_object.td_total_results
-         td_data_object.td_total_in_list
+        /**
+         * moves the select up
          */
-
-        // the .entry-thumb are searched for in the #td-aj-search object, sorted and added into the view port array items
-        if ((typeof window['tdAnimationStack'] !== 'undefined')  && (window['tdAnimationStack'].activated === true)) {
-            window['tdAnimationStack'].check_for_new_items('#td-aj-search .td-animation-stack', window['tdAnimationStack'].SORTED_METHOD.sort_left_to_right, true);
-            window['tdAnimationStack'].compute_items();
-        }
-    },
-
-
-
-    /**
-     * AJAX: do the ajax request
-     */
-    do_ajax_call: function do_ajax_call() {
-        if (jQuery('#td-header-search').val() == '') {
-            td_ajax_search.td_aj_search_input_focus();
-            return;
-        }
-
-
-
-        var search_query = jQuery('#td-header-search').val();
-
-
-        //do we have a cache hit
-        if (tdLocalCache.exist(search_query)) {
-            td_ajax_search.process_ajax_response(tdLocalCache.get(search_query));
-            return; //cache HIT
-        }
-
-
-        //fk no cache hit - do the real request
-
-
-
-        jQuery.ajax({
-            type: 'POST',
-            url: td_ajax_url,
-            data: {
-                action: 'td_ajax_search',
-                td_string: search_query
-            },
-            success: function(data, textStatus, XMLHttpRequest){
-                tdLocalCache.set(search_query, data);
-                td_ajax_search.process_ajax_response(data);
-            },
-            error: function(MLHttpRequest, textStatus, errorThrown){
-                //console.log(errorThrown);
+        move_prompt_up: function() {
+            if (tdAjaxSearch._first_down_up === true) {
+                tdAjaxSearch._first_down_up = false;
+                if (tdAjaxSearch._current_selection_index === 0) {
+                    tdAjaxSearch._current_selection_index = tdAjaxSearch._last_request_results_count - 1;
+                } else {
+                    tdAjaxSearch._current_selection_index--;
+                }
+            } else {
+                if (tdAjaxSearch._current_selection_index === 0) {
+                    tdAjaxSearch._current_selection_index = tdAjaxSearch._last_request_results_count;
+                } else {
+                    tdAjaxSearch._current_selection_index--;
+                }
             }
-        });
-    }
+            tdAjaxSearch._repaintCurrentElement();
+        },
 
 
-};
+
+        /**
+         * moves the select prompt down
+         */
+        move_prompt_down: function() {
+            if (tdAjaxSearch._first_down_up === true) {
+                tdAjaxSearch._first_down_up = false;
+            } else {
+                if (tdAjaxSearch._current_selection_index === tdAjaxSearch._last_request_results_count) {
+                    tdAjaxSearch._current_selection_index = 0;
+                } else {
+                    tdAjaxSearch._current_selection_index++;
+                }
+            }
+            tdAjaxSearch._repaintCurrentElement();
+        },
 
 
+        /**
+         * Recompute the current element in the search results.
+         * Used by the move_prompt_up and move_prompt_down
+         * @private
+         */
+        _repaintCurrentElement: function() {
+            jQuery( '.td_module_wrap' ).removeClass( 'td-aj-cur-element' );
+
+            if (tdAjaxSearch._current_selection_index > tdAjaxSearch._last_request_results_count - 1 ) {
+                //the input is selected
+                jQuery( '.td-search-form' ).fadeTo( 100, 1 );
+            } else {
+                tdAjaxSearch.td_aj_search_input_remove_focus();
+                jQuery( '.td_module_wrap' ).eq( tdAjaxSearch._current_selection_index ).addClass( 'td-aj-cur-element' );
+            }
+        },
+
+
+        /**
+         * puts the focus on the input box
+         */
+        td_aj_search_input_focus: function() {
+            tdAjaxSearch._current_selection_index = 0;
+            tdAjaxSearch._first_down_up = true;
+            jQuery( '.td-search-form' ).fadeTo( 100, 1 );
+            jQuery( '.td_module_wrap' ).removeClass( 'td-aj-cur-element' );
+        },
+
+
+
+        /**
+         * removes the focus from the input box
+         */
+        td_aj_search_input_remove_focus: function() {
+            if ( 0 !== tdAjaxSearch._last_request_results_count ) {
+                jQuery( '.td-search-form' ).css( 'opacity', 0.5 );
+            }
+        },
+
+
+
+        /**
+         * AJAX: process the response from the server
+         */
+        process_ajax_response: function(data) {
+            var current_query = jQuery( '#td-header-search' ).val();
+
+            //the search is empty - drop results
+            if ( '' === current_query ) {
+                jQuery( '#td-aj-search' ).empty();
+                return;
+            }
+
+            var td_data_object = jQuery.parseJSON(data); //get the data object
+            //drop the result - it's from a old query
+            if ( td_data_object.td_search_query !== current_query ) {
+                return;
+            }
+
+            //reset the current selection and total posts
+            tdAjaxSearch._current_selection_index = 0;
+            tdAjaxSearch._last_request_results_count = td_data_object.td_total_in_list;
+            tdAjaxSearch._first_down_up = true;
+
+            //update the query
+            jQuery( '#td-aj-search' ).html( td_data_object.td_data );
+
+            /*
+             td_data_object.td_data
+             td_data_object.td_total_results
+             td_data_object.td_total_in_list
+             */
+
+            // the .entry-thumb are searched for in the #td-aj-search object, sorted and added into the view port array items
+            if ( ( 'undefined' !== typeof window.tdAnimationStack )  && ( true === window.tdAnimationStack.activated ) ) {
+                window.tdAnimationStack.check_for_new_items( '#td-aj-search .td-animation-stack', window.tdAnimationStack.SORTED_METHOD.sort_left_to_right, true );
+                window.tdAnimationStack.compute_items();
+            }
+        },
+
+
+        /**
+         * AJAX: process the response from the server for the responsive version of the theme
+         */
+        process_ajax_response_mob: function(data) {
+            var current_query = jQuery( '#td-header-search-mob' ).val();
+
+            //the search is empty - drop results
+            if ( '' === current_query ) {
+                jQuery('#td-aj-search-mob').empty();
+                return;
+            }
+
+            var td_data_object = jQuery.parseJSON( data ); //get the data object
+            //drop the result - it's from a old query
+            if ( td_data_object.td_search_query !== current_query ) {
+                return;
+            }
+
+            //update the query
+            jQuery( '#td-aj-search-mob' ).html( td_data_object.td_data );
+
+            // the .entry-thumb are searched for in the #td-aj-search-mob object, sorted and added into the view port array items
+            if ( ( 'undefined' !== typeof window.tdAnimationStack )  && ( true === window.tdAnimationStack.activated ) ) {
+                window.tdAnimationStack.check_for_new_items( '#td-aj-search-mob .td-animation-stack', window.tdAnimationStack.SORTED_METHOD.sort_left_to_right, true );
+                window.tdAnimationStack.compute_items();
+            }
+        },
+
+
+        /**
+         * AJAX: do the ajax request
+         */
+        do_ajax_call: function() {
+            var search_query = jQuery('#td-header-search').val();
+
+            if ( '' === search_query ) {
+                tdAjaxSearch.td_aj_search_input_focus();
+                return;
+            }
+
+            //do we have a cache hit
+            if (tdLocalCache.exist(search_query)) {
+                tdAjaxSearch.process_ajax_response(tdLocalCache.get(search_query));
+                return; //cache HIT
+            }
+
+            //fk no cache hit - do the real request
+
+            jQuery.ajax({
+                type: 'POST',
+                url: td_ajax_url,
+                data: {
+                    action: 'td_ajax_search',
+                    td_string: search_query
+                },
+                success: function(data, textStatus, XMLHttpRequest){
+                    tdLocalCache.set(search_query, data);
+                    tdAjaxSearch.process_ajax_response(data);
+                },
+                error: function(MLHttpRequest, textStatus, errorThrown){
+                    //console.log(errorThrown);
+                }
+            });
+        },
+
+
+        /**
+         * AJAX: do the ajax request for the responsive version of the theme
+         */
+        do_ajax_call_mob: function() {
+            var search_query = jQuery( '#td-header-search-mob' ).val();
+
+            if ( '' === search_query) {
+                return;
+            }
+
+            //do we have a cache hit
+            if ( tdLocalCache.exist( search_query ) ) {
+                tdAjaxSearch.process_ajax_response_mob( tdLocalCache.get( search_query ) );
+                return; //cache HIT
+            }
+
+            //fk no cache hit - do the real request
+
+            jQuery.ajax({
+                type: 'POST',
+                url: td_ajax_url,
+                data: {
+                    action: 'td_ajax_search',
+                    td_string: search_query
+                },
+                success: function( data, textStatus, XMLHttpRequest ){
+                    tdLocalCache.set( search_query, data );
+                    tdAjaxSearch.process_ajax_response_mob( data );
+                },
+                error: function( MLHttpRequest, textStatus, errorThrown ){
+                    //console.log(errorThrown);
+                }
+            });
+        }
+    };
+
+})();
 
 ;'use strict';
 
@@ -2371,7 +6007,14 @@ jQuery().ready(function() {
     if ( ( 'undefined' !== typeof window.tds_general_modal_image ) && ( '' !== window.tds_general_modal_image ) ) {
         jQuery( '.single .td-post-content a > img' ).filter(function( index, element ) {
             if ( -1 !== element.className.indexOf( 'wp-image' ) ) {
-                jQuery( element ).parent().addClass( 'td-modal-image' );
+
+                var image_link = jQuery( element ).parent();
+                var href = image_link.attr("href");
+
+                //add the modal class only on post image links that do not link to attachment pages or custom URLs ( for media linking images only )
+                if ((-1 !== href.indexOf(document.domain)) && (-1 !== href.indexOf('uploads'))) {
+                    image_link.addClass( 'td-modal-image' );
+                }
             }
         });
     }
@@ -2886,13 +6529,15 @@ var tdBlocks = {};
             //change current filter value - the filter type is readed by td_ajax from the atts of the shortcode
             currentBlockObj.td_filter_value = jQuery(this).data('td_filter_value');
 
+            jQuery('.' + jQuery(this).data('td_block_id') + '_rand').find('.td-cur-simple-item').removeClass('td-cur-simple-item');
+            jQuery(this).addClass('td-cur-simple-item');
 
             currentBlockObj.td_current_page = 1;
 
 
             //put loading... text and hide the dropdown @todo - tranlation pt loading
             //tdBlocks.tdPullDownFilterChangeValue(currentBlockObj.id, '<span>Loading... </span><i class="td-icon-menu-down"></i>');
-            tdBlocks.tdPullDownFilterChangeValue(currentBlockUid, '<span>' + jQuery(this).html() + ' </span><i class="td-icon-menu-down"></i>');
+            //tdBlocks.tdPullDownFilterChangeValue(currentBlockUid, '<span>' + jQuery(this).html() + ' </span><i class="td-icon-menu-down"></i>');
 
 
             //hide the dropdown
@@ -3306,7 +6951,8 @@ jQuery().ready(function() {
     /**
      * Modal window js code
      */
-    jQuery( '.td-login-modal-js' ).magnificPopup({
+
+    var modalSettings = {
         type: 'inline',
         preloader: false,
         focus: '#name',
@@ -3320,10 +6966,10 @@ jQuery().ready(function() {
                 this.st.mainClass = this.st.el.attr('data-effect');
 
                 //empty all fields
-                td_modala_empty_all_fields();
+                tdLogin.clearFields();
 
                 //empty error display div
-                td_modala_empty_err_div();
+                tdLogin.showHideMsg();
 
                 if( jQuery( window ).width() < 700) {
                     this.st.focus = false;
@@ -3337,352 +6983,761 @@ jQuery().ready(function() {
 
             beforeClose: function() {
             }
+        },
+
+        // The modal login is disabled for widths under less than 750px
+        disableOn: function() {
+            if( jQuery(window).width() < 750 ) {
+                return false;
+            }
+            return true;
+        }
+    };
+
+
+
+    if ( undefined !== window.tds_login_sing_in_widget ) {
+        // The following settings are only for the modal magnific popup, which is disable when width is less than 750px
+        jQuery( '.comment-reply-login' ).attr({
+            'href': '#login-form',
+            'data-effect': 'mpf-td-login-effect'
+        });
+
+        // Set the modal magnific popup settings
+        jQuery( '.comment-reply-login, .td-login-modal-js' ).magnificPopup( modalSettings );
+    }
+
+    // - Set the normal link that will apply only for windows widths less than 750px
+    // - Used for log in to leave a comment on post page to open the login section
+    jQuery( '.td-login-modal-js, .comment-reply-login' ).on( 'click', function( event ) {
+
+        if ( jQuery( window ).width() < 750 && undefined !== window.tds_login_sing_in_widget ) {
+
+
+            event.preventDefault();
+
+            // open the menu background
+            jQuery( 'body' ).addClass( 'td-menu-mob-open-menu' );
+
+            // hide the menu content
+            jQuery( '.td-mobile-container' ).hide();
+            jQuery( '#td-mobile-nav' ).addClass( 'td-hide-menu-content' );
+
+            setTimeout(function(){
+                jQuery( '.td-mobile-container' ).show();
+            }, 500);
+
+            //hides or shows the divs with inputs
+            tdLogin.showHideElementsMobile( [['#td-login-mob', 1], ['#td-register-mob', 0], ['#td-forgot-pass-mob', 0]] );
         }
     });
+
 
     //login
     jQuery( '#login-link' ).on( 'click', function() {
         //hides or shows the divs with inputs
-        show_hide_content_modala( [['#td-login-div', 1], ['#td-register-div', 0], ['#td-forgot-pass-div', 0]] );
+        tdLogin.showHideElements( [['#td-login-div', 1], ['#td-register-div', 0], ['#td-forgot-pass-div', 0]] );
 
-        //moves focus on the tab
-        modala_swich_tabs( [['#login-link', 1], ['#register-link', 0]] );
+        jQuery( '#login-form' ).addClass( 'td-login-animation' );
 
         if ( jQuery(window).width() > 700 && tdDetect.isIe === false ) {
             jQuery( '#login_email' ).focus();
         }
 
-        //empty all fields
-        //td_modala_empty_all_fields();
-
         //empty error display div
-        td_modala_empty_err_div();
+        tdLogin.showHideMsg();
     });
 
-    //login button
-    jQuery( '#login_button' ).on( 'click', function() {
-        handle_login_for_modal_window();
-    });
-
-    //enter key on #login_pass
-    jQuery( '#login_pass' ).keydown(function(event) {
-        if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
-            handle_login_for_modal_window();
-        }
-    });
 
     //register
     jQuery( '#register-link' ).on( 'click', function() {
         //hides or shows the divs with inputs
-        show_hide_content_modala( [['#td-login-div', 0], ['#td-register-div', 1], ['#td-forgot-pass-div', 0]] );
+        tdLogin.showHideElements( [['#td-login-div', 0], ['#td-register-div', 1], ['#td-forgot-pass-div', 0]] );
 
-        //moves focus on the tab
-        modala_swich_tabs( [['#login-link', 0], ['#register-link', 1]] );
+        jQuery( '#login-form' ).addClass( 'td-login-animation' );
 
         if ( jQuery( window ).width() > 700  && false === tdDetect.isIe ) {
             jQuery( '#register_email' ).focus();
         }
 
-        //empty all fields
-        //td_modala_empty_all_fields();
-
         //empty error display div
-        td_modala_empty_err_div();
+        tdLogin.showHideMsg();
     });
 
-    //register button
-    jQuery( '#register_button' ).on( 'click', function() {
-        handle_register_for_modal_window();
-    });
-
-    //enter key on #register_user
-    jQuery( '#register_user' ).keydown(function(event) {
-        if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
-            handle_register_for_modal_window();
-        }
-    });
 
     //forgot pass
-    jQuery( '#forgot-pass-link' ).on( 'click', function() {
+    jQuery( '#forgot-pass-link' ).on( 'click', function(event) {
+        //prevent scroll to page top
+        event.preventDefault();
         //hides or shows the divs with inputs
-        show_hide_content_modala( [['#td-login-div', 0], ['#td-register-div', 0], ['#td-forgot-pass-div', 1]] );
+        tdLogin.showHideElements( [['#td-login-div', 0], ['#td-register-div', 0], ['#td-forgot-pass-div', 1]] );
 
-        //moves focus on the tab
-        modala_swich_tabs( [['#login-link', 0], ['#register-link', 0]] );
+        jQuery( '#login-form' ).addClass( 'td-login-animation' );
 
         if (jQuery( window ).width() > 700 && false === tdDetect.isIe ) {
             jQuery( '#forgot_email' ).focus();
         }
 
-        //empty all fields
-        //td_modala_empty_all_fields();
-
         //empty error display div
-        td_modala_empty_err_div();
+        tdLogin.showHideMsg();
     });
+    
+
+    //login button
+    jQuery( '#login_button' ).on( 'click', function() {
+        tdLogin.handlerLogin();
+    });
+
+    //enter key on #login_pass
+    jQuery( '#login_pass' ).keydown(function(event) {
+        if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
+            tdLogin.handlerLogin();
+        }
+    });
+
+
+    //register button
+    jQuery( '#register_button' ).on( 'click', function() {
+        tdLogin.handlerRegister();
+    });
+
+    //enter key on #register_user
+    jQuery( '#register_user' ).keydown(function(event) {
+        if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
+            tdLogin.handlerRegister();
+        }
+    });
+
 
     //forgot button
     jQuery( '#forgot_button' ).on( 'click', function() {
-        handle_forgot_password_for_modal_window();
+        tdLogin.handlerForgotPass();
     });
 
     //enter key on #forgot_email
     jQuery( '#forgot_email' ).keydown(function(event) {
         if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
-            handle_forgot_password_for_modal_window();
+            tdLogin.handlerForgotPass();
         }
+    });
+
+
+    // marius
+    jQuery( '.td-back-button' ).on( 'click', function() {
+        //hides or shows the divs with inputs
+        tdLogin.showHideElements( [['#td-login-div', 1], ['#td-register-div', 0], ['#td-forgot-pass-div', 0]] );
+
+        jQuery( '#login-form' ).removeClass( 'td-login-animation' );
+
+        // clear the error message when press back
+        jQuery( '.td_display_err' ).hide();
     });
 });//end jquery ready
 
 
 
-//patern to check emails
-var td_mod_pattern_email = /^[a-zA-Z0-9][a-zA-Z0-9_\.-]{0,}[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9_\.-]{0,}[a-z0-9][\.][a-z0-9]{2,4}$/,
-    handle_login_for_modal_window,
-    handle_register_for_modal_window,
-    handle_forgot_password_for_modal_window,
-    show_hide_content_modala,
-    modala_swich_tabs,
-    modala_add_remove_class,
-    td_modala_empty_err_div,
-    td_modala_write_err_div,
-    td_modala_empty_all_fields,
-    td_modala_call_ajax;
+
+var tdLogin = {};
 
 
 (function(){
 
     'use strict';
 
-    /**
-     * handle all request made from login tab
-     */
-    handle_login_for_modal_window = function() {
-        var login_email = jQuery( '#login_email' ).val();
-        var login_pass = jQuery( '#login_pass' ).val();
+    tdLogin = {
 
-        if ( login_email && login_pass ) {
-            //empty error display div
-            //td_modala_empty_err_div();
+        //patern to check emails
+        email_pattern : /^[a-zA-Z0-9][a-zA-Z0-9_\.-]{0,}[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9_\.-]{0,}[a-z0-9][\.][a-z0-9]{2,4}$/,
 
-            modala_add_remove_class( ['.td_display_err', 1, 'td_display_msg_ok'] );
-            jQuery( '.td_display_err' ).show();
-            td_modala_write_err_div( td_please_wait );
+        /**
+         * handle all request made from login tab
+         */
+        handlerLogin : function() {
+            var loginEmailEl = jQuery( '#login_email'),
+                loginPassEl = jQuery( '#login_pass' );
 
-            //call ajax for log in
-            td_modala_call_ajax( 'td_mod_login', login_email, '', login_pass );
-        } else {
-            jQuery( '.td_display_err' ).show();
-            td_modala_write_err_div( td_email_user_pass_incorrect );
-        }
-    };
+            if ( loginEmailEl.length && loginPassEl.length ) {
+                var loginEmailVal = loginEmailEl.val().trim(),
+                    loginPassVal = loginPassEl.val().trim();
 
-    /**
-     * handle all request made from register tab
-     */
-    handle_register_for_modal_window = function() {
-        var register_email = jQuery( '#register_email' ).val();
-        var register_user = jQuery( '#register_user' ).val();
+                if ( loginEmailVal && loginPassVal ) {
+                    tdLogin.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                    tdLogin.showHideMsg( td_please_wait );
 
-        if ( td_mod_pattern_email.test( register_email ) && register_user ) {
-            //empty error display div
-            //td_modala_empty_err_div();
-
-            modala_add_remove_class( ['.td_display_err', 1, 'td_display_msg_ok'] );
-            jQuery( '.td_display_err' ).show();
-            td_modala_write_err_div( td_please_wait );
-
-            //call ajax
-            td_modala_call_ajax( 'td_mod_register', register_email, register_user, '' );
-        } else {
-            jQuery( '.td_display_err' ).show();
-            td_modala_write_err_div( td_email_user_incorrect );
-        }
-    };
-
-    /**
-     * handle all request made from forgot password tab
-     */
-    handle_forgot_password_for_modal_window = function() {
-        var forgot_email = jQuery( '#forgot_email' ).val();
-
-        if ( td_mod_pattern_email.test( forgot_email ) ){
-            //empty error display div
-            //td_modala_empty_err_div();
-
-            modala_add_remove_class( ['.td_display_err', 1, 'td_display_msg_ok'] );
-            jQuery( '.td_display_err' ).show();
-            td_modala_write_err_div( td_please_wait );
-
-            //call ajax
-            td_modala_call_ajax( 'td_mod_remember_pass', forgot_email, '', '' );
-        } else {
-            jQuery( '.td_display_err' ).show();
-            td_modala_write_err_div( td_email_incorrect );
-        }
-    };
-
-
-    /**
-     * swhich the div's acordingly to the user action (Log In, Register, Remember Password)
-     *
-     * ids_array : array of ids that have to be showed or hidden
-     */
-    show_hide_content_modala = function( ids_array ) {
-        var length = ids_array.length;
-
-        for ( var i = 0; i < length; i++ ) {
-            var element_id = ids_array[ i ][0];
-            var element_visibility = ids_array[ i ][1];
-
-            if ( 1 === element_visibility ) {
-                jQuery( element_id ).removeClass( 'td-dispaly-none' ).addClass( 'td-dispaly-block' );
-            } else {
-                jQuery( element_id ).removeClass( 'td-dispaly-block' ).addClass( 'td-dispaly-none' );
-            }
-        }
-    };
-
-
-    /**
-     * swhich the tab's acordingly to the user action (Log In, Register, Remember Password)
-     *
-     * ids_array : array of ids that have to be focus on or unfocus
-     */
-    modala_swich_tabs = function( ids_array ) {
-        var length = ids_array.length;
-
-        for ( var i = 0; i < length; i++ ) {
-            var element_id = ids_array[ i ][0];
-            var element_visibility = ids_array[ i ][1];
-
-            if ( 1 === element_visibility ) {
-                jQuery( element_id ).addClass( 'td_login_tab_focus' );
-            } else {
-                jQuery( element_id ).removeClass( 'td_login_tab_focus' );
-            }
-        }
-    };
-
-
-    /**
-     * adds or remove a class from an html object
-     *
-     * param : array with object identifier (id - # or class - .)
-     * ex: ['.class_indetifier', 1, 'class_to_add'] or ['.class_indetifier', 0, 'class_to_remove']
-     */
-    modala_add_remove_class = function( param ) {
-
-        //add class
-        if ( 1 === param[1] ) {
-            jQuery( param[0] ).addClass( param[2] );
-
-            //remove class
-        } else {
-            jQuery( param[0] ).removeClass( param[2] );
-        }
-    };
-
-
-    /**
-     * empty the error div
-     */
-    td_modala_empty_err_div = function() {
-        var jQueryObj = jQuery( '.td_display_err');
-        if ( jQueryObj.length ) {
-            jQueryObj.html( '' );
-            jQueryObj.hide();
-        }
-    };
-
-
-    /**
-     * write text to error div
-     */
-    td_modala_write_err_div = function( message ) {
-        jQuery( '.td_display_err' ).html( message );
-    };
-
-
-    /**
-     * empty all fields in modal window
-     */
-    td_modala_empty_all_fields = function() {
-        //login fields
-        jQuery( '#login_email' ).val( '' );
-        jQuery( '#login_pass' ).val( '' );
-
-        //register fields
-        jQuery( '#register_email' ).val( '' );
-        jQuery( '#register_user' ).val( '' );
-
-        //forgot pass
-        jQuery( '#forgot_email' ).val( '' );
-    };
-
-
-    /**
-     * call to server from modal window
-     *
-     * @param $action : what action (log in, register, forgot email)
-     * @param $email  : the email beening sent
-     * @param $user   : the user name beening sent
-     */
-    td_modala_call_ajax = function( sent_action, sent_email, sent_user, sent_pass ) {
-        jQuery.ajax({
-            type: 'POST',
-            url: td_ajax_url,
-            data: {
-                action: sent_action,
-                email: sent_email,
-                user: sent_user,
-                pass: sent_pass
-            },
-            success: function( data, textStatus, XMLHttpRequest ){
-                var td_data_object = jQuery.parseJSON( data ); //get the data object
-
-                //check the response from server
-                switch( td_data_object[0] ) {
-                    case 'login':
-                        if ( 1 === td_data_object[1] ) {
-                            location.reload( true );
-                        } else {
-                            modala_add_remove_class( ['.td_display_err', 0, 'td_display_msg_ok'] );
-                            jQuery( '.td_display_err' ).show();
-                            td_modala_write_err_div( td_data_object[2] );
-                        }
-                        break;
-
-                    case 'register':
-                        if ( 1 === td_data_object[1] ) {
-                            modala_add_remove_class( ['.td_display_err', 1, 'td_display_msg_ok'] );
-                            jQuery( '.td_display_err' ).show();
-                        } else {
-                            modala_add_remove_class( ['.td_display_err', 0, 'td_display_msg_ok'] );
-                            jQuery( '.td_display_err' ).show();
-                        }
-                        td_modala_write_err_div( td_data_object[2] );
-                        break;
-
-                    case 'remember_pass':
-                        if ( 1 === td_data_object[1] ) {
-                            modala_add_remove_class( ['.td_display_err', 1, 'td_display_msg_ok'] );
-                            jQuery( '.td_display_err' ).show();
-                        } else {
-                            modala_add_remove_class( ['.td_display_err', 0, 'td_display_msg_ok'] );
-                            jQuery( '.td_display_err' ).show();
-                        }
-                        td_modala_write_err_div( td_data_object[2] );
-                        break;
-
+                    //call ajax for log in
+                    tdLogin.doAction( 'td_mod_login', loginEmailVal, '', loginPassVal );
+                } else {
+                    tdLogin.showHideMsg( td_email_user_pass_incorrect );
                 }
-
-
-            },
-            error: function( MLHttpRequest, textStatus, errorThrown ){
-                //console.log(errorThrown);
             }
-        });
+        },
+
+
+        /**
+         * handle all request made from register tab
+         */
+        handlerRegister : function() {
+            var registerEmailEl = jQuery( '#register_email' ),
+                registerUserEl = jQuery( '#register_user' );
+
+            if ( registerEmailEl.length && registerUserEl.length ) {
+                var registerEmailVal = registerEmailEl.val().trim(),
+                    registerUserVal = registerUserEl.val().trim();
+
+                if ( tdLogin.email_pattern.test( registerEmailVal ) && registerUserVal ) {
+
+                    tdLogin.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                    tdLogin.showHideMsg( td_please_wait );
+
+                    //call ajax
+                    tdLogin.doAction( 'td_mod_register', registerEmailVal, registerUserVal, '' );
+                } else {
+                    tdLogin.showHideMsg( td_email_user_incorrect );
+                }
+            }
+        },
+
+
+        /**
+         * handle all request made from forgot password tab
+         */
+        handlerForgotPass : function() {
+            var forgotEmailEl = jQuery( '#forgot_email' );
+
+            if ( forgotEmailEl.length ) {
+                var forgotEmailVal = forgotEmailEl.val().trim();
+
+                if ( tdLogin.email_pattern.test( forgotEmailVal ) ){
+
+                    tdLogin.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                    tdLogin.showHideMsg( td_please_wait );
+
+                    //call ajax
+                    tdLogin.doAction( 'td_mod_remember_pass', forgotEmailVal, '', '' );
+                } else {
+                    tdLogin.showHideMsg( td_email_incorrect );
+                }
+            }
+        },
+
+
+        /**
+         * swhich the div's acordingly to the user action (Log In, Register, Remember Password)
+         *
+         * ids_array : array of ids that have to be showed or hidden
+         */
+        showHideElements : function( ids_array ) {
+            if ( ids_array.constructor === Array ) {
+                var length = ids_array.length;
+
+                for ( var i = 0; i < length; i++ ) {
+                    if ( ids_array[ i ].constructor === Array && 2 === ids_array[ i ].length ) {
+                        var jqElement = jQuery( ids_array[ i ][0] );
+                        if ( jqElement.length ) {
+                            if ( 1 === ids_array[ i ][1] ) {
+                                jqElement.removeClass( 'td-display-none' ).addClass( 'td-display-block' );
+                            } else {
+                                jqElement.removeClass( 'td-display-block' ).addClass( 'td-display-none' );
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        showHideElementsMobile : function( ids_array ) {
+            if ( ids_array.constructor === Array ) {
+                var length = ids_array.length;
+
+                for ( var i = 0; i < length; i++ ) {
+                    if ( ids_array[ i ].constructor === Array && 2 === ids_array[ i ].length ) {
+                        var jqElement = jQuery( ids_array[ i ][0] );
+                        if ( jqElement.length ) {
+                            if ( 1 === ids_array[ i ][1] ) {
+                                jqElement.removeClass( 'td-login-hide' ).addClass( 'td-login-show' );
+                            } else {
+                                jqElement.removeClass( 'td-login-show' ).addClass( 'td-login-hide' );
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+        showTabs : function( ids_array ) {
+            if ( ids_array.constructor === Array ) {
+                var length = ids_array.length;
+
+                for ( var i = 0; i < length; i++ ) {
+                    if ( ids_array[ i ].constructor === Array && 2 === ids_array[ i ].length ) {
+                        var jqElement = jQuery( ids_array[ i ][0] );
+                        if ( jqElement.length ) {
+                            if ( 1 === ids_array[ i ][1] ) {
+                                jqElement.addClass( 'td_login_tab_focus' );
+                            } else {
+                                jqElement.removeClass( 'td_login_tab_focus' );
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+        /**
+         * adds or remove a class from an html object
+         *
+         * param : array with object identifier (id - # or class - .)
+         * ex: ['.class_indetifier', 1, 'class_to_add'] or ['.class_indetifier', 0, 'class_to_remove']
+         */
+        addRemoveClass : function( param ) {
+            if ( param.constructor === Array && 3 === param.length ) {
+                var tdElement = jQuery( param[0] );
+                if ( tdElement.length ) {
+                    if ( 1 === param[1] ) {
+                        tdElement.addClass( param[2] );
+                    } else {
+                        tdElement.removeClass( param[2] );
+                    }
+                }
+            }
+        },
+
+
+        showHideMsg : function( msg ) {
+            var tdDisplayErr = jQuery( '.td_display_err' );
+            if ( tdDisplayErr.length ) {
+                if ( undefined !== msg && msg.constructor === String && msg.length > 0 ) {
+                    tdDisplayErr.show();
+                    tdDisplayErr.html( msg );
+                } else {
+                    tdDisplayErr.hide();
+                    tdDisplayErr.html( '' );
+                }
+            }
+        },
+
+
+        /**
+         * empty all fields in modal window
+         */
+        clearFields : function() {
+            //login fields
+            jQuery( '#login_email' ).val( '' );
+            jQuery( '#login_pass' ).val( '' );
+
+            //register fields
+            jQuery( '#register_email' ).val( '' );
+            jQuery( '#register_user' ).val( '' );
+
+            //forgot pass
+            jQuery( '#forgot_email' ).val( '' );
+        },
+
+
+        /**
+         * call to server from modal window
+         *
+         * @param $action : what action (log in, register, forgot email)
+         * @param $email  : the email beening sent
+         * @param $user   : the user name beening sent
+         */
+        doAction : function( sent_action, sent_email, sent_user, sent_pass ) {
+            jQuery.ajax({
+                type: 'POST',
+                url: td_ajax_url,
+                data: {
+                    action: sent_action,
+                    email: sent_email,
+                    user: sent_user,
+                    pass: sent_pass
+                },
+                success: function( data, textStatus, XMLHttpRequest ){
+                    var td_data_object = jQuery.parseJSON( data ); //get the data object
+
+                    //check the response from server
+                    switch( td_data_object[0] ) {
+                        case 'login':
+                            if ( 1 === td_data_object[1] ) {
+                                location.reload( true );
+                            } else {
+                                tdLogin.addRemoveClass( ['.td_display_err', 0, 'td_display_msg_ok'] );
+                                tdLogin.showHideMsg( td_data_object[2] );
+                            }
+                            break;
+
+                        case 'register':
+                            if ( 1 === td_data_object[1] ) {
+                                tdLogin.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                            } else {
+                                tdLogin.addRemoveClass( ['.td_display_err', 0, 'td_display_msg_ok'] );
+                            }
+                            tdLogin.showHideMsg( td_data_object[2] );
+                            break;
+
+                        case 'remember_pass':
+                            if ( 1 === td_data_object[1] ) {
+                                tdLogin.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                            } else {
+                                tdLogin.addRemoveClass( ['.td_display_err', 0, 'td_display_msg_ok'] );
+                            }
+                            tdLogin.showHideMsg( td_data_object[2] );
+                            break;
+                    }
+                },
+                error: function( MLHttpRequest, textStatus, errorThrown ){
+                    //console.log(errorThrown);
+                }
+            });
+        }
+    };
+
+})();
+/*
+ td_util.js
+ v1.1
+ */
+
+/* global jQuery:{} */
+/* global tdDetect:{} */
+/* global td_ajax_url:string */
+
+/* global td_please_wait:string */
+/* global td_email_user_pass_incorrect:string */
+/* global td_email_user_incorrect:string */
+/* global td_email_incorrect:string */
+
+
+
+/*  ----------------------------------------------------------------------------
+ On load
+ */
+jQuery().ready(function() {
+
+    'use strict';
+
+    //login
+    jQuery( '#login-link-mob' ).on( 'click', function() {
+        //hides or shows the divs with inputs
+        tdLoginMob.showHideElements( [['#td-login-mob', 1], ['#td-register-mob', 0], ['#td-forgot-pass-mob', 0]] );
+
+        jQuery( '#td-mobile-nav' ).addClass( 'td-hide-menu-content' );
+
+        if ( jQuery(window).width() > 700 && tdDetect.isIe === false ) {
+            jQuery( '#login_email-mob' ).focus();
+        }
+
+        //empty error display div
+        tdLoginMob.showHideMsg();
+    });
+
+    //register
+    jQuery( '#register-link-mob' ).on( 'click', function() {
+        //hides or shows the divs with inputs
+        tdLoginMob.showHideElements( [['#td-login-mob', 0], ['#td-register-mob', 1], ['#td-forgot-pass-mob', 0]] );
+
+        jQuery( '#td-mobile-nav' ).addClass( 'td-hide-menu-content' );
+
+        if ( jQuery( window ).width() > 700  && false === tdDetect.isIe ) {
+            jQuery( '#register_email-mob' ).focus();
+        }
+
+        //empty error display div
+        tdLoginMob.showHideMsg();
+    });
+
+    //forgot pass
+    jQuery( '#forgot-pass-link-mob' ).on( 'click', function() {
+        //hides or shows the divs with inputs
+        tdLoginMob.showHideElements( [['#td-login-mob', 0], ['#td-register-mob', 0], ['#td-forgot-pass-mob', 1]] );
+
+        if (jQuery( window ).width() > 700 && false === tdDetect.isIe ) {
+            jQuery( '#forgot_email-mob' ).focus();
+        }
+
+        //empty error display div
+        tdLoginMob.showHideMsg();
+    });
+
+
+    //login button
+    jQuery( '#login_button-mob' ).on( 'click', function() {
+        tdLoginMob.handlerLogin();
+    });
+
+    //enter key on #login_pass
+    jQuery( '#login_pass-mob' ).keydown(function(event) {
+        if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
+            tdLoginMob.handlerLogin();
+        }
+    });
+
+
+    //register button
+    jQuery( '#register_button-mob' ).on( 'click', function() {
+        tdLoginMob.handlerRegister();
+    });
+
+    //enter key on #register_user
+    jQuery( '#register_user-mob' ).keydown(function(event) {
+        if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
+            tdLoginMob.handlerRegister();
+        }
+    });
+
+
+    //forgot button
+    jQuery( '#forgot_button-mob' ).on( 'click', function() {
+        tdLoginMob.handlerForgotPass();
+    });
+
+    //enter key on #forgot_email
+    jQuery( '#forgot_email-mob' ).keydown(function(event) {
+        if ( ( event.which && 13 === event.which ) || ( event.keyCode && 13 === event.keyCode ) ) {
+            tdLoginMob.handlerForgotPass();
+        }
+    });
+
+
+    // marius
+    // *****************************************************************************
+    // *****************************************************************************
+    // back login/register button
+    jQuery( '#td-mobile-nav .td-login-close a, #td-mobile-nav .td-register-close a' ).on( 'click', function() {
+        //hides or shows the divs with inputs
+        tdLoginMob.showHideElements( [['#td-login-mob', 0], ['#td-register-mob', 0], ['#td-forgot-pass-mob', 0]] );
+
+        jQuery( '#td-mobile-nav' ).removeClass( 'td-hide-menu-content' );
+    });
+
+    // back forgot pass button
+    jQuery( '#td-mobile-nav .td-forgot-pass-close a' ).on( 'click', function() {
+        //hides or shows the divs with inputs
+        tdLoginMob.showHideElements( [['#td-login-mob', 1], ['#td-register-mob', 0], ['#td-forgot-pass-mob', 0]] );
+    });
+
+});//end jquery ready
+
+
+
+
+
+var tdLoginMob = {};
+
+
+(function(){
+
+    'use strict';
+
+    tdLoginMob = {
+
+        //patern to check emails
+        email_pattern : /^[a-zA-Z0-9][a-zA-Z0-9_\.-]{0,}[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9_\.-]{0,}[a-z0-9][\.][a-z0-9]{2,4}$/,
+
+        /**
+         * handle all request made from login tab
+         */
+        handlerLogin : function() {
+            var loginEmailEl = jQuery( '#login_email-mob'),
+                loginPassEl = jQuery( '#login_pass-mob' );
+
+            if ( loginEmailEl.length && loginPassEl.length ) {
+                var loginEmailVal = loginEmailEl.val().trim(),
+                    loginPassVal = loginPassEl.val().trim();
+
+                if ( loginEmailVal && loginPassVal ) {
+                    tdLoginMob.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                    tdLoginMob.showHideMsg( td_please_wait );
+
+                    //call ajax for log in
+                    tdLoginMob.doAction( 'td_mod_login', loginEmailVal, '', loginPassVal );
+                } else {
+                    tdLoginMob.showHideMsg( td_email_user_pass_incorrect );
+                }
+            }
+        },
+
+
+        /**
+         * handle all request made from register tab
+         */
+        handlerRegister : function() {
+            var registerEmailEl = jQuery( '#register_email-mob' ),
+                registerUserEl = jQuery( '#register_user-mob' );
+
+            if ( registerEmailEl.length && registerUserEl.length ) {
+                var registerEmailVal = registerEmailEl.val().trim(),
+                    registerUserVal = registerUserEl.val().trim();
+
+                if ( tdLoginMob.email_pattern.test( registerEmailVal ) && registerUserVal ) {
+
+                    tdLoginMob.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                    tdLoginMob.showHideMsg( td_please_wait );
+
+                    //call ajax
+                    tdLoginMob.doAction( 'td_mod_register', registerEmailVal, registerUserVal, '' );
+                } else {
+                    tdLoginMob.showHideMsg( td_email_user_incorrect );
+                }
+            }
+        },
+
+
+        /**
+         * handle all request made from forgot password tab
+         */
+        handlerForgotPass : function() {
+            var forgotEmailEl = jQuery( '#forgot_email-mob' );
+
+            if ( forgotEmailEl.length ) {
+                var forgotEmailVal = forgotEmailEl.val().trim();
+
+                if ( tdLoginMob.email_pattern.test( forgotEmailVal ) ){
+
+                    tdLoginMob.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                    tdLoginMob.showHideMsg( td_please_wait );
+
+                    //call ajax
+                    tdLoginMob.doAction( 'td_mod_remember_pass', forgotEmailVal, '', '' );
+                } else {
+                    tdLoginMob.showHideMsg( td_email_incorrect );
+                }
+            }
+        },
+
+
+        /**
+         * swhich the div's acordingly to the user action (Log In, Register, Remember Password)
+         *
+         * ids_array : array of ids that have to be showed or hidden
+         */
+        showHideElements : function( ids_array ) {
+            if ( ids_array.constructor === Array ) {
+                var length = ids_array.length;
+
+                for ( var i = 0; i < length; i++ ) {
+                    if ( ids_array[ i ].constructor === Array && 2 === ids_array[ i ].length ) {
+                        var jqElement = jQuery( ids_array[ i ][0] );
+                        if ( jqElement.length ) {
+                            if ( 1 === ids_array[ i ][1] ) {
+                                jqElement.removeClass( 'td-login-hide' ).addClass( 'td-login-show' );
+                            } else {
+                                jqElement.removeClass( 'td-login-show' ).addClass( 'td-login-hide' );
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+        /**
+         * adds or remove a class from an html object
+         *
+         * param : array with object identifier (id - # or class - .)
+         * ex: ['.class_indetifier', 1, 'class_to_add'] or ['.class_indetifier', 0, 'class_to_remove']
+         */
+        addRemoveClass : function( param ) {
+            if ( param.constructor === Array && 3 === param.length ) {
+                var jqElement = jQuery( param[0] );
+                if ( jqElement.length ) {
+                    if ( 1 === param[1] ) {
+                        jqElement.addClass( param[2] );
+                    } else {
+                        jqElement.removeClass( param[2] );
+                    }
+                }
+            }
+        },
+
+
+        showHideMsg : function( msg ) {
+            var tdDisplayErr = jQuery( '.td_display_err' );
+            if ( tdDisplayErr.length ) {
+                if ( undefined !== msg && msg.constructor === String && msg.length > 0 ) {
+                    tdDisplayErr.show();
+                    tdDisplayErr.html( msg );
+                } else {
+                    tdDisplayErr.hide();
+                    tdDisplayErr.html( '' );
+                }
+            }
+        },
+
+
+        /**
+         * empty all fields in modal window
+         */
+        clearFields : function() {
+            //login fields
+            jQuery( '#login_email-mob' ).val( '' );
+            jQuery( '#login_pass-mob' ).val( '' );
+
+            //register fields
+            jQuery( '#register_email-mob' ).val( '' );
+            jQuery( '#register_user-mob' ).val( '' );
+
+            //forgot pass
+            jQuery( '#forgot_email-mob' ).val( '' );
+        },
+
+
+        /**
+         * call to server from modal window
+         *
+         * @param $action : what action (log in, register, forgot email)
+         * @param $email  : the email beening sent
+         * @param $user   : the user name beening sent
+         */
+        doAction : function( sent_action, sent_email, sent_user, sent_pass ) {
+            jQuery.ajax({
+                type: 'POST',
+                url: td_ajax_url,
+                data: {
+                    action: sent_action,
+                    email: sent_email,
+                    user: sent_user,
+                    pass: sent_pass
+                },
+                success: function( data, textStatus, XMLHttpRequest ){
+                    var td_data_object = jQuery.parseJSON( data ); //get the data object
+
+                    //check the response from server
+                    switch( td_data_object[0] ) {
+                        case 'login':
+                            if ( 1 === td_data_object[1] ) {
+                                location.reload( true );
+                            } else {
+                                tdLoginMob.addRemoveClass( ['.td_display_err', 0, 'td_display_msg_ok'] );
+                                tdLoginMob.showHideMsg( td_data_object[2] );
+                            }
+                            break;
+
+                        case 'register':
+                            if ( 1 === td_data_object[1] ) {
+                                tdLoginMob.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                            } else {
+                                tdLoginMob.addRemoveClass( ['.td_display_err', 0, 'td_display_msg_ok'] );
+                            }
+                            tdLoginMob.showHideMsg( td_data_object[2] );
+                            break;
+
+                        case 'remember_pass':
+                            if ( 1 === td_data_object[1] ) {
+                                tdLoginMob.addRemoveClass( ['.td_display_err', 1, 'td_display_msg_ok'] );
+                            } else {
+                                tdLoginMob.addRemoveClass( ['.td_display_err', 0, 'td_display_msg_ok'] );
+                            }
+                            tdLoginMob.showHideMsg( td_data_object[2] );
+                            break;
+                    }
+                },
+                error: function( MLHttpRequest, textStatus, errorThrown ){
+                    //console.log(errorThrown);
+                }
+            });
+        }
     };
 
 })();
@@ -3698,25 +7753,695 @@ var td_mod_pattern_email = /^[a-zA-Z0-9][a-zA-Z0-9_\.-]{0,}[a-zA-Z0-9]@[a-zA-Z0-
 /* global jQuery:{} */
 /* global td_read_site_cookie:Function */
 /* global td_set_cookies_life:Function */
+/* global tdDetect: {} */
 
-var td_current_panel_stat = '';
+var tdDemoMenu;
 
-(function() {
+(function(jQuery, undefined) {
 
     'use strict';
 
-    td_current_panel_stat = td_read_site_cookie( 'td_show_panel' );
+    tdDemoMenu = {
 
-    if ( 'show' === td_current_panel_stat || null === td_current_panel_stat ) {
+        // document - horizontal mouse position
+        mousePosX: 0,
 
-        var jQueryObj = jQuery( '.td-theme-settings-small' );
-        if ( jQueryObj.length ) {
-            jQueryObj.addClass('td-theme-settings-no-transition');
-            jQueryObj.removeClass('td-theme-settings-small');
+        // document - vertical mouse position
+        mousePosY: 0,
+
+        // The timer waiting to start de interval
+        startTimeout: undefined,
+
+        // The interval that decreases the padding-left css value and increases the left css value of the screen demo (previewer of the demo)
+        startInterval: undefined,
+
+
+
+        // Flag marks that it's possible to move the mouse to the original demo
+        _extendedDemo: false,
+
+        // The current demo element (for which the counters have been applied)
+        _currentElement: undefined,
+
+        // The timer waiting to start the interval for extended demo
+        _startExtendedTimeout: undefined,
+
+        // The interval that decreases the width css value of the extended element
+        _startExtendedInterval: undefined,
+
+
+
+
+
+        init: function () {
+
+            // Get document mouse position
+            jQuery(document).mousemove(function (event) {
+                if (event.pageX || event.pageY) {
+                    tdDemoMenu.mousePosX = event.pageX;
+                    tdDemoMenu.mousePosY = event.pageY;
+                } else if (event.clientX || event.clientY) {
+                    tdDemoMenu.mousePosX = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                    tdDemoMenu.mousePosY = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+                }
+            });
+
+
+            // cloase the preview on mouse leave
+            jQuery(document).mouseleave(function (event) {
+
+                // Any existing timeout is cleard to stop any further css settings
+                if (undefined !== tdDemoMenu.startTimeout) {
+                    window.clearTimeout(tdDemoMenu.startTimeout);
+                }
+
+                // Any existing interval is cleard to stop any further css settings
+                if (undefined !== tdDemoMenu.startInterval) {
+                    window.clearInterval(tdDemoMenu.startInterval);
+                }
+
+                jQuery('.td-screen-demo:first').css('visibility', 'hidden');
+                jQuery('.td-screen-demo-extend:first').hide();
+            });
+
+            // Show/hide the arrow skin scroll element
+            jQuery('#td-theme-settings').find('.td-skin-wrap:first').scroll(function (event) {
+                //console.log( event );
+
+                var theTarget = event.currentTarget,
+                    tdSkinScroll = jQuery(this).find('.td-skin-scroll:first');
+
+                if (theTarget.clientHeight + theTarget.scrollTop < theTarget.scrollHeight) {
+                    tdSkinScroll.css({
+                        bottom: 0
+                    });
+                } else {
+                    tdSkinScroll.css({
+                        bottom: -40
+                    });
+                }
+            });
+
+            jQuery('#td-theme-settings').find('.td-skin-scroll:first').click(function (event) {
+                //console.log( event );
+
+                var theTarget = event.currentTarget,
+                    tdSkinWrap = jQuery(this).closest('.td-skin-wrap');
+
+                tdSkinWrap.animate(
+                    {scrollTop: tdSkinWrap.scrollTop() + 200},
+                    {
+                        duration: 800,
+                        easing: 'easeInOutQuart'
+                    });
+            }).mouseenter(function (event) {
+                // Any existing timeout is cleard to stop any further css settings
+                if (undefined !== tdDemoMenu.startTimeout) {
+                    window.clearTimeout(tdDemoMenu.startTimeout);
+                }
+
+                // Any existing interval is cleard to stop any further css settings
+                if (undefined !== tdDemoMenu.startInterval) {
+                    window.clearInterval(tdDemoMenu.startInterval);
+                }
+
+                //jQuery( '#td-theme-settings' ).find( '.td-screen-demo:first' ).hide();
+                jQuery('#td-theme-settings').find('.td-screen-demo:first').css('visibility', 'hidden');
+            });
+
+
+
+
+            jQuery('.td-set-theme-style-link').hover(
+
+                // The mouse enter event handler
+                function (event) {
+
+                //console.log( 'in MAIN ' + contor++);
+
+                    // Any existing timeout is cleard to stop any further css settings
+                    if (undefined !== tdDemoMenu.startTimeout) {
+                        window.clearTimeout(tdDemoMenu.startTimeout);
+                    }
+
+                    // Any existing interval is cleard to stop any further css settings
+                    if (undefined !== tdDemoMenu.startInterval) {
+                        window.clearInterval(tdDemoMenu.startInterval);
+                    }
+
+                    var
+                    // The css class of the container element
+                        cssClassContainer = 'td-set-theme-style',
+
+                    // The jquery object of the current element
+                        $this = jQuery(this),
+
+                    // The jquery object of the container of the current element
+                        $thisContainer = $this.closest('.' + cssClassContainer),
+
+                    // The demo previewer
+                        jQueryDisplayEl = jQuery('.td-screen-demo:first'),
+
+                    // The ref top value considers the existing of the wpadminbar element
+                        refTopValue = 0,
+
+                    // The top value set to the css top setting
+                        topValue = 0,
+
+                    // The left value set to the css left setting
+                        rightValue = 0,
+
+                    // The padding value set to the css padding-left setting
+                        paddingRightValue = 0,
+
+                    // The extra value added to the css padding-left setting and removed from the css left setting (if we need to start earlier or later - does nothing with 0 value)
+                        extraRightValue = 0,
+
+                    // The jquery wpadminbar element
+                        jqWPAdminBar = jQuery('#wpadminbar');
+
+
+
+                    // Show the image into the image previewer
+                    var imgElement = jQueryDisplayEl.find('img:first'),
+                        dataImgUrl = $this.data('img-url');
+
+                    if (imgElement.length) {
+                        imgElement.attr('src', dataImgUrl);
+                    } else {
+                        jQueryDisplayEl.html('<img src="' + dataImgUrl + '"/>');
+                    }
+
+
+                    // The first column
+                    if ( 0 === jQuery( '.td-set-theme-style-link' ).index( this ) % 2 ) {
+                        rightValue = $thisContainer.outerWidth(true) * 2;
+
+                        // The second column
+                    } else {
+                        var $thisPrevContainer = $thisContainer.prev('.' + cssClassContainer);
+
+                        if ($thisPrevContainer.length) {
+                            rightValue = $thisPrevContainer.outerWidth(true) - extraRightValue;
+                            paddingRightValue = $thisPrevContainer.outerWidth(true) + extraRightValue;
+
+                        }
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    topValue = event.pageY - document.body.scrollTop - ( jQueryDisplayEl.outerHeight( true ) / 2 );
+
+                    // Do not allow displaying the previewer demo below the bottom of the window screen
+                    if (topValue + jQueryDisplayEl.outerHeight(true) > window.innerHeight) {
+                        topValue -= (topValue + jQueryDisplayEl.outerHeight(true)) - window.innerHeight;
+                    }
+
+                    // Do not allow displaying the previewer demo above the top of the window screen. It also checks if the wpadminbar exists.
+                    if (jqWPAdminBar.length) {
+                        refTopValue = jqWPAdminBar.outerHeight(true);
+                    } else {
+                        refTopValue = 0;
+                    }
+
+                    if (refTopValue > topValue) {
+                        topValue = refTopValue;
+                    }
+
+                    // The 'width' css property is used for Chrome and IE browsers which do not display the previewer image with auto width and auto height
+                    var cssSettings = {
+                            'top': topValue,
+                            'right': rightValue,
+                            //'padding-right': paddingRightValue,
+                            'width': ''
+                        },
+                        dataWidthPreview = jQueryDisplayEl.data('width-preview');
+
+
+                    // For the first column of demos, the previewer has padding
+                    if (paddingRightValue > 0) {
+                        cssSettings.width = dataWidthPreview + paddingRightValue;
+                    }
+
+
+
+
+                    // Apply the computed css to the element
+                    jQueryDisplayEl.css(cssSettings);
+
+                    // The 'right-value' data will be used to set 'right' css value when the computed padding is < 0
+                    jQueryDisplayEl.data('right-value', rightValue + paddingRightValue);
+
+                    //jQueryDisplayEl.show();
+                    jQueryDisplayEl.css('visibility', 'visible');
+                },
+
+                // The mouse exit event handler
+                function (event) {
+
+                    //console.log('out MAIN ');
+
+                    jQuery('.td-screen-demo-extend:first').hide();
+
+                    var
+                    // The jquery object of the previewer demo element
+                        jQueryDisplayEl = jQuery('.td-screen-demo:first'),
+
+                    // The css right value
+                        existingRightValue = jQueryDisplayEl.css('right'),
+
+                    // The css padding-right value
+                        existingExtraRightValue = jQueryDisplayEl.css('padding-right'),
+
+                    // The css width value
+                        existingWidthValue = jQueryDisplayEl.css('width'),
+
+                    // The integer css right value
+                        newRightValue = parseInt(existingRightValue.replace('px', '')),
+
+                    // The integer css padding-right value
+                        newExtraRightValue = parseInt(existingExtraRightValue.replace('px', '')),
+
+                    // The step value used to decrease the padding-left css value and to increase the left css value
+                        step = 10,
+
+                    // The waiting time (ms) for the timeout
+                        startTimeoutWait = 50,
+
+                    // The time (ms) for the interval
+                    //startIntervalWait = 15,
+                    startIntervalWait = 15,
+
+                        newWidthValue = parseInt(existingWidthValue.replace('px', ''));
+
+
+                    var $this = jQuery(this);
+                    tdDemoMenu._currentElement = $this;
+
+                    var tdThemeSettingsWidth = parseInt(jQuery('#td-theme-settings').css('width').replace('px', ''));
+
+                    if (newExtraRightValue > 0) {
+
+                        // Clear any timeout if there's one, because a new one will be created
+                        if (undefined !== tdDemoMenu.startTimeout) {
+                            window.clearTimeout(tdDemoMenu.startTimeout);
+                            tdDemoMenu.startTimeout = undefined;
+                        }
+
+                        // Clear any interval if there's one, because a new one will be created
+                        if (undefined !== tdDemoMenu.startInterval) {
+                            window.clearInterval(tdDemoMenu.startInterval);
+                            tdDemoMenu.startInterval = undefined;
+                        }
+
+                        tdDemoMenu.startTimeout = setTimeout(function () {
+
+
+                            // Extended demo is eligible to be shown (true)
+                            // The flag is set to false when the mouse is found in wrong position (mouse position is reached)
+                            // The flag is set to true when the counters (the timer and the interval) finish, there the extended demo element being shown
+                            tdDemoMenu._extendedDemo = true;
+
+                            tdDemoMenu.startInterval = setInterval(function () {
+
+                                    var dataWidthPreview = jQueryDisplayEl.data('width-preview');
+
+                                    newRightValue += step;
+                                    newExtraRightValue -= step;
+                                    newWidthValue -= step;
+
+                                    var mousePositionFound = false;
+
+                                    if (newExtraRightValue <= 0 ||
+                                        newWidthValue < dataWidthPreview ||
+                                        tdDemoMenu.mousePosX <= jQuery(window).width() - tdThemeSettingsWidth ||
+                                        tdDemoMenu.mousePosX >= jQuery(window).width() - newRightValue) {
+
+                                        // Clear any timeout, and we should have one, because we finished
+                                        if (undefined !== tdDemoMenu.startTimeout) {
+                                            window.clearTimeout(tdDemoMenu.startTimeout);
+                                            tdDemoMenu.startTimeout = undefined;
+                                        }
+
+                                        // Clear any interval, and we should have one, because we finished
+                                        if (undefined !== tdDemoMenu.startInterval) {
+                                            window.clearInterval(tdDemoMenu.startInterval);
+                                            tdDemoMenu.startInterval = undefined;
+                                        }
+
+                                        newExtraRightValue = 0;
+                                        newRightValue = jQueryDisplayEl.data('right-value');
+                                        newWidthValue = dataWidthPreview;
+
+                                        if (tdDemoMenu.mousePosX >= jQuery(window).width() - newRightValue) {
+                                            mousePositionFound = true;
+                                        }
+                                    }
+
+                                    jQueryDisplayEl.css({
+                                        'right': newRightValue,
+                                        'padding-right': newExtraRightValue,
+                                        'width': newWidthValue
+                                    });
+
+                                    // The timeout started and the interval are stopped (The mouse was reached or the css computation is done)
+                                    if (mousePositionFound) {
+                                        tdDemoMenu._extendedDemo = false;
+                                        tdDemoMenu._checkMousePosition();
+                                    } else if (undefined === tdDemoMenu.startTimeout && undefined === tdDemoMenu.startInterval) {
+                                        tdDemoMenu._extendedDemo = true;
+                                        tdDemoMenu._showExtendedScreenDemo();
+                                    }
+
+                                }, startIntervalWait
+                            );
+                        }, startTimeoutWait);
+
+                    } else {
+                        //jQueryDisplayEl.hide();
+                        jQueryDisplayEl.css('visibility', 'hidden');
+                    }
+                }
+
+            ).mousemove(function(event) {
+                tdDemoMenu._moveScreenDemo( event );
+            });
+
+            //jQuery('.td-screen-demo').hover(
+            //    function (event) {
+            //        //jQuery(this).show();
+            //        jQuery(this).css('visibility', 'visible');
+            //
+            //        tdDemoMenu._resetTdScreeDemoExtendWidth();
+            //    },
+            //    function (event) {
+            //
+            //        // We are on mouseleave event, and because of this, if the main counters (the timer and the interval) are not finished, it means we
+            //        // don't have any extended demo element, so it's okay to set its flag to false and hide the extended demo element and the previewer demo element (this element)
+            //
+            //        // The main counters (the timer and the interval) are cleared immediately, because their final step can make extend demo visible
+            //
+            //        // Clear any timeout, and we should have one, because we finished
+            //        if (undefined !== tdDemoMenu.startTimeout) {
+            //            window.clearTimeout(tdDemoMenu.startTimeout);
+            //            tdDemoMenu.startTimeout = undefined;
+            //        }
+            //
+            //        // Clear any interval, and we should have one, because we finished
+            //        if (undefined !== tdDemoMenu.startInterval) {
+            //            window.clearInterval(tdDemoMenu.startInterval);
+            //            tdDemoMenu.startInterval = undefined;
+            //        }
+            //
+            //        //jQuery(this).hide();
+            //        jQuery(this).css('visibility', 'hidden');
+            //        jQuery('.td-screen-demo-extend:first').hide();
+            //    }
+            //
+            //).mousemove(function(event) {
+            //    //tdDemoMenu._moveScreenDemo( event );
+            //});
+
+            jQuery('.td-screen-demo-extend').hover(
+                function (event) {
+
+                if ( tdDemoMenu._extendedDemo ) {
+
+                    // Set the flag to false to not execute this routine twice on mouseenter event
+                    tdDemoMenu._extendedDemo = false;
+
+                    var
+
+                    // The jquery current element
+                        $this = jQuery(this),
+
+                    // The jquery '.td-screen-demo' element
+                        $tdScreenDemo = jQuery('.td-screen-demo:first'),
+
+                    // The css width value
+                    //columnWidth = $this.data('width-column'),
+                        columnWidth = parseInt(jQuery('#td-theme-settings').css('width').replace('px', '')) / 2,
+
+                    // The step value used to decrease the padding-left css value and to increase the left css value
+                        step = 10,
+
+                    // The waiting time (ms) for the timeout
+                        startTimeoutWait = 50,
+
+                    // The time (ms) for the interval
+                    //startIntervalWait = 15,
+                        startIntervalWait = 15,
+
+                            newWidthValue = columnWidth;
+
+                        $this.css({
+                            'width': columnWidth + 'px',
+                            'top': $tdScreenDemo.css('top')
+                        });
+
+                        $this.show();
+                        //$tdScreenDemo.show();
+                        $tdScreenDemo.css('visibility', 'visible');
+
+
+                        tdDemoMenu._startExtendedTimeout = setTimeout(function () {
+
+                            tdDemoMenu._startExtendedInterval = setInterval(function () {
+
+                                newWidthValue -= step;
+
+                                var mousePositionFound = false;
+
+                                if (newWidthValue < 0 ||
+                                    tdDemoMenu.mousePosX <= jQuery(window).width() - columnWidth - newWidthValue) {
+
+                                    // Clear any timeout, and we should have one, because we finished
+                                    if (undefined !== tdDemoMenu._startExtendedTimeout) {
+                                        window.clearTimeout(tdDemoMenu._startExtendedTimeout);
+                                        tdDemoMenu._startExtendedTimeout = undefined;
+                                    }
+
+                                    // Clear any interval, and we should have one, because we finished
+                                    if (undefined !== tdDemoMenu._startExtendedInterval) {
+                                        window.clearInterval(tdDemoMenu._startExtendedInterval);
+                                        tdDemoMenu._startExtendedInterval = undefined;
+                                    }
+
+                                    if (tdDemoMenu.mousePosX <= jQuery(window).width() - columnWidth - newWidthValue) {
+                                        mousePositionFound = true;
+                                    }
+
+                                    newWidthValue = columnWidth;
+
+                                    $this.hide();
+                                }
+
+                                $this.css({
+                                    'width': newWidthValue,
+                                    'top': $tdScreenDemo.css('top')
+                                });
+
+                                if (mousePositionFound) {
+                                    tdDemoMenu._checkMousePosition();
+                                }
+                            }, startIntervalWait);
+                        }, startTimeoutWait);
+                    }
+                },
+                function (event) {
+
+                    /**
+                     * 1. clear any extended timer/interval
+                     * 2. hide the element
+                     * 3. adjust its width to the initial value
+                     * 4. hide the previewer element (this will be shown by the a mouseenter event if it's the case)
+                     */
+
+                    // Clear any timeout, and we should have one, because we finished
+                    if (undefined !== tdDemoMenu._startExtendedTimeout) {
+                        window.clearTimeout(tdDemoMenu._startExtendedTimeout);
+                        tdDemoMenu._startExtendedTimeout = undefined;
+                    }
+
+                    // Clear any interval, and we should have one, because we finished
+                    if (undefined !== tdDemoMenu._startExtendedInterval) {
+                        window.clearInterval(tdDemoMenu._startExtendedInterval);
+                        tdDemoMenu._startExtendedInterval = undefined;
+                    }
+
+                    tdDemoMenu._resetTdScreeDemoExtendWidth();
+
+                    jQuery(this).hide();
+
+                    //jQuery( '.td-screen-demo:first').hide();
+                    jQuery('.td-screen-demo:first').css('visibility', 'hidden');
+                }
+
+            ).mousemove(function(event) {
+                //tdDemoMenu._moveScreenDemo( event );
+            });
+        },
+
+
+
+
+        /**
+         * Position the '.td-screen-demo' element according to the mouse position
+         *
+         * @param event - mouse move
+         * @private
+         */
+        _moveScreenDemo: function( event ) {
+            var
+            // The jquery object of the previewer demo element
+                $screenDemo = jQuery( '.td-screen-demo:first' ),
+
+                $WPAdminBar = jQuery( '#wpadminbar' ),
+
+            // new top value
+                newTopValue = event.pageY - document.body.scrollTop - ( $screenDemo.outerHeight( true ) / 2 ),
+
+            // The reference top value used when #wpadminbar is enabled
+                refTopValue = 0;
+
+            if ( $WPAdminBar.length ) {
+                refTopValue = $WPAdminBar.outerHeight(true);
+            } else {
+                refTopValue = 0;
+            }
+
+            if ( refTopValue > newTopValue ) {
+                newTopValue = refTopValue;
+            }
+
+
+            if ( newTopValue < 0 ) {
+                newTopValue = 0;
+            } else if ( jQuery( window ).height() - $screenDemo.outerHeight( true ) / 2 < event.pageY - document.body.scrollTop ) {
+                newTopValue = jQuery( window ).height() - $screenDemo.outerHeight( true );
+            }
+
+            $screenDemo.css( 'top', newTopValue );
+        },
+
+
+
+
+
+        /**
+         * Used when the width of the demo menu has changed (the width of the extended screen also changes)
+         * @private
+         */
+        _resetTdScreeDemoExtendWidth: function () {
+
+            var widthColumn = parseInt(jQuery('#td-theme-settings').css('width').replace('px', '')) / 2;
+
+            jQuery('.td-screen-demo-extend:first').css({
+                'width': widthColumn + 'px'
+            });
+        },
+
+        _showExtendedScreenDemo: function () {
+
+            if (tdDemoMenu._extendedDemo) {
+
+                jQuery('.td-screen-demo-extend:first').css({
+                    top: jQuery('.td-screen-demo:first').css('top')
+                }).show();
+
+            }
+        },
+
+        _checkMousePosition: function () {
+
+            var theElement;
+
+            jQuery('.td-set-theme-style-link').each(function (index, element) {
+
+                tdDemoMenu._log(index);
+
+                var $this = jQuery(element),
+                    cssClassContainer = 'td-set-theme-style',
+                    $thisContainer = $this.closest('.' + cssClassContainer);
+
+                var verticalPosition = false;
+                var horizontalPosition = false;
+
+                if (0 === jQuery('.td-set-theme-style-link').index(element) % 2) {
+
+                    if (parseInt($thisContainer.position().top) + parseInt(jQuery(window).scrollTop()) < tdDemoMenu.mousePosY && tdDemoMenu.mousePosY < parseInt($thisContainer.position().top) + parseInt(jQuery(window).scrollTop()) + parseInt($thisContainer.outerHeight())) {
+                        verticalPosition = true;
+
+                        if (parseInt(jQuery(window).width()) - 2 * parseInt($thisContainer.outerWidth()) < tdDemoMenu.mousePosX && tdDemoMenu.mousePosX < parseInt(jQuery(window).width()) - parseInt($thisContainer.outerWidth())) {
+                            horizontalPosition = true;
+                        }
+                    }
+                    //tdDemoMenu._log( 'caz A : ' + index + ' > vert: ' + verticalPosition + ' > hori: ' + horizontalPosition + ' > posY: ' + tdDemoMenu.mousePosY + ' > posX: ' + tdDemoMenu.mousePosX +
+                    //    ' > top: ' + (parseInt($thisContainer.position().top) + parseInt(jQuery(window).scrollTop())) + ' > bottom: ' + (parseInt($thisContainer.position().top) + parseInt(jQuery(window).scrollTop()) + parseInt($thisContainer.outerHeight())) +
+                    //    ' > left: ' + (parseInt(jQuery( window ).width()) - 2 * parseInt($thisContainer.outerWidth())) + ' > right: ' + (parseInt(jQuery( window ).width()) - parseInt($thisContainer.outerWidth())) );
+
+                } else {
+                    var $thisPrevContainer = $thisContainer.prev('.' + cssClassContainer);
+
+                    if ($thisPrevContainer.length) {
+                        if (parseInt($thisPrevContainer.position().top) + parseInt(jQuery(window).scrollTop()) < tdDemoMenu.mousePosY && tdDemoMenu.mousePosY < (parseInt($thisPrevContainer.position().top) + parseInt(jQuery(window).scrollTop()) + parseInt($thisPrevContainer.outerHeight()))) {
+                            verticalPosition = true;
+
+                            if (parseInt(jQuery(window).width()) - parseInt($thisContainer.outerWidth()) < tdDemoMenu.mousePosX && tdDemoMenu.mousePosX < parseInt(jQuery(window).width())) {
+                                horizontalPosition = true;
+                            }
+                        }
+                    }
+                    //tdDemoMenu._log( 'caz B : ' + index + ' > vert: ' + verticalPosition + ' > hori: ' + horizontalPosition + ' > posY: ' + tdDemoMenu.mousePosY + ' > posX: ' + tdDemoMenu.mousePosX +
+                    //    ' > top: ' + ($thisPrevContainer.position().top + parseInt(jQuery(window).scrollTop())) + ' > bottom: ' + (parseInt($thisPrevContainer.position().top) + parseInt(jQuery(window).scrollTop()) + parseInt($thisPrevContainer.outerHeight())) +
+                    //    ' > left: ' + (parseInt(jQuery( window ).width()) - parseInt($thisContainer.outerWidth())) + ' > right: ' + parseInt(jQuery( window ).width()) );
+                }
+
+                // The element where the mouse is positioned, was found
+                if (verticalPosition && horizontalPosition) {
+                    theElement = element;
+                    return false;
+                }
+
+            });
+
+            if (undefined === theElement) {
+                //jQuery( '#td-theme-settings').find( '.td-screen-demo:first' ).hide();
+                jQuery('#td-theme-settings').find('.td-screen-demo:first').css('visibility', 'hidden');
+            } else {
+                jQuery(theElement).mouseenter();
+            }
+        },
+
+        _log: function (msg) {
+
+            //window.console.log( msg );
         }
+
+    };
+
+})( jQuery );
+
+
+/**
+ * show the panel if the cookie is set
+ */
+(function() {
+    'use strict';
+    var td_current_panel_stat = td_read_site_cookie( 'td_show_panel' );
+    if ( 'hide' === td_current_panel_stat ) {
+        var jQueryObj = jQuery( '#td-theme-settings' );
+        if ( jQueryObj.length ) {
+            jQueryObj.removeClass( 'td-theme-settings-small' );
+            jQuery( '#td-theme-set-hide' ).html( 'DEMOS' );
+        }
+    } else {
+        jQuery( '#td-theme-set-hide' ).html( 'CLOSE');
     }
 
 })();
+
+
 
 
 
@@ -3727,34 +8452,46 @@ jQuery().ready(function() {
 
     'use strict';
 
-    //hide panel
-    jQuery( '#td-theme-set-hide' ).click(function(event){
+    // do not run on iOS
+    if (tdDetect.isIos === false && tdDetect.isAndroid === false) {
+        tdDemoMenu.init();
+    }
+
+
+
+    // Show/hide the demo menu panel
+    jQuery( '#td-theme-set-hide' ).click(function(event) {
         event.preventDefault();
         event.stopPropagation();
-        //hide
-        td_set_cookies_life( ['td_show_panel', 'hide', 86400000] );//86400000 is the number of milliseconds in a day
 
-        var jQueryObj = jQuery( '#td-theme-settings' );
-        if ( jQueryObj.length ) {
-            jQueryObj.removeClass( 'td-theme-settings-no-transition' );
+        var $this = jQuery(this),
+            jQueryObj = jQuery( '#td-theme-settings' );
+
+        if ( jQueryObj.hasClass( 'td-theme-settings-small' ) ) {
+            // close
+            jQueryObj.removeClass( 'td-theme-settings-small' );
+            jQueryObj.addClass( 'td-theme-settings-closed' );
+            $this.html( 'DEMOS' );
+
+            setTimeout(function(){
+                jQueryObj.addClass( 'td-ts-closed-no-transition' ); // add the remove transition class after the animation has finished
+            }, 450);
+
+            td_set_cookies_life( ['td_show_panel', 'hide', 86400000] );//86400000 is the number of milliseconds in a day
+
+
+        } else {
+            // open
+            jQueryObj.removeClass( 'td-ts-closed-no-transition' ); // remove the remove transition class :)
+
+
             jQueryObj.addClass( 'td-theme-settings-small' );
-        }
-
-        jQuery('.td-set-theme-style-link').removeClass('td_fadeInLeft');
-
-    });
-
-    //show panel
-    jQuery( '#td-theme-settings' ).click(function(){
-        if ( jQuery( this).hasClass( 'td-theme-settings-small' ) ) {
-
-            jQuery( '.td-set-theme-style-link' ).addClass( 'td_animated_xlong td_fadeInLeft' );
-
-            //show full
+            jQueryObj.removeClass( 'td-theme-settings-closed' );
+            $this.html( 'CLOSE' );
             td_set_cookies_life( ['td_show_panel', 'show', 86400000] );//86400000 is the number of milliseconds in a day
-            jQuery( '.td-theme-settings-small' ).removeClass( 'td-theme-settings-small' );
         }
     });
+
 
 }); //end on load
 /**
@@ -3763,107 +8500,142 @@ jQuery().ready(function() {
 
 /* global jQuery: {} */
 
-//global object that holds each `trending-now-wrapper` list of posts
-//var td_trending_now_object = {};
-
-var tdTrendingNowObject = {};
+var tdTrendingNow = {};
 
 (function() {
 
     "use strict";
 
-    tdTrendingNowObject = {
+    tdTrendingNow = {
 
-        trendingNowAutostartBlocks: [],
+        // - the list of items
+        items: [],
 
-        //trending now function : creates the array of posts in each trend and add events to the nav buttons
-        tdTrendingNow: function() {
-
-            //move thru all `trending-now-wrapper's` on the page
-            jQuery('.td-trending-now-wrapper').each(function() {
-                var wrapperId = jQuery(this).attr('id');
-                var wrapperIdNavigation = jQuery(this).data('start');
-
-                if ('manual' !== wrapperIdNavigation) {
-                    tdTrendingNowObject.trendingNowAutostartBlocks.push(wrapperId);
-                }
-
-                var trendingListPosts = [];
-                var iCont = 0;
-
-                //take the text from each post from current trending-now-wrapper
-                jQuery('#' + wrapperId + ' .td-trending-now-post').each(function() {
-                    //trending_list_posts[i_cont] = jQuery(this)[0].outerHTML;
-                    trendingListPosts[iCont] = jQuery(this);
-
-                    //increment the counter
-                    iCont++;
-                });
-
-                //add this array to `tdTrendingNowObject`
-                tdTrendingNowObject[wrapperId] = trendingListPosts;
-                tdTrendingNowObject[wrapperId + '_position'] = 0;
-            });
-
-            jQuery('.td-trending-now-nav-left').click( function(event) {
-                event.preventDefault();
-                var wrapperIdForNav = jQuery(this).data('wrapper-id');
-
-                // if there's just a single post to be shown, there's no need for next/prev/autostart
-                if ((undefined !== wrapperIdForNav) && (1 >= tdTrendingNowObject[wrapperIdForNav].length))  {
-                    return;
-                }
-
-                //var data_moving = jQuery(this).data('moving');
-                var controlStart = jQuery(this).data('control-start');
-
-                /**
-                 * used when the trending now block is used on auto mod and we click on show prev or show next article title
-                 * this will make the auto mode wait another xx seconds before displaying the next article title
-                 */
-                if ('manual' !== controlStart) {
-                    clearInterval(tdTrendingNowObject[wrapperIdForNav + '_timer']);
-                    tdTrendingNowObject[wrapperIdForNav + '_timer'] = setInterval(function() {
-                        tdTrendingNowObject.tdTrendingNowChangeText([wrapperIdForNav, 'left'], true);
-                    }, 3000);
-                }
-
-
-                //call to change the text
-                tdTrendingNowObject.tdTrendingNowChangeText([wrapperIdForNav, 'right'], false);
-            });
-
-
-            jQuery('.td-trending-now-nav-right').click(function(event) {
-                event.preventDefault();
-                var wrapperIdForNav = jQuery(this).data('wrapper-id');
-
-                // if there's just a single post to be shown, there's no need for next/prev/autostart
-                if ((undefined !== wrapperIdForNav) && (1 >= tdTrendingNowObject[wrapperIdForNav].length)) {
-                    return;
-                }
-
-                //var data_moving = jQuery(this).data('moving');
-                var controlStart = jQuery(this).data('control-start');
-
-                /**
-                 * used when the trending now block is used on auto mod and we click on show prev or show next article title
-                 * this will make the auto mode wait another xx seconds before displaying the next article title
-                 */
-                if ('manual' !== controlStart) {
-                    clearInterval(tdTrendingNowObject[wrapperIdForNav + '_timer']);
-                    tdTrendingNowObject[wrapperIdForNav + '_timer'] = setInterval(function() {
-                        tdTrendingNowObject.tdTrendingNowChangeText([wrapperIdForNav, 'left' ], true);
-                    }, 3000);
-                }
-
-                //call to change the text
-                tdTrendingNowObject.tdTrendingNowChangeText([wrapperIdForNav, 'left'], true);
-            });
-
-            //console.log(tdTrendingNowObject);
+        // - trending now item
+        item: function item() {
+            //the block Unique id
+            this.blockUid = '';
+            //autostart
+            this.trendingNowAutostart = 'manual';
+            //autostart timer
+            this.trendingNowTimer = 0;
+            //slider position
+            this.trendingNowPosition = 0;
+            //posts list
+            this.trendingNowPosts = [];
+            // flag used to mark the initialization item
+            this._is_initialized = false;
         },
 
+        //function used to init tdTrendingNow
+        init: function() {
+            tdTrendingNow.items = [];
+        },
+
+        //internal utility function used to initialize an item
+        _initialize_item: function( item ) {
+            // an item must be initialized only once
+            if ( true === item._is_initialized ) {
+                return;
+            }
+            // the item is marked as initialized
+            item._is_initialized = true;
+        },
+
+        //add an item
+        addItem: function( item ) {
+
+            //todo - add some checks on item
+            // check to see if the item is ok
+            if (typeof item.blockUid === 'undefined') {
+                throw 'item.blockUid is not valid';
+            }
+            if (typeof item.trendingNowPosts === 'undefined' || item.trendingNowPosts.length < 1) {
+                throw 'item.trendingNowPosts is not valid';
+            }
+
+            // the item is added in the items list
+            tdTrendingNow.items.push( item );
+
+            // the item is initialized only once when it is added
+            tdTrendingNow._initialize_item( item );
+
+            //autostart
+            tdTrendingNow.tdTrendingNowAutoStart(item.blockUid);
+        },
+
+        //deletes an item base on blockUid
+        deleteItem: function( blockUid ) {
+            for (var cnt = 0; cnt < tdTrendingNow.items.length; cnt++) {
+                if (tdTrendingNow.items[cnt].blockUid === blockUid) {
+                    tdTrendingNow.items.splice(cnt, 1); // remove the item from the "array"
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        //switch to the previous item
+        itemPrev: function( blockUid ) {
+            //current item
+            var i, currentItem;
+            //get current item
+            for (var cnt = 0; cnt < tdTrendingNow.items.length; cnt++) {
+                if (tdTrendingNow.items[cnt].blockUid === blockUid) {
+                    currentItem = tdTrendingNow.items[cnt];
+                }
+            }
+
+            // if there's just a single post to be shown, there's no need for next/prev/autostart
+            if ((blockUid !== undefined) && (1 >= currentItem.trendingNowPosts.length))  {
+                return;
+            }
+
+            /**
+             * used when the trending now block is used on auto mod and we click on show prev or show next article title
+             * this will make the auto mode wait another xx seconds before displaying the next article title
+             */
+            if ('manual' !== currentItem.trendingNowAutostart) {
+                clearInterval(currentItem.trendingNowTimer);
+                currentItem.trendingNowTimer = setInterval(function () {
+                    tdTrendingNow.tdTrendingNowChangeText([blockUid, 'left'], true);
+                }, 3000);
+            }
+
+            //call to change the text
+            tdTrendingNow.tdTrendingNowChangeText([blockUid, 'right'], false);
+        },
+
+        //switch to the next item
+        itemNext: function ( blockUid ) {
+            //current item
+            var i, currentItem;
+            //get current item
+            for (var cnt = 0; cnt < tdTrendingNow.items.length; cnt++) {
+                if (tdTrendingNow.items[cnt].blockUid === blockUid) {
+                    currentItem = tdTrendingNow.items[cnt];
+                }
+            }
+
+            // if there's just a single post to be shown, there's no need for next/prev/autostart
+            if ((blockUid !== undefined) && (1 >= currentItem.trendingNowPosts.length))  {
+                return;
+            }
+
+            /**
+             * used when the trending now block is used on auto mod and we click on show prev or show next article title
+             * this will make the auto mode wait another xx seconds before displaying the next article title
+             */
+            if ('manual' !== currentItem.trendingNowAutostart) {
+                clearInterval(currentItem.trendingNowTimer);
+                currentItem.trendingNowTimer = setInterval(function () {
+                    tdTrendingNow.tdTrendingNowChangeText([blockUid, 'left'], true);
+                }, 3000);
+            }
+
+            //call to change the text
+            tdTrendingNow.tdTrendingNowChangeText([blockUid, 'left'], true);
+        },
 
         /*
          function for changing the posts in `trending now` display area
@@ -3874,92 +8646,90 @@ var tdTrendingNowObject = {};
         tdTrendingNowChangeText: function(array_param, to_right) {
 
             //for consistency use the same variables names as thh parent function
-            var wrapperIdForNav = array_param[0];
-            var dataMoving = array_param[1];
+            var blockUid = array_param[0],
+                movingDirection = array_param[1],
+                postsArrayListForThisTrend = [],
+                postsArrayListPosition = 0,
+                itemPosition;
 
-            //get the list of post and position for this trending now block
-            var postsArrayListForThisTrend = tdTrendingNowObject[wrapperIdForNav];
-
-
-            // the following method is not so good because using it, many timers are already created
-            //
-            // if there's just a single post to be shown, there's no need for next/prev/autostart
-            //if (posts_array_list_for_this_trend.length <= 1) {
-            //    return;
-            //}
-
-            var postsArrayListPosition = tdTrendingNowObject[wrapperIdForNav + '_position'];
-
-            var previousPostArrayListPosition = postsArrayListPosition;
-
-            //count how many post are in the list
-            var post_count = postsArrayListForThisTrend.length - 1;
-
-            if ('left' === dataMoving) {
-                postsArrayListPosition += 1;
-
-                if (postsArrayListPosition > post_count) {
-                    postsArrayListPosition = 0;
-                }
-
-            } else {
-                postsArrayListPosition -= 1;
-
-                if (postsArrayListPosition < 0) {
-                    postsArrayListPosition = post_count;
+            for (var cnt = 0; cnt < tdTrendingNow.items.length; cnt++) {
+                if (tdTrendingNow.items[cnt].blockUid === blockUid) {
+                    itemPosition = cnt;
+                    postsArrayListForThisTrend = tdTrendingNow.items[cnt].trendingNowPosts;
+                    postsArrayListPosition = tdTrendingNow.items[cnt].trendingNowPosition;
                 }
             }
+            
+            if (typeof itemPosition !== 'undefined' && itemPosition !== null) {
+                var previousPostArrayListPosition = postsArrayListPosition,
+                    post_count = postsArrayListForThisTrend.length - 1;//count how many post are in the list
 
-            //update the new position in the global `tdTrendingNowObject`
-            tdTrendingNowObject[wrapperIdForNav + '_position'] = postsArrayListPosition;
-
-            postsArrayListForThisTrend[previousPostArrayListPosition].css('opacity', 0);
-            postsArrayListForThisTrend[previousPostArrayListPosition].css('z-index', 0);
-
-            for (var trending_post in postsArrayListForThisTrend) {
-                if (true === postsArrayListForThisTrend.hasOwnProperty(trending_post)) {
-                    postsArrayListForThisTrend[trending_post].removeClass('td_animated_xlong td_fadeInLeft td_fadeInRight td_fadeOutLeft td_fadeOutRight');
-                }
-            }
-
-            postsArrayListForThisTrend[postsArrayListPosition].css('opacity', 1);
-            postsArrayListForThisTrend[postsArrayListPosition].css('z-index', 1);
-
-            if (true === to_right) {
-
-                postsArrayListForThisTrend[previousPostArrayListPosition].addClass('td_animated_xlong td_fadeOutLeft');
-                postsArrayListForThisTrend[postsArrayListPosition].addClass('td_animated_xlong td_fadeInRight');
-            } else {
-
-                postsArrayListForThisTrend[previousPostArrayListPosition].addClass('td_animated_xlong td_fadeOutRight');
-                postsArrayListForThisTrend[postsArrayListPosition].addClass('td_animated_xlong td_fadeInLeft');
-            }
-        },
-
-
-        //trending now function to auto start
-        tdTrendingNowAutoStart: function() {
-
-            var list = tdTrendingNowObject.trendingNowAutostartBlocks;
-
-            for (var i = 0, len = list.length; i < len; i += 1) {
-
-                // if there's just a single post to be shown, there's no need for next/prev/autostart
-                if (1 >= tdTrendingNowObject[list[i]].length) {
+                if ( post_count < 1 ) {
                     return;
                 }
 
-                tdTrendingNowObject[list[i] + '_timer'] = tdTrendingNowObject.setTimerChangingText(list[i]);
+                if ('left' === movingDirection) {
+                    postsArrayListPosition += 1;
+
+                    if (postsArrayListPosition > post_count) {
+                        postsArrayListPosition = 0;
+                    }
+
+                } else {
+                    postsArrayListPosition -= 1;
+
+                    if (postsArrayListPosition < 0) {
+                        postsArrayListPosition = post_count;
+                    }
+                }
+
+                //update the new position in the global `tdTrendingNow`
+                tdTrendingNow.items[itemPosition].trendingNowPosition = postsArrayListPosition;
+
+                postsArrayListForThisTrend[previousPostArrayListPosition].css('opacity', 0);
+                postsArrayListForThisTrend[previousPostArrayListPosition].css('z-index', 0);
+
+                for (var trending_post in postsArrayListForThisTrend) {
+                    if (true === postsArrayListForThisTrend.hasOwnProperty(trending_post)) {
+                        postsArrayListForThisTrend[trending_post].removeClass('td_animated_xlong td_fadeInLeft td_fadeInRight td_fadeOutLeft td_fadeOutRight');
+                    }
+                }
+
+                postsArrayListForThisTrend[postsArrayListPosition].css('opacity', 1);
+                postsArrayListForThisTrend[postsArrayListPosition].css('z-index', 1);
+
+                if (true === to_right) {
+
+                    postsArrayListForThisTrend[previousPostArrayListPosition].addClass('td_animated_xlong td_fadeOutLeft');
+                    postsArrayListForThisTrend[postsArrayListPosition].addClass('td_animated_xlong td_fadeInRight');
+                } else {
+
+                    postsArrayListForThisTrend[previousPostArrayListPosition].addClass('td_animated_xlong td_fadeOutRight');
+                    postsArrayListForThisTrend[postsArrayListPosition].addClass('td_animated_xlong td_fadeInLeft');
+                }
             }
         },
 
-        setTimerChangingText: function(autoStartItem) {
+        //trending now function to auto start
+        tdTrendingNowAutoStart: function(blockUid) {
+            for (var cnt = 0; cnt < tdTrendingNow.items.length; cnt++) {
+                // if there's just a single post to be shown, there's no need for next/prev/autostart
+                if (tdTrendingNow.items[cnt].blockUid === blockUid && tdTrendingNow.items[cnt].trendingNowAutostart !== 'manual') {
+                    tdTrendingNow.items[cnt].trendingNowTimer = tdTrendingNow.setTimerChangingText(blockUid);
+                }
+            }
+        },
+
+        setTimerChangingText: function( blockUid ) {
             return setInterval(function () {
                 //console.log(i + "=>" + list[i] + "\n");
-                tdTrendingNowObject.tdTrendingNowChangeText([autoStartItem, 'left'], true);
+                tdTrendingNow.tdTrendingNowChangeText([blockUid, 'left'], true);
             }, 3000);
         }
+
     };
+
+    tdTrendingNow.init();
 
 })();
 "use strict";
@@ -4415,7 +9185,7 @@ var tdSmartSidebar = {};
 
                                     cur_item_ref.sidebar_state = 'case_3_bottom_of_content';
                                 }
-                                //console.log(cur_item_ref.content_bottom + ' >= ' +  cur_item_ref.sidebar_bottom); //@todo fix this case pe http://0div.com:69/wp_marius/wp_010/homepage-with-a-post-featured/
+                                //console.log(cur_item_ref.content_bottom + ' >= ' +  cur_item_ref.sidebar_bottom); //@todo fix this case pe ? @20may2016 era un url aici dar l-am sters din motive de securitate
                             }
                         }
 
@@ -4500,6 +9270,17 @@ var tdSmartSidebar = {};
                         ) {
                             //console.log('sidebar_top' + cur_item_ref.sidebar_top + ' content top:' + cur_item_ref.content_top);
                             cur_item_ref.sidebar_state = 'case_4_fixed_up';
+                        }
+
+
+
+
+                        /**
+                         * This is the case when the scroll direction is 'up', but the sidebar is above the viewport (it could be left behind by a fast operation like typing HOME key)
+                         */
+                        else if ('up' === scroll_direction && true === tdSmartSidebar._is_smaller_or_equal( view_port_bottom, cur_item_ref.sidebar_top ))
+                        {
+                            cur_item_ref.sidebar_state = 'case_2_top_of_content';
                         }
 
 
@@ -5032,562 +9813,6 @@ var tdInfiniteLoader = {};
         tdInfiniteLoader.computeTopDistances();
     });
 })();
-/**
- * activate smooth scroll
- */
-
-if (typeof window['tds_smooth_scroll'] !== 'undefined') {
-
-    if (tdDetect.isChrome === true && tdDetect.isAndroid === false) {
-
-        td_smooth_scroll();
-    }
-}
-
-
-
-function td_smooth_scroll() {
-
-// SmoothScroll v1.2.1
-// Licensed under the terms of the MIT license.
-
-// People involved
-//  - Balazs Galambosi (maintainer)
-//  - Patrick Brunner  (original idea)
-//  - Michael Herf     (Pulse Algorithm)
-
-// Scroll Variables (tweakable)
-    var defaultOptions = {
-
-        // Scrolling Core
-        frameRate        : 150, // [Hz]
-        animationTime    : 600, // [px]
-        stepSize         : 120, // [px]
-
-        // Pulse (less tweakable)
-        // ratio of "tail" to "acceleration"
-        pulseAlgorithm   : true,
-        pulseScale       : 8,
-        pulseNormalize   : 1,
-
-        // Acceleration
-        accelerationDelta : 20,  // 20
-        accelerationMax   : 1,   // 1
-
-        // Keyboard Settings
-        keyboardSupport   : true,  // option
-        arrowScroll       : 50,     // [px]
-
-        // Other
-        touchpadSupport   : true,
-        fixedBackground   : true,
-        excluded          : ""
-    };
-
-    var options = defaultOptions;
-
-
-// Other Variables
-    var isExcluded = false;
-    var isFrame = false;
-    var direction = { x: 0, y: 0 };
-    var initDone  = false;
-    var root = document.documentElement;
-    var activeElement;
-    var observer;
-    var deltaBuffer = [ 120, 120, 120 ];
-
-    var key = { left: 37, up: 38, right: 39, down: 40, spacebar: 32,
-        pageup: 33, pagedown: 34, end: 35, home: 36 };
-
-
-
-
-    /***********************************************
-     * INITIALIZE
-     ***********************************************/
-
-
-
-    /**
-     * Sets up scrolls array, determines if frames are involved.
-     */
-    function init() {
-
-        if (!document.body) return;
-
-        var body = document.body;
-        var html = document.documentElement;
-        var windowHeight = window.innerHeight;
-        var scrollHeight = body.scrollHeight;
-
-        // check compat mode for root element
-        root = (document.compatMode.indexOf('CSS') >= 0) ? html : body;
-        activeElement = body;
-
-
-        initDone = true;
-
-        // Checks if this script is running in a frame
-        if (top != self) {
-            isFrame = true;
-        }
-
-        /**
-         * This fixes a bug where the areas left and right to
-         * the content does not trigger the onmousewheel event
-         * on some pages. e.g.: html, body { height: 100% }
-         */
-        else if (scrollHeight > windowHeight &&
-            (body.offsetHeight <= windowHeight ||
-            html.offsetHeight <= windowHeight)) {
-
-            // DOMChange (throttle): fix height
-            var pending = false;
-            var refresh = function () {
-                if (!pending && html.scrollHeight != document.height) {
-                    pending = true; // add a new pending action
-                    setTimeout(function () {
-                        html.style.height = document.height + 'px';
-                        pending = false;
-                    }, 500); // act rarely to stay fast
-                }
-            };
-            html.style.height = 'auto';
-            setTimeout(refresh, 10);
-
-            var config = {
-                attributes: true,
-                childList: true,
-                characterData: false
-            };
-
-            observer = new MutationObserver(refresh);
-            observer.observe(body, config);
-
-            // clearfix
-            if (root.offsetHeight <= windowHeight) {
-                var underlay = document.createElement("div");
-                underlay.style.clear = "both";
-                body.appendChild(underlay);
-            }
-        }
-
-        // gmail performance fix
-        if (document.URL.indexOf("mail.google.com") > -1) {
-            var s = document.createElement("style");
-            s.innerHTML = ".iu { visibility: hidden }";
-            (document.getElementsByTagName("head")[0] || html).appendChild(s);
-        }
-        // facebook better home timeline performance
-        // all the HTML resized images make rendering CPU intensive
-        else if (document.URL.indexOf("www.facebook.com") > -1) {
-            var home_stream = document.getElementById("home_stream");
-            home_stream && (home_stream.style.webkitTransform = "translateZ(0)");
-        }
-        // disable fixed background
-        if (!options.fixedBackground && !isExcluded) {
-            body.style.backgroundAttachment = "scroll";
-            html.style.backgroundAttachment = "scroll";
-        }
-    }
-
-
-    /************************************************
-     * SCROLLING
-     ************************************************/
-
-    var que = [];
-    var pending = false;
-    var lastScroll = +new Date;
-
-    /**
-     * Pushes scroll actions to the scrolling queue.
-     */
-    function scrollArray(elem, left, top, delay) {
-
-        delay || (delay = 1000);
-        directionCheck(left, top);
-
-        if (options.accelerationMax != 1) {
-            var now = +new Date;
-            var elapsed = now - lastScroll;
-            if (elapsed < options.accelerationDelta) {
-                var factor = (1 + (30 / elapsed)) / 2;
-                if (factor > 1) {
-                    factor = Math.min(factor, options.accelerationMax);
-                    left *= factor;
-                    top  *= factor;
-                }
-            }
-            lastScroll = +new Date;
-        }
-
-        // push a scroll command
-        que.push({
-            x: left,
-            y: top,
-            lastX: (left < 0) ? 0.99 : -0.99,
-            lastY: (top  < 0) ? 0.99 : -0.99,
-            start: +new Date
-        });
-
-        // don't act if there's a pending queue
-        if (pending) {
-            return;
-        }
-
-        var scrollWindow = (elem === document.body);
-
-        var step = function (time) {
-
-            var now = +new Date;
-            var scrollX = 0;
-            var scrollY = 0;
-
-            for (var i = 0; i < que.length; i++) {
-
-                var item = que[i];
-                var elapsed  = now - item.start;
-                var finished = (elapsed >= options.animationTime);
-
-                // scroll position: [0, 1]
-                var position = (finished) ? 1 : elapsed / options.animationTime;
-
-                // easing [optional]
-                if (options.pulseAlgorithm) {
-                    position = pulse(position);
-                }
-
-                // only need the difference
-                var x = (item.x * position - item.lastX) >> 0;
-                var y = (item.y * position - item.lastY) >> 0;
-
-                // add this to the total scrolling
-                scrollX += x;
-                scrollY += y;
-
-                // update last values
-                item.lastX += x;
-                item.lastY += y;
-
-                // delete and step back if it's over
-                if (finished) {
-                    que.splice(i, 1); i--;
-                }
-            }
-
-            // scroll left and top
-            if (scrollWindow) {
-                window.scrollBy(scrollX, scrollY);
-            }
-            else {
-                if (scrollX) elem.scrollLeft += scrollX;
-                if (scrollY) elem.scrollTop  += scrollY;
-            }
-
-            // clean up if there's nothing left to do
-            if (!left && !top) {
-                que = [];
-            }
-
-            if (que.length) {
-                requestFrame(step, elem, (delay / options.frameRate + 1));
-            } else {
-                pending = false;
-            }
-        };
-
-        // start a new queue of actions
-        requestFrame(step, elem, 0);
-        pending = true;
-    }
-
-
-    /***********************************************
-     * EVENTS
-     ***********************************************/
-
-    /**
-     * Mouse wheel handler.
-     * @param {Object} event
-     */
-    function wheel(event) {
-
-        if (!initDone) {
-            init();
-        }
-
-        var target = event.target;
-        var overflowing = overflowingAncestor(target);
-
-        // use default if there's no overflowing
-        // element or default action is prevented
-        if (!overflowing || event.defaultPrevented ||
-            isNodeName(activeElement, "embed") ||
-            (isNodeName(target, "embed") && /\.pdf/i.test(target.src))) {
-            return true;
-        }
-
-        var deltaX = event.wheelDeltaX || 0;
-        var deltaY = event.wheelDeltaY || 0;
-
-        // use wheelDelta if deltaX/Y is not available
-        if (!deltaX && !deltaY) {
-            deltaY = event.wheelDelta || 0;
-        }
-
-        // check if it's a touchpad scroll that should be ignored
-        if (!options.touchpadSupport && isTouchpad(deltaY)) {
-            return true;
-        }
-
-        // scale by step size
-        // delta is 120 most of the time
-        // synaptics seems to send 1 sometimes
-        if (Math.abs(deltaX) > 1.2) {
-            deltaX *= options.stepSize / 120;
-        }
-        if (Math.abs(deltaY) > 1.2) {
-            deltaY *= options.stepSize / 120;
-        }
-
-        scrollArray(overflowing, -deltaX, -deltaY);
-        event.preventDefault();
-    }
-
-    /**
-     * Keydown event handler.
-     * @param {Object} event
-     */
-    function keydown(event) {
-
-        var target   = event.target;
-        var modifier = event.ctrlKey || event.altKey || event.metaKey ||
-            (event.shiftKey && event.keyCode !== key.spacebar);
-
-        // do nothing if user is editing text
-        // or using a modifier key (except shift)
-        // or in a dropdown
-        if ( /input|textarea|select|embed/i.test(target.nodeName) ||
-            target.isContentEditable ||
-            event.defaultPrevented   ||
-            modifier ) {
-            return true;
-        }
-        // spacebar should trigger button press
-        if (isNodeName(target, "button") &&
-            event.keyCode === key.spacebar) {
-            return true;
-        }
-
-        var shift, x = 0, y = 0;
-        var elem = overflowingAncestor(activeElement);
-        var clientHeight = elem.clientHeight;
-
-        if (elem == document.body) {
-            clientHeight = window.innerHeight;
-        }
-
-        switch (event.keyCode) {
-            case key.up:
-                y = -options.arrowScroll;
-                break;
-            case key.down:
-                y = options.arrowScroll;
-                break;
-            case key.spacebar: // (+ shift)
-                shift = event.shiftKey ? 1 : -1;
-                y = -shift * clientHeight * 0.9;
-                break;
-            case key.pageup:
-                y = -clientHeight * 0.9;
-                break;
-            case key.pagedown:
-                y = clientHeight * 0.9;
-                break;
-            case key.home:
-                y = -elem.scrollTop;
-                break;
-            case key.end:
-                var damt = elem.scrollHeight - elem.scrollTop - clientHeight;
-                y = (damt > 0) ? damt+10 : 0;
-                break;
-            case key.left:
-                x = -options.arrowScroll;
-                break;
-            case key.right:
-                x = options.arrowScroll;
-                break;
-            default:
-                return true; // a key we don't care about
-        }
-
-        scrollArray(elem, x, y);
-        event.preventDefault();
-    }
-
-    /**
-     * Mousedown event only for updating activeElement
-     */
-    function mousedown(event) {
-        activeElement = event.target;
-    }
-
-
-    /***********************************************
-     * OVERFLOW
-     ***********************************************/
-
-    var cache = {}; // cleared out every once in while
-    setInterval(function () { cache = {}; }, 10 * 1000);
-
-    var uniqueID = (function () {
-        var i = 0;
-        return function (el) {
-            return el.uniqueID || (el.uniqueID = i++);
-        };
-    })();
-
-    function setCache(elems, overflowing) {
-        for (var i = elems.length; i--;)
-            cache[uniqueID(elems[i])] = overflowing;
-        return overflowing;
-    }
-
-    function overflowingAncestor(el) {
-        var elems = [];
-        var rootScrollHeight = root.scrollHeight;
-        do {
-            var cached = cache[uniqueID(el)];
-            if (cached) {
-                return setCache(elems, cached);
-            }
-            elems.push(el);
-            if (rootScrollHeight === el.scrollHeight) {
-                if (!isFrame || root.clientHeight + 10 < rootScrollHeight) {
-                    return setCache(elems, document.body); // scrolling root in WebKit
-                }
-            } else if (el.clientHeight + 10 < el.scrollHeight) {
-                overflow = getComputedStyle(el, "").getPropertyValue("overflow-y");
-                if (overflow === "scroll" || overflow === "auto") {
-                    return setCache(elems, el);
-                }
-            }
-        } while (el = el.parentNode);
-    }
-
-
-    /***********************************************
-     * HELPERS
-     ***********************************************/
-
-    function addEvent(type, fn, bubble) {
-        window.addEventListener(type, fn, (bubble||false));
-    }
-
-    function removeEvent(type, fn, bubble) {
-        window.removeEventListener(type, fn, (bubble||false));
-    }
-
-    function isNodeName(el, tag) {
-        return (el.nodeName||"").toLowerCase() === tag.toLowerCase();
-    }
-
-    function directionCheck(x, y) {
-        x = (x > 0) ? 1 : -1;
-        y = (y > 0) ? 1 : -1;
-        if (direction.x !== x || direction.y !== y) {
-            direction.x = x;
-            direction.y = y;
-            que = [];
-            lastScroll = 0;
-        }
-    }
-
-    var deltaBufferTimer;
-
-    function isTouchpad(deltaY) {
-        if (!deltaY) return;
-        deltaY = Math.abs(deltaY)
-        deltaBuffer.push(deltaY);
-        deltaBuffer.shift();
-        clearTimeout(deltaBufferTimer);
-        deltaBufferTimer = setTimeout(function () {
-            chrome.storage.local.set({ deltaBuffer: deltaBuffer });
-        }, 1000);
-        var allEquals    = (deltaBuffer[0] == deltaBuffer[1] &&
-        deltaBuffer[1] == deltaBuffer[2]);
-        var allDivisable = (isDivisible(deltaBuffer[0], 120) &&
-        isDivisible(deltaBuffer[1], 120) &&
-        isDivisible(deltaBuffer[2], 120));
-        return !(allEquals || allDivisable);
-    }
-
-    function isDivisible(n, divisor) {
-        return (Math.floor(n / divisor) == n / divisor);
-    }
-
-    if(typeof(chrome) !== 'undefined' && typeof(chrome.storage) !== 'undefined') {
-        chrome.storage.local.get('deltaBuffer', function (stored) {
-            if (stored.deltaBuffer) {
-                deltaBuffer = stored.deltaBuffer;
-            }
-        });
-    }
-
-    var requestFrame = (function () {
-        return  window.requestAnimationFrame       ||
-            window.webkitRequestAnimationFrame ||
-            function (callback, element, delay) {
-                window.setTimeout(callback, delay || (1000/60));
-            };
-    })();
-
-    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-
-
-    /***********************************************
-     * PULSE
-     ***********************************************/
-
-    /**
-     * Viscous fluid with a pulse for part and decay for the rest.
-     * - Applies a fixed force over an interval (a damped acceleration), and
-     * - Lets the exponential bleed away the velocity over a longer interval
-     * - Michael Herf, http://stereopsis.com/stopping/
-     */
-    function pulse_(x) {
-        var val, start, expx;
-        // test
-        x = x * options.pulseScale;
-        if (x < 1) { // acceleartion
-            val = x - (1 - Math.exp(-x));
-        } else {     // tail
-            // the previous animation ended here:
-            start = Math.exp(-1);
-            // simple viscous drag
-            x -= 1;
-            expx = 1 - Math.exp(-x);
-            val = start + (expx * (1 - start));
-        }
-        return val * options.pulseNormalize;
-    }
-
-    function pulse(x) {
-        if (x >= 1) return 1;
-        if (x <= 0) return 0;
-
-        if (options.pulseNormalize == 1) {
-            options.pulseNormalize /= pulse_(1);
-        }
-        return pulse_(x);
-    }
-
-    addEvent("mousedown", mousedown);
-    addEvent("mousewheel", wheel);
-    addEvent("load", init);
-} //end smooth scroll
 /*
 * used by vimeo in td_video shortcode
 * */
@@ -5608,6 +9833,8 @@ var Froogaloop=function(){function e(a){return new e.fn.init(a)}function h(a,c,b
 /* global tdBackstr:{} */
 /* global td_backstretch_items:Array */
 /* global td_compute_backstretch_item:Function */
+
+/* global setMenuMinHeight:Function */
 
 var tdCustomEvents = {};
 
@@ -5688,6 +9915,9 @@ var tdCustomEvents = {};
 
             // for better performance it's used tdAnimationScroll.compute_all_items, because it uses requestAnimationFrame
             tdAnimationScroll.compute_all_items();
+
+            // @todo It will be refactorized when td_site will be
+            setMenuMinHeight();
         }
     };
 })();
@@ -5907,420 +10137,560 @@ var tdAjaxCount = {};
 /* global tdDetect:{} */
 /* global $f:{} */
 
-/* global td_youtube_list_ids:{} */
-/* global td_vimeo_list_ids:{} */
-
 /* jshint -W069 */
+/* jshint -W116 */
 
-var tdYoutubePlayer = {};
-var tdVimeoPlaylistObj = {};
-var tdPlaylistGeneralFunctions = {};
-
+var tdYoutubePlayers = {};
+var tdVimeoPlayers = {};
 
 // @todo this ready hook function must be moved from here
-// jQuery(window).load(function() {//
 jQuery().ready(function() {
 
     'use strict';
 
-    //click on a youtube movie
-    jQuery( '.td_click_video_youtube' ).click(function(){
-
-        //this flag is check to see if to start the movie
-        tdYoutubePlayer.tdPlaylistVideoAutoplayYoutube = 1;
-
-        //add pause to playlist control
-        tdPlaylistGeneralFunctions.tdPlaylistAddPlayControl( '.td_youtube_control' );
-
-        //create  and play the clicked video
-        var tdYoutubeVideo = jQuery( this ).attr( 'id' ).substring( 3 );
-        if ( '' !== tdYoutubeVideo ) {
-            tdYoutubePlayer.playVideo( tdYoutubeVideo );
-        }
-    });
-
-
-
-    //click on youtube play control
-    jQuery( '.td_youtube_control' ).click(function(){
-
-        //click to play
-        if ( jQuery( this ).hasClass( 'td-sp-video-play' ) ){
-            //this is to enable video playing
-            tdYoutubePlayer.tdPlaylistVideoAutoplayYoutube = 1;
-
-            //play the video
-            tdYoutubePlayer.tdPlaylistYoutubePlayVideo();
-
-        } else {
-
-            //put pause to the player
-            tdYoutubePlayer.tdPlaylistYoutubePauseVideo();
-        }
-    });
-
-
-
-    //check for youtube wrapper and add api code to create the player
-    if ( jQuery( '.td_wrapper_playlist_player_youtube' ).length > 0) {
-
-        if ( '1' == jQuery( '.td_wrapper_playlist_player_youtube').data( 'autoplay' ) ) {
-            tdYoutubePlayer.tdPlaylistVideoAutoplayYoutube = 1;
-        }
-
-        var firstVideo = jQuery( '.td_wrapper_playlist_player_youtube' ).data( 'first-video' );
-
-        if ( '' !== firstVideo ) {
-            tdYoutubePlayer.tdPlaylistIdYoutubeVideoRunning = firstVideo;
-
-            tdYoutubePlayer.playVideo( firstVideo );
-        }
-    }
-
-
-
-    //check autoplay vimeo
-    if ( '1' == jQuery( '.td_wrapper_playlist_player_vimeo' ).data( 'autoplay' ) ) {
-        tdVimeoPlaylistObj.tdPlaylistVideoAutoplayVimeo = 1;
-    }
-
-    //click on a vimeo
-    jQuery( '.td_click_video_vimeo' ).click(function(){
-
-        //this flag is check to see if to start the movie
-        tdVimeoPlaylistObj.tdPlaylistVideoAutoplayVimeo = 1;
-
-        //add pause to playlist control
-        tdPlaylistGeneralFunctions.tdPlaylistAddPlayControl( '.td_vimeo_control' );
-
-        //create  and play the clicked video
-        tdVimeoPlaylistObj.createPlayer( jQuery( this ).attr( 'id' ).substring( 3 ) );
-    });
-
-
-
-
-
-    //check for vimeo wrapper and add api code to create the player
-    if ( jQuery( '.td_wrapper_playlist_player_vimeo' ).length > 0 ) {
-
-        //add play to playlist control
-        tdPlaylistGeneralFunctions.tdPlaylistAddPlayControl( '.td_vimeo_control' );
-
-        //create the iframe with the video
-        tdVimeoPlaylistObj.createPlayer( jQuery( '.td_wrapper_playlist_player_vimeo' ).data('first-video' ) );
-    }
-
-
-
-
-    //click on youtube play control
-    jQuery( '.td_vimeo_control' ).click(function(){
-
-        //click to play
-        if ( jQuery( this ).hasClass( 'td-sp-video-play' ) ) {
-            //this is to enable video playing
-            tdVimeoPlaylistObj.tdPlaylistVideoAutoplayVimeo = 1;
-
-            //play the video
-            tdVimeoPlaylistObj.tdPlaylistPlayerVimeo.api( 'play' );
-
-        } else {
-
-            //put pause to the player
-            tdVimeoPlaylistObj.tdPlaylistPlayerVimeo.api( 'pause' );
-        }
-    });
-
+    tdYoutubePlayers.init();
+    tdVimeoPlayers.init();
 });
 
 
+
 (function() {
+
     'use strict';
 
-    tdYoutubePlayer = {
-        tdYtPlayer: '',
 
+    // the youtube list players (the init() method should be called before using the list)
+    tdYoutubePlayers = {
+
+        // the part name of the player id (they will be ex 'player_youtube_1', 'player_youtube_1', 'player_youtube_2', ...)
         tdPlayerContainer: 'player_youtube',
 
-        tdPlaylistVideoAutoplayYoutube: 0,
+        // the internal list
+        players: [],
 
-        tdPlaylistIdYoutubeVideoRunning: '',
+
+        // the initialization of the youtube list players
+        init: function() {
+
+            var jqWrapperPlaylistPlayerYoutube = jQuery( '.td_wrapper_playlist_player_youtube' );
+
+            for ( var i = 0; i < jqWrapperPlaylistPlayerYoutube.length; i++ ) {
+
+                var jqPlayerWrapper = jQuery( jqWrapperPlaylistPlayerYoutube[ i ] ),
+                    youtubePlayer = tdYoutubePlayers.addPlayer( jqPlayerWrapper),
+                    playerId = youtubePlayer.tdPlayerContainer;
+
+                jqPlayerWrapper.parent().find( '.td_youtube_control').data( 'player-id', playerId );
+
+                var videoYoutubeElements = jqPlayerWrapper.parent().find( '.td_click_video_youtube');
+                for ( var j = 0; j < videoYoutubeElements.length; j++ ) {
+                    jQuery( videoYoutubeElements[ j ] ).data( 'player-id', playerId );
+
+                    if ( j + 1 < videoYoutubeElements.length) {
+                        jQuery( videoYoutubeElements[ j ] ).data( 'next-video-id', jQuery(videoYoutubeElements[ j + 1 ] ).data( 'video-id' ) );
+                    } else {
+                        jQuery( videoYoutubeElements[ j ] ).data( 'next-video-id', jQuery(videoYoutubeElements[0]).data( 'video-id' ) );
+                    }
+                }
 
 
-        playVideo: function( videoId ) {
-            if ( 'undefined' === typeof( YT ) || 'undefined' === typeof( YT.Player ) ) {
-                window.onYouTubePlayerAPIReady = function() {
-                    tdYoutubePlayer.loadPlayer( tdYoutubePlayer.tdPlayerContainer, videoId );
-                };
-                jQuery.getScript( 'https://www.youtube.com/player_api' );
-            } else {
-                tdYoutubePlayer.loadPlayer( tdYoutubePlayer.tdPlayerContainer, videoId );
+                if ( '1' == jqPlayerWrapper.data( 'autoplay' ) ) {
+                    youtubePlayer.autoplay = 1;
+                }
+
+                var firstVideo = jqPlayerWrapper.data( 'first-video' );
+
+                if ( '' !== firstVideo ) {
+                    youtubePlayer.tdPlaylistIdYoutubeVideoRunning = firstVideo;
+                    youtubePlayer.playVideo( firstVideo );
+                }
+            }
+
+            //click on a youtube movie
+            jQuery( '.td_click_video_youtube' ).click(function(){
+
+                var videoId = jQuery( this ).data( 'video-id' ),
+                    playerId = jQuery( this ).data( 'player-id' );
+
+                if ( undefined !== playerId && '' !== playerId && undefined !== videoId && '' !== videoId ) {
+                    tdYoutubePlayers.operatePlayer( playerId, 'play', videoId );
+                }
+            });
+
+
+
+            //click on youtube play control
+            jQuery( '.td_youtube_control' ).click(function(){
+
+                var playerId = jQuery( this ).data( 'player-id' );
+
+                if ( undefined !== playerId && '' !== playerId ) {
+                    if ( jQuery( this ).hasClass( 'td-sp-video-play' ) ){
+                        tdYoutubePlayers.operatePlayer( playerId, 'play' );
+                    } else {
+                        tdYoutubePlayers.operatePlayer( playerId, 'pause' );
+                    }
+                }
+            });
+        },
+
+
+        addPlayer: function( jqPlayerWrapper ) {
+
+            var containerId = tdYoutubePlayers.tdPlayerContainer + '_' + tdYoutubePlayers.players.length,
+                tdPlayer = tdYoutubePlayers.createPlayer( containerId, jqPlayerWrapper );
+
+            tdYoutubePlayers.players.push( tdPlayer );
+
+            return tdPlayer;
+        },
+
+        operatePlayer: function( playerId, option, videoId ) {
+            for ( var i = 0; i < tdYoutubePlayers.players.length; i++ ) {
+                if (tdYoutubePlayers.players[i].tdPlayerContainer == playerId ) {
+
+                    var youtubePlayer = tdYoutubePlayers.players[ i ];
+
+                    // This status is necessary just for mobile
+                    youtubePlayer.playStatus();
+
+                    if ( 'play' === option ) {
+
+                        youtubePlayer.autoplay = 1;
+
+                        if ( undefined === videoId ) {
+                            youtubePlayer.playerPlay();
+                        } else {
+                            youtubePlayer.playVideo(videoId);
+                        }
+                    } else if ( 'pause' == option ) {
+                        tdYoutubePlayers.players[i].playerPause();
+                    }
+                    break;
+                }
             }
         },
 
 
-        loadPlayer: function( container, videoId ) {
-            //container is here in case we need to add multiple players on page
-            tdYoutubePlayer.tdPlaylistIdYoutubeVideoRunning = videoId;
+        // create and return the youtube player object
+        createPlayer: function( containerId, jqPlayerWrapper ) {
 
-            var current_video_name = td_youtube_list_ids['td_' + tdYoutubePlayer.tdPlaylistIdYoutubeVideoRunning]['title'];
-            var current_video_time = td_youtube_list_ids['td_' + tdYoutubePlayer.tdPlaylistIdYoutubeVideoRunning]['time'];
+            var youtubePlayer = {
 
-            //remove focus from all videos from playlist
-            tdPlaylistGeneralFunctions.tdVideoPlaylistRemoveFocused( '.td_click_video_youtube' );
+                tdYtPlayer: '',
 
-            //add focus class on current playing video
-            jQuery( '#td_' + videoId ).addClass( 'td_video_currently_playing' );
+                tdPlayerContainer: containerId,
 
-            //ading the current video playing title and time to the control area
-            jQuery( '#td_current_video_play_title_youtube' ).html( current_video_name );
-            jQuery( '#td_current_video_play_time_youtube' ).html( current_video_time );
+                autoplay: 0,
 
-            tdYoutubePlayer.tdYtPlayer = '';
-            jQuery( '.td_wrapper_playlist_player_youtube' ).html( '<div id=' + tdYoutubePlayer.tdPlayerContainer + '></div>' );
+                tdPlaylistIdYoutubeVideoRunning: '',
 
-            tdYoutubePlayer.tdYtPlayer = new YT.Player( container, {//window.myPlayer = new YT.Player(container, {
-                playerVars: {
-                    //modestbranding: 1,
-                    //rel: 0,
-                    //showinfo: 0,
-                    autoplay: tdYoutubePlayer.tdPlaylistVideoAutoplayYoutube
+                jqTDWrapperVideoPlaylist: jqPlayerWrapper.closest( '.td_wrapper_video_playlist' ),
+
+                jqPlayerWrapper: jqPlayerWrapper,
+
+                jqControlPlayer: '',
+
+                _videoId: '',
+
+                playVideo: function( videoId ) {
+
+                    youtubePlayer._videoId = videoId;
+
+                    if ( 'undefined' === typeof( YT ) || 'undefined' === typeof( YT.Player ) ) {
+
+                        window.onYouTubePlayerAPIReady = function () {
+
+                            for ( var i = 0; i < tdYoutubePlayers.players.length; i++ ) {
+                                tdYoutubePlayers.players[ i ].loadPlayer( );
+                            }
+                        };
+
+                        jQuery.getScript('https://www.youtube.com/player_api').done(function( script, textStatus ) {
+                            //alert(textStatus);
+                        });
+                    } else {
+                        youtubePlayer.loadPlayer( videoId );
+                    }
                 },
-                height: '100%',
-                width: '100%',
-                videoId: videoId,
-                events: {
-                    'onReady': tdYoutubePlayer.onPlayerReady,
-                    'onStateChange': tdYoutubePlayer.onPlayerStateChange
-                }
-            });
-        },
 
 
-        onPlayerStateChange: function( event ) {
-            if ( event.data === YT.PlayerState.PLAYING ) {
+                loadPlayer: function (videoId) {
 
-                //add pause to playlist control
-                tdPlaylistGeneralFunctions.tdPlaylistAddPauseControl( '.td_youtube_control' );
+                    var videoIdToPlay = youtubePlayer._videoId;
 
-            } else if ( event.data === YT.PlayerState.ENDED ) {
-                //video_events_js.on_stop('youtube');
-
-                //add play to playlist control
-                tdPlaylistGeneralFunctions.tdPlaylistAddPlayControl( '.td_youtube_control' );
-
-                //if a video has ended then make auto play = 1; This is the case when the user set autoplay = 0 but start watching videos
-                tdYoutubePlayer.tdPlaylistVideoAutoplayYoutube = 1;
-
-                //get the next video
-                var nextVideoId = tdPlaylistGeneralFunctions.tdPlaylistChooseNextVideo( [ td_youtube_list_ids, tdYoutubePlayer.tdPlaylistIdYoutubeVideoRunning ] );
-                if ( '' !== nextVideoId ) {
-                    tdYoutubePlayer.playVideo( nextVideoId );
-                }
-
-            } else if ( YT.PlayerState.PAUSED ) {
-                //add play to playlist control
-                tdPlaylistGeneralFunctions.tdPlaylistAddPlayControl( '.td_youtube_control' );
-            }
-        },
-
-        tdPlaylistYoutubeStopVideo: function() {
-            tdYoutubePlayer.tdYtPlayer.stopVideo();
-        },
-
-        tdPlaylistYoutubePlayVideo: function() {
-            if ( ! tdDetect.isMobileDevice ) {
-                tdYoutubePlayer.tdYtPlayer.playVideo();
-            }
-        },
-
-        tdPlaylistYoutubePauseVideo: function() {
-            tdYoutubePlayer.tdYtPlayer.pauseVideo();
-        }
-    };
-
-
-
-    //VIMEO
-    tdVimeoPlaylistObj = {
-
-        currentVideoPlaying : '',
-
-        tdPlaylistPlayerVimeo: '',//a copy of the vimeo player : needed when playing or pausing the vimeo pleyer from the playlist control
-
-        //tdPlaylistVideoAutoplayVimeo: '',//autoplay
-        tdPlaylistVideoAutoplayVimeo: 0,//autoplay
-
-        createPlayer: function ( videoId ) {
-            if ( '' !== videoId ) {
-
-                var vimeo_iframe_autoplay = '';
-
-                this.currentVideoPlaying = videoId;
-
-                //remove focus class
-                tdPlaylistGeneralFunctions.tdVideoPlaylistRemoveFocused( '.td_click_video_vimeo' );
-
-                //add focus clas on play movie
-                jQuery( '#td_' + videoId ).addClass( 'td_video_currently_playing' );
-
-                //put movie data to control box
-                this.putMovieDataToControlBox( videoId );
-
-                //check autoplay
-                if ( 0 !== this.tdPlaylistVideoAutoplayVimeo ) {
-                    vimeo_iframe_autoplay = '&autoplay=1';
-                }
-
-
-                jQuery( '.td_wrapper_playlist_player_vimeo' ).html( '' );
-                jQuery( '.td_wrapper_playlist_player_vimeo' ).html( '<iframe id="player_vimeo_1" src="https://player.vimeo.com/video/' + videoId + '?api=1&player_id=player_vimeo_1' + vimeo_iframe_autoplay + '"  frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>' );//width="100%" height="100%"
-
-                this.createVimeoObjectPlayer( jQuery );
-            }
-
-        },
-
-        putMovieDataToControlBox: function( videoId ){
-            jQuery( '#td_current_video_play_title_vimeo' ).html( td_vimeo_list_ids['td_' + videoId]['title'] );
-            jQuery( '#td_current_video_play_time_vimeo' ).html( td_vimeo_list_ids['td_' + videoId]['time'] );
-        },
-
-        createVimeoObjectPlayer : function( $ ) {
-            var iframe = '';
-            var player = '';
-
-            iframe = $( '#player_vimeo_1' )[0];
-            player = $f( iframe );
-
-            //a copy of the vimeo player : needed when playing or pausing the vimeo pleyer from the playlist control
-            this.tdPlaylistPlayerVimeo = player;
-
-            // When the player is ready, add listeners for pause, finish, and playProgress
-            player.addEvent( 'ready', function() {
-                //status.text('ready');
-
-                player.addEvent( 'play', tdVimeoPlaylistObj.onPlay );
-                player.addEvent( 'pause', tdVimeoPlaylistObj.onPause );
-                player.addEvent( 'finish', tdVimeoPlaylistObj.onFinish );
-                player.addEvent( 'playProgress', tdVimeoPlaylistObj.onPlayProgress );
-            });
-        },
-
-        onPlay : function( id ) {
-            tdPlaylistGeneralFunctions.tdPlaylistAddPauseControl( '.td_vimeo_control' );
-
-            tdVimeoPlaylistObj.tdPlaylistVideoAutoplayVimeo = 1;
-        },
-
-        onPause : function( id ) {
-            tdPlaylistGeneralFunctions.tdPlaylistAddPlayControl( '.td_vimeo_control' );
-        },
-
-        onFinish : function( id ) {
-            //status.text('finished');
-
-            //add play to playlist control
-            tdPlaylistGeneralFunctions.tdPlaylistAddPlayControl( '.td_vimeo_control' );
-
-            //if a video has ended then make auto play = 1; This is the case when the user set autoplay = 0 but start watching videos
-            tdVimeoPlaylistObj.tdPlaylistVideoAutoplayVimeo = 1;
-
-            if ( ! tdDetect.isMobileDevice || ! tdDetect.isAndroid ) {
-
-                //get the next video
-                var nextVideoId = tdPlaylistGeneralFunctions.tdPlaylistChooseNextVideo( [td_vimeo_list_ids, tdVimeoPlaylistObj.currentVideoPlaying] );
-                if ( '' !== nextVideoId ) {
-                    tdVimeoPlaylistObj.createPlayer( nextVideoId );
-                }
-            }
-        },
-
-        onPlayProgress : function onPlayProgress( data, id ) {
-            //status.text(data.seconds + 's played');
-        }
-    };
-
-
-
-
-    //this object holds some functions used by both the youtube and vimeo
-    tdPlaylistGeneralFunctions = {
-        tdVideoPlaylistRemoveFocused: function( objClass ) {
-            //remove focus class
-            jQuery( objClass ).each(function() {
-                jQuery( this ).removeClass( 'td_video_currently_playing' );
-            });
-        },
-
-
-        /*
-         parram_array = array [
-         video_list,
-         current_video_id_playing
-         ]
-         */
-        tdPlaylistChooseNextVideo: function( parramArray ){
-            //alert('get next');
-
-            var videoList = parramArray[0];
-            var currentVideoIdPlaying = 'td_' + parramArray[1];
-
-            //get next video id
-            var nextVideoId = '';
-            var foundCurrent = '';
-            for ( var video in videoList ) {
-                if ( videoList.hasOwnProperty( video ) ) {
-                    if ( 'found' === foundCurrent ) {
-                        nextVideoId = video;
-                        foundCurrent = '';
-                        break;//found , now exit
+                    if ( undefined !== videoId ) {
+                        videoIdToPlay = videoId;
                     }
-                    if ( video === currentVideoIdPlaying ) {
-                        foundCurrent = 'found';
+
+                    if ( undefined === videoIdToPlay ) {
+                        return;
+                    }
+
+                    //container is here in case we need to add multiple players on page
+                    youtubePlayer.tdPlaylistIdYoutubeVideoRunning = videoIdToPlay;
+
+                    var current_video_name = window.td_youtube_list_ids['td_' + youtubePlayer.tdPlaylistIdYoutubeVideoRunning]['title'],
+                        current_video_time = window.td_youtube_list_ids['td_' + youtubePlayer.tdPlaylistIdYoutubeVideoRunning]['time'];
+
+                    //remove focus from all videos from playlist
+                    youtubePlayer.jqTDWrapperVideoPlaylist.find( '.td_click_video_youtube' ).removeClass( 'td_video_currently_playing' );
+
+                    //add focus class on current playing video
+                    youtubePlayer.jqTDWrapperVideoPlaylist.find( '.td_' + videoIdToPlay ).addClass( 'td_video_currently_playing' );
+
+                    //ading the current video playing title and time to the control area
+                    youtubePlayer.jqTDWrapperVideoPlaylist.find( '.td_current_video_play_title_youtube' ).html( current_video_name );
+                    youtubePlayer.jqTDWrapperVideoPlaylist.find( '.td_current_video_play_time_youtube' ).html( current_video_time );
+
+                    youtubePlayer.jqPlayerWrapper.html('<div id=' + youtubePlayer.tdPlayerContainer + '></div>');
+
+                    youtubePlayer.jqControlPlayer = youtubePlayer.jqTDWrapperVideoPlaylist.find( '.td_youtube_control' );
+
+                    youtubePlayer.tdYtPlayer = new YT.Player(youtubePlayer.tdPlayerContainer, {//window.myPlayer = new YT.Player(container, {
+                        playerVars: {
+                            //modestbranding: 1,
+                            //rel: 0,
+                            //showinfo: 0,
+                            autoplay: youtubePlayer.autoplay
+                        },
+                        height: '100%',
+                        width: '100%',
+                        videoId: videoIdToPlay,
+                        events: {
+                            'onStateChange': youtubePlayer.onPlayerStateChange
+                        }
+                    });
+                },
+
+
+                onPlayerStateChange: function (event) {
+                    if (event.data === YT.PlayerState.PLAYING) {
+
+                        //add pause to playlist control
+                        youtubePlayer.pauseStatus();
+
+                    } else if (event.data === YT.PlayerState.ENDED) {
+
+                        youtubePlayer.playStatus();
+
+                        //if a video has ended then make auto play = 1; This is the case when the user set autoplay = 0 but start watching videos
+                        youtubePlayer.autoplay = 1;
+
+
+                        //get the next video
+                        var nextVideoId = '',
+                            tdVideoCurrentlyPlaying = youtubePlayer.jqTDWrapperVideoPlaylist.find( '.td_video_currently_playing' );
+
+                        if ( tdVideoCurrentlyPlaying.length ) {
+                            var nextSibling = jQuery( tdVideoCurrentlyPlaying ).next( '.td_click_video_youtube' );
+                            if ( nextSibling.length ) {
+                                nextVideoId = jQuery( nextSibling ).data( 'video-id' );
+                            }
+                            //else {
+                            //    var firstSibling = jQuery(tdVideoCurrentlyPlaying).siblings( '.td_click_video_youtube:first' );
+                            //    if ( firstSibling.length ) {
+                            //        nextVideoId = jQuery( firstSibling ).data( 'video-id' );
+                            //    }
+                            //}
+                        }
+
+                        if ('' !== nextVideoId) {
+                            youtubePlayer.playVideo(nextVideoId);
+                        }
+
+                    } else if (YT.PlayerState.PAUSED) {
+                        //add play to playlist control
+                        youtubePlayer.playStatus();
+                    }
+                },
+
+                //tdPlaylistYoutubeStopVideo: function () {
+                //    youtubePlayer.tdYtPlayer.stopVideo();
+                //},
+
+                playerPlay: function () {
+                    youtubePlayer.tdYtPlayer.playVideo();
+                },
+
+                playerPause: function () {
+                    youtubePlayer.tdYtPlayer.pauseVideo();
+                },
+
+                playStatus: function() {
+                    youtubePlayer.jqControlPlayer.removeClass( 'td-sp-video-pause' ).addClass( 'td-sp-video-play' );
+                },
+
+                pauseStatus: function() {
+                    youtubePlayer.jqControlPlayer.removeClass( 'td-sp-video-play' ).addClass( 'td-sp-video-pause' );
+                }
+            };
+
+            return youtubePlayer;
+        }
+    };
+
+
+
+
+    // the vimeo list players (to use it, the init() method should be called)
+    // !Important. Usually, because of froogaloop implementation, there couldn't be multiple vimeo players running all at once on page.
+    tdVimeoPlayers = {
+
+        // the part name of the player id (they will be ex 'player_vimeo_0', 'player_vimeo_1', 'player_vimeo_2', ...)
+        tdPlayerContainer: 'player_vimeo',
+
+        // the internal list
+        players: [],
+
+        // Set to true at the first autoplayed player created
+        // It's used to avoid the autoplay setting of the next players (multiple players can't have autoplay = 1 )
+        existingAutoplay: false,
+
+
+        // init the vimeo list players
+        init: function() {
+            var jqTDWrapperPlaylistPlayerVimeo = jQuery( '.td_wrapper_playlist_player_vimeo' );
+
+            for ( var i = 0; i < jqTDWrapperPlaylistPlayerVimeo.length; i++ ) {
+                var vimeoPlayer = tdVimeoPlayers.addPlayer( jQuery(jqTDWrapperPlaylistPlayerVimeo[i]) );
+                if ( 0 !== vimeoPlayer.autoplay ) {
+                    tdVimeoPlayers.existingAutoplay = true;
+                }
+            }
+
+
+            //click on a vimeo
+            jQuery( '.td_click_video_vimeo' ).click(function(){
+
+                var videoId = jQuery( this ).data( 'video-id' ),
+                    playerId = jQuery( this ).data( 'player-id' );
+
+                if ( undefined !== playerId && '' !== playerId && undefined !== videoId && '' !== videoId ) {
+                    tdVimeoPlayers.operatePlayer( playerId, 'play', videoId );
+                }
+            });
+
+
+            //click on vimeo play control
+            jQuery( '.td_vimeo_control' ).click(function(){
+
+                var playerId = jQuery( this ).data( 'player-id' );
+
+                if ( undefined !== playerId && '' !== playerId ) {
+                    if ( jQuery( this ).hasClass( 'td-sp-video-play' ) ){
+                        tdVimeoPlayers.operatePlayer( playerId, 'play' );
+                    } else {
+                        tdVimeoPlayers.operatePlayer( playerId, 'pause' );
                     }
                 }
-            }
+            });
+        },
 
-            //play the next video
-            if ( '' !== nextVideoId ) {
 
-                //remove 'td_' from the beginning of the string if necessary
-                if ( 'td_' === nextVideoId.substring( 0, 3 ) ) {
-                    nextVideoId = nextVideoId.substring( 3 );
+        // create and add player to the vimeo list players
+        addPlayer: function( jqPlayerWrapper ) {
+            var playerId = tdVimeoPlayers.tdPlayerContainer + '_' + tdVimeoPlayers.players.length,
+                vimeoPlayer = tdVimeoPlayers.createPlayer(  playerId, jqPlayerWrapper );
+
+            jqPlayerWrapper.parent().find( '.td_vimeo_control').data( 'player-id', playerId );
+
+            var vimeoVideoElements = jqPlayerWrapper.parent().find( '.td_click_video_vimeo');
+            for ( var j = 0; j < vimeoVideoElements.length; j++ ) {
+                jQuery( vimeoVideoElements[ j ] ).data( 'player-id', playerId );
+
+                if ( j + 1 < vimeoVideoElements.length ) {
+                    jQuery( vimeoVideoElements[ j ] ).data( 'next-video-id', jQuery( vimeoVideoElements[ j + 1 ] ).data( 'video-id' ) );
+                } else {
+                    jQuery( vimeoVideoElements[ j ] ).data( 'next-video-id', jQuery( vimeoVideoElements[ 0 ] ).data( 'video-id' ) );
                 }
-
-                return nextVideoId;
             }
 
-            return '';
+            if ( '1' == jqPlayerWrapper.data( 'autoplay' ) ) {
+                vimeoPlayer.autoplay = 1;
+            }
+
+            var firstVideo = jqPlayerWrapper.data( 'first-video' );
+
+            if ( undefined !== firstVideo && '' !== firstVideo ) {
+                vimeoPlayer.createPlayer( firstVideo );
+            }
+
+            tdVimeoPlayers.players.push( vimeoPlayer );
+
+            return vimeoPlayer;
         },
 
 
+        // play or pause a video or the current (first) video
+        operatePlayer: function( playerId, option, videoId ) {
+            for ( var i = 0; i < tdVimeoPlayers.players.length; i++ ) {
 
-        //add pause button playlist control
-        tdPlaylistAddPauseControl: function( wrapperClass ){
-            jQuery( wrapperClass ).removeClass( 'td-sp-video-play' ).addClass( 'td-sp-video-pause' );
+                if ( tdVimeoPlayers.players[ i ].playerId == playerId ) {
+
+                    var vimeoPlayer = tdVimeoPlayers.players[ i ];
+
+                    if ( 'play' === option ) {
+
+                        vimeoPlayer.autoplay = 1;
+
+                        if ( undefined !== videoId ) {
+
+                            // the existing autoplay is reset to allow autoplay when we have videoId (a video from the playlist was clicked)
+                            tdVimeoPlayers.existingAutoplay = false;
+
+                            vimeoPlayer.createPlayer( videoId );
+                        } else {
+                            vimeoPlayer.playerPlay();
+                        }
+
+                    } else if ( 'pause' === option ) {
+                        vimeoPlayer.playerPause();
+                    }
+
+                    break;
+                }
+            }
         },
 
-        //add play button playlist control
-        tdPlaylistAddPlayControl: function( wrapperClass ){
-            jQuery( wrapperClass ).removeClass( 'td-sp-video-pause' ).addClass( 'td-sp-video-play' );
+
+        // create and return the vimeo player object
+        createPlayer: function( playerId, jqPlayerWrapper ) {
+
+            var vimeoPlayer = {
+
+                playerId: playerId,
+
+                // the jq td playlist wrapper ( the player and the playlist)
+                jqTDWrapperVideoPlaylist: jqPlayerWrapper.closest( '.td_wrapper_video_playlist' ),
+
+                // the jq player wrapper
+                jqPlayerWrapper: jqPlayerWrapper,
+
+                currentVideoPlaying : '', // not used for the moment
+
+                player: '',//a copy of the vimeo player : needed when playing or pausing the vimeo pleyer from the playlist control
+
+                // main control button of the player
+                jqControlPlayer: '',
+
+                autoplay: 0,//autoplay
+
+                createPlayer: function ( videoId ) {
+                    if ( '' !== videoId ) {
+
+                        this.currentVideoPlaying = videoId;
+
+                        var autoplay = '',
+                            current_video_name = window.td_vimeo_list_ids['td_' + videoId]['title'],
+                            current_video_time = window.td_vimeo_list_ids['td_' + videoId]['time'];
+
+                        //remove focus from all videos from playlist
+                        vimeoPlayer.jqTDWrapperVideoPlaylist.find( '.td_click_video_vimeo' ).removeClass( 'td_video_currently_playing' );
+
+                        //add focus class on current playing video
+                        vimeoPlayer.jqTDWrapperVideoPlaylist.find( '.td_' + videoId ).addClass( 'td_video_currently_playing' );
+
+                        //ading the current video playing title and time to the control area
+                        vimeoPlayer.jqTDWrapperVideoPlaylist.find( '.td_current_video_play_title_vimeo' ).html( current_video_name );
+                        vimeoPlayer.jqTDWrapperVideoPlaylist.find( '.td_current_video_play_time_vimeo' ).html( current_video_time );
+
+                        vimeoPlayer.jqControlPlayer = vimeoPlayer.jqTDWrapperVideoPlaylist.find( '.td_vimeo_control' );
+
+                        //check autoplay
+                        if ( !tdVimeoPlayers.existingAutoplay && 0 !== vimeoPlayer.autoplay ) {
+                            autoplay = '&autoplay=1';
+
+                            if ( tdDetect.isMobileDevice ) {
+                                vimeoPlayer.playStatus();
+                            } else {
+                                vimeoPlayer.pauseStatus();
+                            }
+                        } else {
+                            vimeoPlayer.playStatus();
+                        }
+                        vimeoPlayer.jqPlayerWrapper.html( '<iframe id="' + vimeoPlayer.playerId + '" src="https://player.vimeo.com/video/' + videoId + '?api=1&player_id=' + vimeoPlayer.playerId + '' + autoplay + '"  frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>' );
+                        vimeoPlayer.createVimeoObjectPlayer( jQuery );
+                    }
+                },
+
+                createVimeoObjectPlayer : function( $ ) {
+                    var player = '',
+                        iframe = $( '#' + vimeoPlayer.playerId );
+
+                    if ( iframe.length ) {
+                        player = $f( iframe[0] );
+
+                        //a copy of the vimeo player : needed when playing or pausing the vimeo pleyer from the playlist control
+                        vimeoPlayer.player = player;
+
+                        // When the player is ready, add listeners for pause, finish, and playProgress
+                        player.addEvent( 'ready', function() {
+
+                            player.addEvent( 'play', function( data ) {
+                                vimeoPlayer.pauseStatus();
+                                vimeoPlayer.autoplay = 1;
+                            });
+
+                            player.addEvent( 'pause', function( data ) {
+                                vimeoPlayer.playStatus();
+                            });
+
+                            player.addEvent( 'finish', function( data ) {
+
+                                var nextVideoId = '',
+                                    tdVideoCurrentlyPlaying = vimeoPlayer.jqTDWrapperVideoPlaylist.find( '.td_video_currently_playing' );
+
+                                if ( tdVideoCurrentlyPlaying.length ) {
+                                    var nextSibling = jQuery( tdVideoCurrentlyPlaying ).next( '.td_click_video_vimeo' );
+                                    if ( nextSibling.length ) {
+                                        nextVideoId = jQuery( nextSibling ).data( 'video-id' );
+                                    }
+                                }
+
+                                if ( '' !== nextVideoId ) {
+                                    vimeoPlayer.createPlayer( nextVideoId );
+
+                                    if ( tdDetect.isMobileDevice ) {
+                                        vimeoPlayer.playStatus();
+                                    } else {
+                                        vimeoPlayer.pauseStatus();
+                                    }
+                                } else {
+                                    vimeoPlayer.playStatus();
+                                }
+                            });
+                        });
+                    }
+                },
+
+                // play the current video
+                playerPlay: function () {
+                    vimeoPlayer.autoplay = 1;
+                    vimeoPlayer.player.api( 'play' );
+                },
+
+                // pause the current video
+                playerPause: function () {
+                    vimeoPlayer.player.api( 'pause' );
+                },
+
+                // change status to 'play'
+                playStatus: function() {
+                    vimeoPlayer.jqControlPlayer.removeClass( 'td-sp-video-pause' ).addClass( 'td-sp-video-play' );
+                },
+
+                // change status to 'pause'
+                pauseStatus: function() {
+                    vimeoPlayer.jqControlPlayer.removeClass( 'td-sp-video-play' ).addClass( 'td-sp-video-pause' );
+                }
+            };
+
+            return vimeoPlayer;
         }
     };
+
 })();
-
-
-
-
-
-
-
-
-
-
-
 /*
  td_slide.js
  */
@@ -6517,6 +10887,10 @@ var tdPullDown = {};
         // - to be initialized, every property with 'IT MUST BE SPECIFIED' is mandatory
         item: function item() {
 
+
+            // OPTIONAL - here we store the block Unique ID. This enables us to delete the item via this id @see tdPullDown.deleteItem
+            this.blockUid = '';
+
             // - the jquery object of the horizontal list.
             // IT MUST BE SPECIFIED.
             this.horizontal_jquery_obj = '';
@@ -6538,7 +10912,7 @@ var tdPullDown = {};
 
             // the minimum no. of elements to be shown by the horizontal list
             // - IT CAN BE SPECIFIED
-            this.minimum_elements = 2;
+            this.minimum_elements = 1;
 
 
 
@@ -6604,6 +10978,20 @@ var tdPullDown = {};
          */
         add_item: function( item ) {
 
+            // check to see if the item is ok
+            if (item.vertical_jquery_obj.length !== 1) {
+                throw 'item.vertical_jquery_obj is more or less than one: ' + item.vertical_jquery_obj.length;
+            }
+            if (item.horizontal_jquery_obj.length !== 1) {
+                throw 'item.horizontal_jquery_obj is more or less than one: ' + item.horizontal_jquery_obj.length;
+            }
+            if (item.container_jquery_obj.length !== 1) {
+                throw 'item.container_jquery_obj is more or less than one: ' + item.container_jquery_obj.length;
+            }
+            if (item.horizontal_element_css_class === '') {
+                throw 'item.horizontal_element_css_class is empty';
+            }
+
             // the item is added in the item list
             tdPullDown.items.push( item );
 
@@ -6612,6 +11000,22 @@ var tdPullDown = {};
 
             //  the item is ready to be computed
             tdPullDown._compute_item( item );
+        },
+
+
+        /**
+         * Deletes an item base on blockUid. Note that blockUid is optional (this library is also used outside of blocks)!
+         * Make sure that you add blockUid to items that you expect to be deleted
+         * @param blockUid
+         */
+        deleteItem: function(blockUid) {
+            for (var cnt = 0; cnt < tdPullDown.items.length; cnt++) {
+                if (tdPullDown.items[cnt].blockUid === blockUid) {
+                    tdPullDown.items.splice(cnt, 1); // remove the item from the "array"
+                    return true;
+                }
+            }
+            return false;
         },
 
 
@@ -6633,15 +11037,16 @@ var tdPullDown = {};
             }
 
 
-            // the mandatory item properties are verified
-            if ( ( '' === item.horizontal_jquery_obj ) ||
-                ( '' === item.vertical_jquery_obj ) ||
-                ( '' === item.container_jquery_obj ) ||
-                ( '' === item.horizontal_element_css_class ) ) {
-
-                tdPullDown.log( 'Item can\' be initialized. It doesn\'t have all the mandatory properties' );
-                return;
-            }
+            //// the mandatory item properties are verified
+            // @20/4/2016 - i've moved all the checks to add_item -ra
+            //if ( ( '' === item.horizontal_jquery_obj ) ||
+            //    ( '' === item.vertical_jquery_obj ) ||
+            //    ( '' === item.container_jquery_obj ) ||
+            //    ( '' === item.horizontal_element_css_class ) ) {
+            //
+            //    tdPullDown.log( 'Item can\' be initialized. It doesn\'t have all the mandatory properties' );
+            //    return;
+            //}
 
 
             // the jquery object of the first ul container in the vertical list is initialized
@@ -6826,7 +11231,6 @@ var tdPullDown = {};
             }
 
 
-
             // the horizontal header margin is set 0 and the horizontal space is computing without its margin
             // @see tdPullDown._prepare_horizontal_header
             tdPullDown._prepare_horizontal_header( item, true );
@@ -6847,7 +11251,7 @@ var tdPullDown = {};
 
                 // then this space is reduced by the widths of the excluded elements
                 for ( var i = item.excluded_jquery_elements.length - 1; i >= 0; i-- ) {
-                    space_for_horizontal_elements -= item.excluded_jquery_elements[ i ].contents().outerWidth( true );
+                    space_for_horizontal_elements -= item.excluded_jquery_elements[ i ].outerWidth( true );
                 }
             }
 
@@ -6876,7 +11280,6 @@ var tdPullDown = {};
 
                     // all elements are moved to the vertical list
                     tdPullDown._make_all_elements_vertical( item );
-
 
 
 
@@ -6947,7 +11350,6 @@ var tdPullDown = {};
                 }
                 space_for_horizontal_elements -= local_space;
             }
-
 
 
             // It's the case when there isn't specified a no. of minimum horizontal elements or it is specified and the
@@ -7160,14 +11562,6 @@ var tdPullDown = {};
     tdPullDown.init();
 
 })();
-
-
-
-
-
-
-
-
 var td_fps = {
 
     start_time: 0,
@@ -7855,6 +12249,203 @@ var tdAnimationScroll = {};
 
 
 /**
+ * Created by tagdiv on 30.05.2016.
+ */
+
+/* global jQuery: {} */
+
+var tdHomepageFull = {};
+
+(function( jQuery, undefined ) {
+
+    'use strict';
+
+    tdHomepageFull = {
+
+        items: [],
+
+        item: function() {
+
+            // OPTIONAL - here we store the block Unique ID. This enables us to delete the item via this id @see tdHomepageFull.deleteItem
+            this.blockUid = '';
+
+            this.$tmplBlock = undefined;
+        },
+
+        /**
+         *
+         * @param item tdHomepageFull.item
+         */
+        addItem: function( item ) {
+            if ( tdHomepageFull.items.length ) {
+                return;
+            }
+
+            switch ( item.theme_name ) {
+                case 'Newsmag': tdHomepageFull._addNewsmagItem( item );
+                    break;
+                default:
+                    tdHomepageFull._addItem( item );
+                    break;
+            }
+        },
+
+
+        deleteItem: function( blockUid ) {
+
+            for (var i = 0; i < tdHomepageFull.items.length; i++) {
+
+                var currentItem = tdHomepageFull.items[ i ];
+
+                if ( currentItem.blockUid === blockUid ) {
+
+                    switch ( currentItem.theme_name ) {
+                        case 'Newsmag': tdHomepageFull._deleteNewsmagItem( currentItem, i );
+                            break;
+                        default:
+                            tdHomepageFull._deleteItem( currentItem, i );
+                            break;
+                    }
+                }
+            }
+            return false;
+        },
+
+        _addItem: function( item ) {
+            // The block template script
+            item.$tmplBlock = jQuery( '#' + item.blockUid + '_tmpl' );
+
+            // add the template
+            jQuery( '.td-header-wrap' ).after( item.$tmplBlock.html() );
+
+            // make the wrapper and the image -> and add the image inside
+            var td_homepage_full_bg_image_wrapper = jQuery( '<div class="backstretch"></div>' );
+            var td_homepage_full_bg_image = jQuery( '<img class="td-backstretch not-parallax" src="' + item.postFeaturedImage + '"/>' );
+            td_homepage_full_bg_image_wrapper.append( td_homepage_full_bg_image );
+
+            // add to body
+            jQuery( 'body' ).prepend( td_homepage_full_bg_image_wrapper );
+
+            // run the backstracher
+            var tdBackstrItem = new tdBackstr.item();
+            tdBackstrItem.wrapper_image_jquery_obj = td_homepage_full_bg_image_wrapper;
+            tdBackstrItem.image_jquery_obj = td_homepage_full_bg_image;
+            tdBackstr.add_item( tdBackstrItem );
+
+
+            // The DOM article reference (article has already been inserted)
+            item.$article = jQuery( '#post-' + item.postId );
+
+            // The background image
+            item.$bgImageWrapper = td_homepage_full_bg_image_wrapper;
+
+            // The backstretch item
+            item.backstrItem = tdBackstrItem;
+
+            tdHomepageFull.items.push( item );
+        },
+
+        _addNewsmagItem: function( item ) {
+
+            /// The block template script
+            item.$tmplBlock = jQuery( '#' + item.blockUid + '_tmpl' );
+
+            jQuery('body').addClass('single_template_6'); // add single_template_6 to space the content
+            jQuery('#td-outer-wrap').prepend( item.$tmplBlock.html());
+
+            //'jQuery(\'body\').prepend(\'<div class="td-full-screen-header-image-wrap"><div id="td-full-screen-header-image" class="td-image-gradient"></div></div>\');' . "\r\n" .
+
+            var td_homepage_full_bg_image_wrapper1 = jQuery('<div class="td-full-screen-header-image-wrap"></div>');
+            var td_homepage_full_bg_image_wrapper2 = jQuery('<div id="td-full-screen-header-image" class="td-image-gradient"></div>');
+            var td_homepage_full_bg_image = jQuery('<img class="td-backstretch" src="' + item.postFeaturedImage + '"/>');
+
+            td_homepage_full_bg_image_wrapper1.append(td_homepage_full_bg_image_wrapper2);
+            td_homepage_full_bg_image_wrapper2.append(td_homepage_full_bg_image);
+
+            // add to body
+            jQuery('#td-outer-wrap').prepend(td_homepage_full_bg_image_wrapper1);
+
+            // The background image
+            item.$bgImageWrapper = td_homepage_full_bg_image_wrapper1;
+
+            // run the backstracher
+            var tdBackstrItem = new tdBackstr.item();
+            tdBackstrItem.wrapper_image_jquery_obj = td_homepage_full_bg_image_wrapper1;
+            tdBackstrItem.image_jquery_obj = td_homepage_full_bg_image;
+
+            tdBackstr.add_item(tdBackstrItem);
+
+            // The DOM article reference (article has already been inserted)
+            item.$article = jQuery( '#post-' + item.postId );
+
+            // The backstretch item
+            item.backstrItem = tdBackstrItem;
+
+            jQuery('.td-read-down a').click(function(event){
+                event.preventDefault();
+                tdUtil.scrollToPosition(jQuery('.td-full-screen-header-image-wrap').height(), 1200);
+            });
+
+            tdHomepageFull.items.push( item );
+        },
+
+
+        _deleteItem: function( item, index ) {
+
+            // Remove the block template script
+            item.$tmplBlock.remove();
+
+            // Remove the article
+            item.$article.remove();
+
+            // Remove the background image
+            item.$bgImageWrapper.remove();
+
+            tdHomepageFull.items.splice(index, 1); // remove the item from the "array"
+
+            if ( tdBackstr.deleteItem( item.blockUid ) ) {
+
+                item.backstrItem = undefined;
+            }
+
+            var existingClassName = document.body.className;
+
+            existingClassName = existingClassName.replace(/td-boxed-layout/g, '');
+            existingClassName = existingClassName.replace(/single_template_8/g, '');
+            existingClassName = existingClassName.replace(/homepage-post/g, '');
+
+            document.body.className = existingClassName;
+        },
+
+        _deleteNewsmagItem: function(item, index) {
+
+            // Remove the block template script
+            item.$tmplBlock.remove();
+
+            // Remove the article
+            item.$article.remove();
+
+            // Remove the background image
+            item.$bgImageWrapper.remove();
+
+            tdHomepageFull.items.splice(index, 1); // remove the item from the "array"
+
+            if ( tdBackstr.deleteItem( item.blockUid ) ) {
+
+                item.backstrItem = undefined;
+            }
+
+            var existingClassName = document.body.className;
+
+            existingClassName = existingClassName.replace(/single_template_6/g, '');
+
+            document.body.className = existingClassName;
+        }
+    };
+
+})( jQuery );
+
+/**
  * Created by tagdiv on 23.02.2015.
  */
 
@@ -7871,6 +12462,9 @@ var tdBackstr = {};
 
 
         item: function() {
+
+            // OPTIONAL - here we store the block Unique ID. This enables us to delete the item via this id @see tdBackstr.deleteItem
+            this.blockUid = '';
 
             // check if is necessary to apply modification (css)
             this.previous_value = 0;
@@ -7934,6 +12528,17 @@ var tdBackstr = {};
                 //    }
                 //}, 0);
             }
+        },
+
+
+        deleteItem: function( blockUid ) {
+            for (var i = 0; i < tdBackstr.items.length; i++) {
+                if ( tdBackstr.items[ i ].blockUid === blockUid ) {
+                    tdBackstr.items.splice(i, 1); // remove the item from the "array"
+                    return true;
+                }
+            }
+            return false;
         },
 
 
@@ -8789,17 +13394,6 @@ tdAffix.init({
 });
 
 
-/**
- * smooth scroll init
- */
-/*
-jQuery().ready(function () {
-    if (tdDetect.isChrome === true && tdDetect.isOsx === false) {
-        td_smooth_scroll();
-    }
-});
-*/
-
 
 /**
  * sidebar init
@@ -8810,8 +13404,8 @@ if (tdUtil.getBackendVar('tds_smart_sidebar') == 'enabled' && tdDetect.isIos ===
         jQuery('.td-ss-row').each(function () {
             //@todo check to see if the sidebar + content is pressent
             var td_smart_sidebar_item = new tdSmartSidebar.item();
-            td_smart_sidebar_item.sidebar_jquery_obj = jQuery(this).children('.td-pb-span4').children('.wpb_wrapper');
-            td_smart_sidebar_item.content_jquery_obj = jQuery(this).children('.td-pb-span8').children('.wpb_wrapper');
+            td_smart_sidebar_item.sidebar_jquery_obj = jQuery(this).children('.td-pb-span4').find('.wpb_wrapper:first');
+            td_smart_sidebar_item.content_jquery_obj = jQuery(this).children('.td-pb-span8').find('.wpb_wrapper:first');
             tdSmartSidebar.add_item(td_smart_sidebar_item);
         });
 
@@ -8835,44 +13429,41 @@ if (tdUtil.getBackendVar('tds_smart_sidebar') == 'enabled' && tdDetect.isIos ===
  *
  */
 
-jQuery('.td-subcat-filter').each(function(index, element) {
-    var jquery_object_container = jQuery(element);
-    var horizontal_jquery_obj = jquery_object_container.find('.td-subcat-list:first');
-    var vertical_jquery_obj = jquery_object_container.find('.td-subcat-dropdown:first');
+jQuery(window).load( function() {
 
-    if (horizontal_jquery_obj.length == 1 && vertical_jquery_obj.length == 1) {
+// block subcategory ajax filters!
+    jQuery('.td-subcat-filter').each(function (index, element) {
+        var jquery_object_container = jQuery(element);
+        var horizontal_jquery_obj = jquery_object_container.find('.td-subcat-list:first');
 
         var pulldown_item_obj = new tdPullDown.item();
-
+        pulldown_item_obj.blockUid = jquery_object_container.parent().parent().data('td-block-uid'); // get the block UID
         pulldown_item_obj.horizontal_jquery_obj = horizontal_jquery_obj;
-        pulldown_item_obj.vertical_jquery_obj = vertical_jquery_obj;
+        pulldown_item_obj.vertical_jquery_obj = jquery_object_container.find('.td-subcat-dropdown:first');
         pulldown_item_obj.horizontal_element_css_class = 'td-subcat-item';
-        pulldown_item_obj.container_jquery_obj = horizontal_jquery_obj.parents('.td_block_wrap:first');
-        pulldown_item_obj.excluded_jquery_elements = [horizontal_jquery_obj.parent().siblings('.block-title:first')];
+        pulldown_item_obj.container_jquery_obj = horizontal_jquery_obj.closest('.td-block-title-wrap');
 
+        // '.td-pulldown-size' are the elements excluded
+        pulldown_item_obj.excluded_jquery_elements = [pulldown_item_obj.container_jquery_obj.find('.td-pulldown-size')];
         tdPullDown.add_item(pulldown_item_obj);
-    }
-});
+    });
 
-jQuery('.td-category-siblings').each(function(index, element) {
-    var jquery_object_container = jQuery(element);
-    var horizontal_jquery_obj = jquery_object_container.find('.td-category:first');
-    var vertical_jquery_obj = jquery_object_container.find('.td-subcat-dropdown:first');
 
-    if (horizontal_jquery_obj.length == 1 && vertical_jquery_obj.length == 1) {
+// on category pages
+    jQuery('.td-category-siblings').each(function (index, element) {
+        var jquery_object_container = jQuery(element);
+        var horizontal_jquery_obj = jquery_object_container.find('.td-category:first');
 
         var pulldown_item_obj = new tdPullDown.item();
-
         pulldown_item_obj.horizontal_jquery_obj = horizontal_jquery_obj;
-        pulldown_item_obj.vertical_jquery_obj = vertical_jquery_obj;
+        pulldown_item_obj.vertical_jquery_obj = jquery_object_container.find('.td-subcat-dropdown:first');
         pulldown_item_obj.horizontal_element_css_class = 'entry-category';
         pulldown_item_obj.container_jquery_obj = horizontal_jquery_obj.parents('.td-category-siblings:first');
-
         tdPullDown.add_item(pulldown_item_obj);
-    }
+
+    });
+
 });
-
-
 
 
 
@@ -9276,9 +13867,16 @@ var tdWeather = {};
         _currentLatitude: 0,
         _currentLongitude: 0,
         _currentPositionCacheKey: '',
+        _currentLocationCacheKey: '',
+
+        //location
+        _currentLocation: '',
 
         // all the weather items
         items: [],  /** an item is json encoded from this in PHP: @see td_weather::$weather_data */
+
+        // location set filed open
+        _is_location_open: false,
 
 
 
@@ -9300,8 +13898,13 @@ var tdWeather = {};
                 // get the position + callback
                 var timeoutVal = 10 * 1000 * 1000;
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(tdWeather._updateLocationCallback, tdWeather._displayLocationApiError, {enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 600000});
+                    navigator.geolocation.getCurrentPosition(
+                        tdWeather._updateLocationCallback,
+                        tdWeather._displayLocationApiError,
+                        {enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 600000});
                 }
+
+                tdWeather._currentRequestInProgress = false;
 
             });
 
@@ -9321,7 +13924,69 @@ var tdWeather = {};
                 }
                 tdWeather._renderCurrentItem();
             });
+
+            /**
+             *  set manual location
+             *  */
+
+            jQuery('.td-manual-location-form').submit( function(event){
+                event.preventDefault();
+
+                if (tdWeather._currentRequestInProgress === true) {
+                    return;
+                }
+
+                tdWeather._currentRequestInProgress = true;
+
+                tdWeather._currentItem = tdWeather._getItemByBlockID(jQuery(this).data('block-uid'));
+                //console.debug(this);
+
+                tdWeather._currentLocation = jQuery('input#' + jQuery(this).data('block-uid')).val();
+
+                tdWeather._updateLocationCallback2(tdWeather._currentLocation);
+
+                tdWeather._currentRequestInProgress = false;
+                tdWeather._hide_manual_location_form();
+            });
+
+
+            jQuery(document).click(function(ev) {
+
+                if ( tdWeather._is_location_open === true
+                    && jQuery(ev.target).hasClass('td-location-set-input') !== true
+                    && jQuery(ev.target).hasClass('td-location-set-button') !== true ) {
+                    tdWeather._hide_manual_location_form();
+                }
+
+            });
         },
+
+
+        /**
+         * adds a new weather item
+         * item.block_uid is REQUIERED, based on that id, we delete the item from the array *as of 27.4.2016 the id is not used
+         * @param item object - an item is json encoded from this in PHP: @see td_weather::$weather_data
+         */
+        addItem: function (item) {
+            tdWeather.items.push(item);
+        },
+
+        ///
+        // For now it's not needed because td_weater.php does not add js if it detects td-composer
+        // **
+        // * Deletes an item base on blockUid.
+        // * Make sure that you add block_uid to items that you expect to be deleted
+        // * @param blockUid
+        // */
+        //deleteItem: function(blockUid) {
+        //    for (var cnt = 0; cnt < tdWeather.items.length; cnt++) {
+        //        if (tdWeather.items[cnt].block_uid === blockUid) {
+        //            tdWeather.items.splice(cnt, 1); // remove the item from the "array"
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //},
 
 
         /**
@@ -9384,7 +14049,8 @@ var tdWeather = {};
             if (tdLocalCache.exist(tdWeather._currentPositionCacheKey)) {
                 tdWeather._owmGetFiveDaysData(tdLocalCache.get(tdWeather._currentPositionCacheKey));
             } else {
-                var weather = 'http://api.openweathermap.org/data/2.5/forecast/daily?lat=' + tdWeather._currentLatitude + '&lon=' + tdWeather._currentLongitude + '&units=metric&lang=' + tdWeather._currentItem.api_language + '&appid=' + tdWeather._currentItem.api_key;
+                var weather = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + tdWeather._currentLatitude + '&lon=' + tdWeather._currentLongitude + '&units=metric&lang=' + tdWeather._currentItem.api_language + '&appid=' + tdWeather._currentItem.api_key;
+                //console.log('forecast: ' + weather);
                 jQuery.ajax({
                     dataType: "jsonp",
                     url: weather,
@@ -9407,8 +14073,12 @@ var tdWeather = {};
 
             // process the data
             for (var item_index = 0; item_index < tdWeather._currentItem.forecast.length ; item_index++) {
+                //limit forecast to 5 days - api brings 35 x 3 hour intervals and at the end of the day you get 6 days forecast
+                if (item_index === 5) {
+                    break;
+                }
                 var current_forecast = tdWeather._currentItem.forecast[item_index];
-                current_forecast.day_temp[0] = tdUtil.round(data.list[current_forecast.owm_day_index].temp.day);        //celsius
+                current_forecast.day_temp[0] = tdUtil.round(data.list[current_forecast.owm_day_index].main.temp_max);   //celsius
                 current_forecast.day_temp[1] = tdWeather._celsiusToFahrenheit(current_forecast.day_temp[0]);            //imperial
             }
             tdWeather._renderCurrentItem();
@@ -9426,8 +14096,16 @@ var tdWeather = {};
 
             var blockInner = jQuery('#' + tdWeather._currentItem.block_uid);
 
+            var currentLatitude = tdWeather._currentLatitude;
+            var currentLongitude = tdWeather._currentLongitude;
+            var currentLocation = tdWeather._currentLocation;
+
             // city
             blockInner.find('.td-weather-city').html(tdWeather._currentItem.api_location);
+
+            if (currentLocation === '' && ( currentLatitude === 0 && currentLongitude === 0)){
+                blockInner.find('.td-weather-city').html(tdWeather._currentItem.location);
+            }
 
             // conditions
             blockInner.find('.td-weather-condition').html(tdWeather._currentItem.today_icon_text);
@@ -9474,6 +14152,7 @@ var tdWeather = {};
 
             // full list of items! - just the temperature
             for (var item_index = 0; item_index < tdWeather._currentItem.forecast.length ; item_index++) {
+                blockInner.find('.td-day-' + item_index).html(tdWeather._currentItem.forecast[item_index].day_name);
                 blockInner.find('.td-degrees-' + item_index).html(tdWeather._currentItem.forecast[item_index].day_temp[currentTempUnit]);
             }
 
@@ -9507,8 +14186,11 @@ var tdWeather = {};
 
             if (error.code === 1) {
                 if (tdDetect.isAndroid) {
-                    alert('Please enable your gps and reload the page.');
-                    return;
+
+                    //show manual location form
+                    tdWeather._show_manual_location_form();
+
+                    //alert('Please enable your gps and reload the page.');
                 }
 
                 else if (tdDetect.isIos) {
@@ -9516,18 +14198,13 @@ var tdWeather = {};
                     return;
                 }
 
-
-                alert("Permission denied. Enable GPS or Location services and reload the page");
-                return;
-
+                //alert("Permission denied. Enable GPS or Location services and reload the page");
+                //show manual location form
+                tdWeather._show_manual_location_form();
             }
 
-            // the rest of the errors
-            var errors = {
-                2: 'Position unavailable',
-                3: 'Request timeout'
-            };
-            alert("Error: " + errors[error.code]);
+            //show manual location form
+            tdWeather._show_manual_location_form();
         },
 
 
@@ -9556,15 +14233,187 @@ var tdWeather = {};
          */
         _kmphToMph: function ($kmph) {
             return tdUtil.round($kmph * 0.621371192, 1);
+        },
+
+        /**
+         * *************************************************************************************************************
+         *      set manual location for weather widget
+         * *************************************************************************************************************
+         */
+
+        /**
+         * shows the manual location form
+         */
+
+        _show_manual_location_form: function (){
+
+            tdWeather._currentItem = tdWeather._getItemByBlockID(tdWeather._currentItem.block_uid);
+
+            jQuery('#' + tdWeather._currentItem.block_uid).find('.td-weather-set-location').addClass( 'td-show-location' );
+            jQuery('.td-manual-location-form input').focus();
+
+            tdWeather._is_location_open = true;
+
+        },
+
+        /**
+         * hides the manual location form
+         */
+
+        _hide_manual_location_form: function (){
+
+            jQuery('#' + tdWeather._currentItem.block_uid).find('.td-weather-set-location').removeClass('td-show-location');
+
+            tdWeather._is_location_open = false;
+        },
+
+        /**
+         *  Location API - position callback 2 - used on chrome or other browsers that do not allow current position retrieving
+         * @param location
+         */
+
+        _updateLocationCallback2: function(location){
+
+            tdWeather._currentLocationCacheKey = location;
+
+            // check the cache first and avoid doing the same ajax request again
+            if (tdLocalCache.exist(tdWeather._currentLocationCacheKey + '_today')) {
+                tdWeather._owmGetTodayDataCallback2(tdLocalCache.get(tdWeather._currentLocationCacheKey + '_today'));
+
+            } else {
+
+                //console.log('city weather api request!');
+                var weather = 'https://api.openweathermap.org/data/2.5/weather?q=' + encodeURIComponent(location) + '&lang=' + tdWeather._currentItem.api_language + '&units=metric&appid=' + tdWeather._currentItem.api_key;
+
+                //console.log('city api request url: ' + weather);
+
+                jQuery.ajax({
+                    dataType: "jsonp",
+                    url: weather,
+                    success: tdWeather._owmGetTodayDataCallback2,
+                    cache: true
+                });
+            }
+        },
+
+
+        /**
+         * AJAX callback for today forecast on manual city location api request
+         * @param data - OWM api response
+         *
+         */
+
+        _owmGetTodayDataCallback2: function (data) {
+            // save the data to localCache
+            tdLocalCache.set(tdWeather._currentLocationCacheKey + '_today', data);
+
+
+            // prepare the tdWeather._currentItem object, notice that tdWeather._currentItem is a reference to an object stored in tdWeather.items
+            tdWeather._currentItem.api_location = data.name;
+            tdWeather._currentItem.today_clouds = tdUtil.round(data.clouds.all);
+            tdWeather._currentItem.today_humidity = tdUtil.round(data.main.humidity);
+            tdWeather._currentItem.today_icon = tdWeather._icons[data.weather[0].icon];
+            tdWeather._currentItem.today_icon_text = data.weather[0].description;
+            tdWeather._currentItem.today_max[0] = tdUtil.round(data.main.temp_max, 1);                                  //celsius
+            tdWeather._currentItem.today_max[1] = tdWeather._celsiusToFahrenheit(data.main.temp_max);                   //imperial
+            tdWeather._currentItem.today_min[0] = tdUtil.round(data.main.temp_min, 1);                                  //celsius
+            tdWeather._currentItem.today_min[1] = tdWeather._celsiusToFahrenheit(data.main.temp_min);                   //imperial
+            tdWeather._currentItem.today_temp[0] = tdUtil.round(data.main.temp, 1);                                     //celsius
+            tdWeather._currentItem.today_temp[1] = tdWeather._celsiusToFahrenheit(data.main.temp);                      //imperial
+            tdWeather._currentItem.today_wind_speed[0] = tdUtil.round(data.wind.speed, 1);                              //metric
+            tdWeather._currentItem.today_wind_speed[1] = tdWeather._kmphToMph(data.wind.speed);                         //imperial
+
+
+            // check the cache first and avoid doing the same ajax request again
+            if (tdLocalCache.exist(tdWeather._currentLocationCacheKey)) {
+                tdWeather._owmGetFiveDaysData2(tdLocalCache.get(tdWeather._currentLocationCacheKey));
+
+            } else {
+
+                //console.log('api forecast request!');
+
+                var weather = 'https://api.openweathermap.org/data/2.5/forecast?q=' + tdWeather._currentItem.api_location + '&lang=' + tdWeather._currentItem.api_language + '&units=metric&cnt=35&appid=' + tdWeather._currentItem.api_key;
+
+                //console.log('city forecast api request url: ' + weather);
+
+                jQuery.ajax({
+                    dataType: "jsonp",
+                    url: weather,
+                    success: tdWeather._owmGetFiveDaysData2,
+                    cache:true
+                });
+            }
+
+        },
+
+
+        /**
+         * AJAX callback for 5 days forecast on manual city location api request
+         * @param data - OWM api response
+         *
+         */
+
+        _owmGetFiveDaysData2: function (data) {
+            // save the data to localCache
+            tdLocalCache.set(tdWeather._currentLocationCacheKey, data);
+
+            var newForecast = {},
+                newForecastIsEmpty = true,
+                ObjProto = Object.prototype,
+                hasOwnProperty = ObjProto.hasOwnProperty; //safe reference to the hasOwnProperty function, in case it's been overridden accidentally
+
+            for (var list_item_index = 0; list_item_index <  data.list.length ; list_item_index++) {
+                if (hasOwnProperty.call(data.list[list_item_index], 'dt')) {
+
+                    var timestamp = data.list[list_item_index].dt,
+                        currentDay = td_date_i18n('Ymd', timestamp);
+
+                    if (hasOwnProperty.call(newForecast, currentDay) === false) {
+                        newForecast[currentDay] = {
+                            timestamp: timestamp,
+                            day_name: td_date_i18n('D', timestamp),
+                            day_temp: [
+                                tdUtil.round(data.list[list_item_index].main.temp_max),
+                                tdUtil.round(tdWeather._celsiusToFahrenheit(data.list[list_item_index].main.temp_max))
+                            ],
+                            owm_day_index: list_item_index
+                        }
+                    } else {
+                        if (newForecast[currentDay].day_temp[0] < tdUtil.round(data.list[list_item_index].main.temp_max)) {
+
+                            newForecast[currentDay].day_temp[0] = tdUtil.round(data.list[list_item_index].main.temp_max);
+                            newForecast[currentDay].day_temp[1] = tdUtil.round(tdWeather._celsiusToFahrenheit(data.list[list_item_index].main.temp_max));
+                        }
+                    }
+
+                    newForecastIsEmpty = false;
+                }
+            }
+
+
+            if (newForecastIsEmpty === false) {
+                tdWeather._currentItem.forecast = [];
+                for (var key in newForecast) {
+                    //limit forecast to 5 days - api brings 35 x 3 hour intervals and at the end of the day you get 6 days forecast
+                    if (tdWeather._currentItem.forecast.length === 5) {
+                        break;
+                    }
+                    tdWeather._currentItem.forecast[tdWeather._currentItem.forecast.length] = newForecast[key];
+                }
+            }
+
+            tdWeather._renderCurrentItem();
         }
 
     };  // end tdWeather
 })();
 
 tdWeather.init(); //init the class
+
+
 /* global jQuery:{} */
 /* global tdUtil:{} */
-/* global tdTrendingNowObject:{} */
+/* global tdTrendingNow:{} */
 
 jQuery( window ).load(function() {
 
@@ -9582,24 +14431,82 @@ jQuery( window ).ready(function() {
     /*
      - code used to allow external links from td_smart_list, when the Google Yoast "Track outbound click and downloads" is checked
      - internal links ("#with-hash") are allowed too
+     - test the links on incognito, by default Google analytics by yoast ignores the Administrator and Editor users
      */
 
-    jQuery( '.td_smart_list_1 a, .td_smart_list_3 a' ).click(function( event ) {
-
+    jQuery( '.td_smart_list_1 a, .td_smart_list_3 a').click(function( event ) {
         if ( event.target === event.currentTarget ) {
+            var targetAttributeContent = jQuery( this ).attr( 'target' );
+            var donwloadAttributeIsSet = jQuery( this )[0].hasAttribute( 'download' );
             var currentUrl = jQuery( this ).attr( 'href' );
-
-            if ( ( window.location.href !== currentUrl ) && tdUtil.isValidUrl( currentUrl ) ) {
-                window.location.href = currentUrl;
+            //if target is _blank open the link in a new window
+            if (donwloadAttributeIsSet) {
+                //link contains download attribute - do nothing, let it download
+            } else if (targetAttributeContent == '_blank') {
+                event.preventDefault();
+                window.open(currentUrl);
+            } else {
+            //regular links
+                if (( window.location.href !== currentUrl ) && tdUtil.isValidUrl(currentUrl)) {
+                    window.location.href = currentUrl;
+                }
             }
         }
     });
 
     //trending now
-    tdTrendingNowObject.tdTrendingNow();
+    jQuery('.td_block_trending_now').each(function(){
+        var item = new tdTrendingNow.item(),
+            wrapper = jQuery(this).find('.td-trending-now-wrapper'),
+            autoStart = wrapper.data('start'),
+            iCont = 0;
+
+        //block unique ID
+        item.blockUid = jQuery(this).data('td-block-uid');
+
+        //set trendingNowAutostart
+        if (autoStart !== 'manual') {
+            item.trendingNowAutostart = autoStart;
+        }
+
+        //take the text from each post from current trending-now-wrapper
+        jQuery('#' + item.blockUid + ' .td-trending-now-post').each(function() {
+            //trending_list_posts[i_cont] = jQuery(this)[0].outerHTML;
+            item.trendingNowPosts[iCont] = jQuery(this);
+            //increment the counter
+            iCont++;
+        });
+
+        /**
+         * if an item does not have posts no animation is required so no item is created
+         * because the tdTrendingNow library for animations is not needed
+         * @see tdTrendingNow.addItem
+         */
+
+        if (typeof item.trendingNowPosts === 'undefined' || item.trendingNowPosts.length < 1) {
+            return;
+        }
+        //add the item
+        tdTrendingNow.addItem(item);
+
+    });
+    jQuery('.td-trending-now-nav-left').on('click', function(event) {
+        event.preventDefault();
+        var blockUid = jQuery(this).data('block-id');
+        tdTrendingNow.itemPrev(blockUid);
+    });
+    jQuery('.td-trending-now-nav-right').on('click', function(event) {
+        event.preventDefault();
+        var blockUid = jQuery(this).data('block-id');
+        tdTrendingNow.itemNext(blockUid);
+
+    });
+
+    //trending now
+    //tdTrendingNowObj.tdTrendingNow();
 
     //call to trending now function to start auto scroll
-    tdTrendingNowObject.tdTrendingNowAutoStart();
+    //tdTrendingNowObj.tdTrendingNowAutoStart();
 });
 
 /**
@@ -9623,6 +14530,11 @@ var tdAnimationSprite = {};
 
         // The item that needs animation
         item: function item() {
+
+
+
+            // here we store the block Unique ID. This enables us to delete the item via this id @see tdPullDown.deleteItem
+            this.blockUid = '';
 
             // boolean - an item must be initialized only once
             this._isInitialized = false;
@@ -9766,42 +14678,47 @@ var tdAnimationSprite = {};
             // get all strings containing 'td_animation_sprite'
             var regex = /(td_animation_sprite\S*)/gi;
 
-            // resultMatch is an array of matches, or null if there's no matching
-            var resultMatch = item.jqueryObj.attr( 'class' ).match( regex );
+            if ( 'undefined' !== typeof item.jqueryObj.attr( 'class' ) ) {
 
-            if ( null !== resultMatch ) {
+                // resultMatch is an array of matches, or null if there's no matching
+                var resultMatch = item.jqueryObj.attr( 'class' ).match( regex );
 
-                item.offsetTop = item.jqueryObj.offset().top;
-                item.offsetBottomToTop = item.offsetTop + item.jqueryObj.height();
+                if (null !== resultMatch) {
 
-                // the last matching is considered, because new css classes that matches, can be added before recomputing an item
-                item.animationSpriteClass = resultMatch[ resultMatch.length - 1 ];
+                    item.offsetTop = item.jqueryObj.offset().top;
+                    item.offsetBottomToTop = item.offsetTop + item.jqueryObj.height();
 
-                var sceneParams = item.animationSpriteClass.split( '-' );
+                    // the last matching is considered, because new css classes that matches, can be added before recomputing an item
+                    item.animationSpriteClass = resultMatch[resultMatch.length - 1];
 
-                if ( 7 === sceneParams.length ) {
+                    var sceneParams = item.animationSpriteClass.split('-');
 
-                    item.frames = parseInt( sceneParams[1] );
-                    item.frameWidth = parseInt( sceneParams[2] );
-                    item.velocity = parseInt( sceneParams[3] );
-                    item.loops = parseInt( sceneParams[4] );
+                    if (7 === sceneParams.length) {
 
-                    if ( 1 === parseInt( sceneParams[5] ) ) {
-                        item.reverse = true;
-                    } else {
-                        item.reverse = false;
+                        item.frames = parseInt(sceneParams[1]);
+                        item.frameWidth = parseInt(sceneParams[2]);
+                        item.velocity = parseInt(sceneParams[3]);
+                        item.loops = parseInt(sceneParams[4]);
+
+                        if (1 === parseInt(sceneParams[5])) {
+                            item.reverse = true;
+                        } else {
+                            item.reverse = false;
+                        }
+
+                        if (1 === parseInt(sceneParams[6])) {
+                            item.automatStart = true;
+                        } else {
+                            item.automatStart = false;
+                        }
+
+                        item._isInitialized = true;
                     }
-
-                    if ( 1 === parseInt( sceneParams[6] ) ) {
-                        item.automatStart = true;
-                    } else {
-                        item.automatStart = false;
-                    }
-
-                    item._isInitialized = true;
                 }
             }
         },
+
+
 
         addItem: function( item ) {
 
@@ -9813,6 +14730,22 @@ var tdAnimationSprite = {};
                     tdAnimationSprite.computeItem( item );
                 }
             }
+        },
+
+
+        /**
+         * Deletes an item base on blockUid.
+         * Make sure that you add blockUid to items that you expect to be deleted
+         * @param blockUid
+         */
+        deleteItem: function(blockUid) {
+            for (var cnt = 0; cnt < tdAnimationSprite.items.length; cnt++) {
+                if (tdAnimationSprite.items[cnt].blockUid === blockUid) {
+                    tdAnimationSprite.items.splice(cnt, 1); // remove the item from the "array"
+                    return true;
+                }
+            }
+            return false;
         },
 
         computeItem: function( item ) {
@@ -9932,6 +14865,8 @@ var tdAnimationSprite = {};
     /*
      <div class="td_animation_sprite-a-b-c-d-e-f"></div>
 
+    @note - we should have used the data- html attribute here!
+
      a - number of frames
      b - width(px) of a frame
      c - velocity
@@ -9944,8 +14879,283 @@ var tdAnimationSprite = {};
 
     for ( var i = 0; i < tdAnimationSpriteElements.length; i++ ) {
         var tdAnimationSpriteItem = new tdAnimationSprite.item();
+
         tdAnimationSpriteItem.jqueryObj = jQuery( tdAnimationSpriteElements[i] );
+        tdAnimationSpriteItem.blockUid = tdAnimationSpriteItem.jqueryObj.data('td-block-uid');   // the block uid is used on the front end editor when we want to delete this item via it's blockuid
         tdAnimationSprite.addItem( tdAnimationSpriteItem );
     }
 })();
 
+function td_date_i18n(format, timestamp) {
+    // http://kevin.vanzonneveld.net
+    // +   original by: Carlos R. L. Rodrigues (http://www.jsfromhell.com)
+    // +      parts by: Peter-Paul Koch (http://www.quirksmode.org/js/beat.html)
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   improved by: MeEtc (http://yass.meetcweb.com)
+    // +   improved by: Brad Touesnard
+    // +   improved by: Tim Wiel
+    // +   improved by: Bryan Elliott
+    // +   improved by: David Randall
+    // +      input by: Brett Zamir (http://brett-zamir.me)
+    // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   improved by: Theriault
+    // +  derived from: gettimeofday
+    // +      input by: majak
+    // +   bugfixed by: majak
+    // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +      input by: Alex
+    // +   bugfixed by: Brett Zamir (http://brett-zamir.me)
+    // +   improved by: Theriault
+    // +   improved by: Brett Zamir (http://brett-zamir.me)
+    // +   improved by: Theriault
+    // +   improved by: Thomas Beaucourt (http://www.webapp.fr)
+    // +   improved by: JT
+    // +   improved by: Theriault
+    // +   improved by: Rafał Kukawski (http://blog.kukawski.pl)
+    // +   bugfixed by: omid (http://phpjs.org/functions/380:380#comment_137122)
+    // +      input by: Martin
+    // +      input by: Alex Wilson
+    // +      input by: Haravikk
+    // +   improved by: Theriault
+    // +   bugfixed by: Chris (http://www.devotis.nl/)
+    // +   improved by: Jari Pennanen (https://github.com/ciantic/) - date_i18n from WordPress
+    // %        note 1: Uses global: php_js to store the default timezone
+    // %        note 2: Although the function potentially allows timezone info (see notes), it currently does not set
+    // %        note 2: per a timezone specified by date_default_timezone_set(). Implementers might use
+    // %        note 2: this.php_js.currentTimezoneOffset and this.php_js.currentTimezoneDST set by that function
+    // %        note 2: in order to adjust the dates in this function (or our other date functions!) accordingly
+    // *     example 1: date('H:m:s \\m \\i\\s \\m\\o\\n\\t\\h', 1062402400);
+    // *     returns 1: '09:09:40 m is month'
+    // *     example 2: date('F j, Y, g:i a', 1062462400);
+    // *     returns 2: 'September 2, 2003, 2:26 am'
+    // *     example 3: date('Y W o', 1062462400);
+    // *     returns 3: '2003 36 2003'
+    // *     example 4: x = date('Y m d', (new Date()).getTime()/1000);
+    // *     example 4: (x+'').length == 10 // 2009 01 09
+    // *     returns 4: true
+    // *     example 5: date('W', 1104534000);
+    // *     returns 5: '53'
+    // *     example 6: date('B t', 1104534000);
+    // *     returns 6: '999 31'
+    // *     example 7: date('W U', 1293750000.82); // 2010-12-31
+    // *     returns 7: '52 1293750000'
+    // *     example 8: date('W', 1293836400); // 2011-01-01
+    // *     returns 8: '52'
+    // *     example 9: date('W Y-m-d', 1293974054); // 2011-01-02
+    // *     returns 9: '52 2011-01-02'
+    var that = this,
+        jsdate,
+        f,
+    // Keep this here (works, but for code commented-out
+    // below for file size reasons)
+    //, tal= [],
+    // trailing backslash -> (dropped)
+    // a backslash followed by any character (including backslash) -> the character
+    // empty string -> empty string
+        formatChr = /\\?(.?)/gi,
+        formatChrCb = function (t, s) {
+            return f[t] ? f[t]() : s;
+        },
+        _pad = function (n, c) {
+            n = String(n);
+            while (n.length < c) {
+                n = '0' + n;
+            }
+            return n;
+        };
+    f = {
+        // Day
+        d: function () { // Day of month w/leading 0; 01..31
+            return _pad(f.j(), 2);
+        },
+        D: function () { // Shorthand day name; Mon...Sun
+            return tdDateNamesI18n.day_names_short[f.w()];
+        },
+        j: function () { // Day of month; 1..31
+            return jsdate.getDate();
+        },
+        l: function () { // Full day name; Monday...Sunday
+            return tdDateNamesI18n.day_names[f.w()];
+        },
+        N: function () { // ISO-8601 day of week; 1[Mon]..7[Sun]
+            return f.w() || 7;
+        },
+        S: function(){ // Ordinal suffix for day of month; st, nd, rd, th
+            var j = f.j(),
+                i = j%10;
+            if (i <= 3 && parseInt((j%100)/10, 10) == 1) {
+                i = 0;
+            }
+            return ['st', 'nd', 'rd'][i - 1] || 'th';
+        },
+        w: function () { // Day of week; 0[Sun]..6[Sat]
+            return jsdate.getDay();
+        },
+        z: function () { // Day of year; 0..365
+            var a = new Date(f.Y(), f.n() - 1, f.j()),
+                b = new Date(f.Y(), 0, 1);
+            return Math.round((a - b) / 864e5);
+        },
+
+        // Week
+        W: function () { // ISO-8601 week number
+            var a = new Date(f.Y(), f.n() - 1, f.j() - f.N() + 3),
+                b = new Date(a.getFullYear(), 0, 4);
+            return _pad(1 + Math.round((a - b) / 864e5 / 7), 2);
+        },
+
+        // Month
+        F: function () { // Full month name; January...December
+            return tdDateNamesI18n.month_names[f.n() - 1];
+        },
+        m: function () { // Month w/leading 0; 01...12
+            return _pad(f.n(), 2);
+        },
+        M: function () { // Shorthand month name; Jan...Dec
+            return tdDateNamesI18n.month_names_short[f.n() - 1];
+        },
+        n: function () { // Month; 1...12
+            return jsdate.getMonth() + 1;
+        },
+        t: function () { // Days in month; 28...31
+            return (new Date(f.Y(), f.n(), 0)).getDate();
+        },
+
+        // Year
+        L: function () { // Is leap year?; 0 or 1
+            var j = f.Y();
+            return j % 4 === 0 & j % 100 !== 0 | j % 400 === 0;
+        },
+        o: function () { // ISO-8601 year
+            var n = f.n(),
+                W = f.W(),
+                Y = f.Y();
+            return Y + (n === 12 && W < 9 ? 1 : n === 1 && W > 9 ? -1 : 0);
+        },
+        Y: function () { // Full year; e.g. 1980...2010
+            return jsdate.getFullYear();
+        },
+        y: function () { // Last two digits of year; 00...99
+            return f.Y().toString().slice(-2);
+        },
+
+        // Time
+        a: function () { // am or pm
+            return jsdate.getHours() > 11 ? "pm" : "am";
+        },
+        A: function () { // AM or PM
+            return f.a().toUpperCase();
+        },
+        B: function () { // Swatch Internet time; 000..999
+            var H = jsdate.getUTCHours() * 36e2,
+            // Hours
+                i = jsdate.getUTCMinutes() * 60,
+            // Minutes
+                s = jsdate.getUTCSeconds(); // Seconds
+            return _pad(Math.floor((H + i + s + 36e2) / 86.4) % 1e3, 3);
+        },
+        g: function () { // 12-Hours; 1..12
+            return f.G() % 12 || 12;
+        },
+        G: function () { // 24-Hours; 0..23
+            return jsdate.getHours();
+        },
+        h: function () { // 12-Hours w/leading 0; 01..12
+            return _pad(f.g(), 2);
+        },
+        H: function () { // 24-Hours w/leading 0; 00..23
+            return _pad(f.G(), 2);
+        },
+        i: function () { // Minutes w/leading 0; 00..59
+            return _pad(jsdate.getMinutes(), 2);
+        },
+        s: function () { // Seconds w/leading 0; 00..59
+            return _pad(jsdate.getSeconds(), 2);
+        },
+        u: function () { // Microseconds; 000000-999000
+            return _pad(jsdate.getMilliseconds() * 1000, 6);
+        },
+
+        // Timezone
+        e: function () { // Timezone identifier; e.g. Atlantic/Azores, ...
+            // The following works, but requires inclusion of the very large
+            // timezone_abbreviations_list() function.
+            /*              return that.date_default_timezone_get();
+             */
+            //throw 'Not supported (see source code of date() for timezone on how to add support)';
+            console.log('Not supported (see source code of date() for timezone on how to add support)');
+        },
+        I: function () { // DST observed?; 0 or 1
+            // Compares Jan 1 minus Jan 1 UTC to Jul 1 minus Jul 1 UTC.
+            // If they are not equal, then DST is observed.
+            var a = new Date(f.Y(), 0),
+            // Jan 1
+                c = Date.UTC(f.Y(), 0),
+            // Jan 1 UTC
+                b = new Date(f.Y(), 6),
+            // Jul 1
+                d = Date.UTC(f.Y(), 6); // Jul 1 UTC
+            return ((a - c) !== (b - d)) ? 1 : 0;
+        },
+        O: function () { // Difference to GMT in hour format; e.g. +0200
+            var tzo = jsdate.getTimezoneOffset(),
+                a = Math.abs(tzo);
+            return (tzo > 0 ? "-" : "+") + _pad(Math.floor(a / 60) * 100 + a % 60, 4);
+        },
+        P: function () { // Difference to GMT w/colon; e.g. +02:00
+            var O = f.O();
+            return (O.substr(0, 3) + ":" + O.substr(3, 2));
+        },
+        T: function () { // Timezone abbreviation; e.g. EST, MDT, ...
+            // The following works, but requires inclusion of the very
+            // large timezone_abbreviations_list() function.
+            /*              var abbr = '', i = 0, os = 0, default = 0;
+             if (!tal.length) {
+             tal = that.timezone_abbreviations_list();
+             }
+             if (that.php_js && that.php_js.default_timezone) {
+             default = that.php_js.default_timezone;
+             for (abbr in tal) {
+             for (i=0; i < tal[abbr].length; i++) {
+             if (tal[abbr][i].timezone_id === default) {
+             return abbr.toUpperCase();
+             }
+             }
+             }
+             }
+             for (abbr in tal) {
+             for (i = 0; i < tal[abbr].length; i++) {
+             os = -jsdate.getTimezoneOffset() * 60;
+             if (tal[abbr][i].offset === os) {
+             return abbr.toUpperCase();
+             }
+             }
+             }
+             */
+            return 'UTC';
+        },
+        Z: function () { // Timezone offset in seconds (-43200...50400)
+            return -jsdate.getTimezoneOffset() * 60;
+        },
+
+        // Full Date/Time
+        c: function () { // ISO-8601 date.
+            return 'Y-m-d\\TH:i:sP'.replace(formatChr, formatChrCb);
+        },
+        r: function () { // RFC 2822
+            return 'D, d M Y H:i:s O'.replace(formatChr, formatChrCb);
+        },
+        U: function () { // Seconds since UNIX epoch
+            return jsdate / 1000 | 0;
+        }
+    };
+    this.date = function (format, timestamp) {
+        that = this;
+        jsdate = (timestamp === undefined ? new Date() : // Not provided
+            (timestamp instanceof Date) ? new Date(timestamp) : // JS Date()
+                new Date(timestamp * 1000) // UNIX timestamp (auto-convert to int)
+        );
+        return format.replace(formatChr, formatChrCb);
+    };
+    return this.date(format, timestamp);
+}

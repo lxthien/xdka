@@ -40,6 +40,35 @@
         </div>
     </div>
 
+    <!-- Category pull-down filter -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">Category pull-down filter</span>
+            <p>
+                This setting controls the display of the category pull-down filter.
+                <?php td_util::tooltip_html('
+                        <h3>Category pull-down filter:</h3>
+                        <p>This option allows you to enable or disable this filter:</p>
+                        <ul>
+                            <li>By default it\'s enabled.</li>
+                            <li>This filter allows you to set a different post sort order and it can be found on the top section of the category page.</li>
+                            <li>If you select "Disable" this filter will be removed from all category pages.</li>
+                        </ul>
+                ', 'right')?>
+            </p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_category_pull_down',
+                'true_value' => '',
+                'false_value' => 'hide'
+            ));
+            ?>
+        </div>
+    </div>
+
 
 
 <div class="td-box-section-separator"></div>
@@ -165,9 +194,9 @@
                     'ds' => 'td_option',
                     'option_id' => 'tds_category_sidebar_pos',
                     'values' => array(
-                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                        array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                        array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                        array('text' => '', 'title' => '', 'val' => '', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                     )
                 ));
                 ?>
@@ -184,11 +213,9 @@
             </div>
         </div>
     </div>
+
+
 <?php echo td_panel_generator::box_end();?>
-
-
-
-
 
 
 <hr>
@@ -221,6 +248,7 @@ class td_category_walker_panel extends Walker {
 
 
     var $td_category_hierarchy = array();  // we store them like so [0] Category 1 - [1] Category 2 - [2] Category 3
+
 
     var $td_category_buffer = array();
 
@@ -265,7 +293,6 @@ class td_category_walker_panel extends Walker {
 
         //build the category hierarchy - [0] Category 1 - [1] Category 2 - [2] Category 3
         $this->td_category_hierarchy[$depth] = $category;
-
 
         if ($depth == 0) {
             //reset the parrents

@@ -27,6 +27,15 @@
     margin-top: 10px;
   }
 
+  .td-post-author-name {
+    display: block;
+    margin-bottom: 10px;
+
+    span {
+      display: none;
+    }
+  }
+
   /* responsive portrait tablet */
   @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
     .td-post-author-name {
@@ -59,13 +68,5 @@
     .td-video-play-ico img {
       width: 40px;
     }
-  }
-}
-
-// fix module height for slow connection
-/* responsive portrait phone */
-@media (max-width: @responsive_p_phone_max) {
-  .td_block_16 .td-column-2 .td-module-thumb {
-    height: auto !important;
   }
 }

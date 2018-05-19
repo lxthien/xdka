@@ -26,6 +26,19 @@ if (td_util::get_option('tds_footer_column_1') != 'no') {
         $td_footer_logo_title = $td_logo_title;
     }
 
+    $retina_footer_logo_width = '';
+    if (!empty($td_footer_retina_logo)) {
+        // retina logo width of the normal logo
+        $retina_footer_logo_id = attachment_url_to_postid($td_footer_logo);
+
+        if ($retina_footer_logo_id !== 0) {
+            $img_properties = wp_get_attachment_image_src($retina_footer_logo_id, 'full');
+            if ($img_properties !== false && !empty($img_properties[1])) {
+                $retina_footer_logo_width = $img_properties[1];
+            }
+        }
+    }
+
     $buffy = '';
 
     $buffy .= '<div class="td-footer-info">';
@@ -35,13 +48,13 @@ if (td_util::get_option('tds_footer_column_1') != 'no') {
         if (empty($td_footer_retina_logo)) { // if don't have a retina footer logo load the normal logo
             $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img src="' . $td_footer_logo . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
         } else {
-            $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img class="td-retina-data" src="' . $td_footer_logo . '" data-retina="' . esc_attr($td_footer_retina_logo) . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '"/></a>';
+            $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img class="td-retina-data" src="' . $td_footer_logo . '" data-retina="' . esc_attr($td_footer_retina_logo) . '" alt="' . $td_footer_logo_alt . '" title="' . $td_footer_logo_title . '" width="' . esc_attr($retina_footer_logo_width) . '" /></a>';
         }
     } else { // if you don't have a footer logo load the top logo
         if (empty($td_top_retina_logo)) {
             $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img src="' . $td_top_logo . '" alt="' . $td_logo_alt . '" title="' . $td_logo_title . '"/></a>';
         } else {
-            $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img class="td-retina-data" src="' . $td_top_logo . '" data-retina="' . esc_attr($td_top_retina_logo) . '" alt="' . $td_logo_alt . '" title="' . $td_logo_title . '"/></a>';
+            $buffy .= '<a href="' . esc_url(home_url( '/' )) . '"><img class="td-retina-data" src="' . $td_top_logo . '" data-retina="' . esc_attr($td_top_retina_logo) . '" alt="' . $td_logo_alt . '" title="' . $td_logo_title . '" width="' . esc_attr($retina_footer_logo_width) . '" /></a>';
         }
     }
 
@@ -60,12 +73,12 @@ if (td_util::get_option('tds_footer_column_1') != 'no') {
     $buffy .= '<div class="footer-social-wrap td-social-style-2">';
     if(td_util::get_option('tds_footer_social') != 'no') {
         //get the socials that are set by user
-        $td_get_social_network = td_util::get_option('td_social_networks');
+        $td_get_social_network = td_options::get_array('td_social_networks');
 
         if(!empty($td_get_social_network)) {
             foreach($td_get_social_network as $social_id => $social_link) {
                 if(!empty($social_link)) {
-                    $buffy .= td_social_icons::get_icon($social_link, $social_id, 4, 16, true);
+                    $buffy .= td_social_icons::get_icon($social_link, $social_id, true);
                 }
             }
         }

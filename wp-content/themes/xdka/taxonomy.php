@@ -28,7 +28,7 @@ if($loop_sidebar_position == 'sidebar_left') {
 
 ?>
 
-    <div class="td-main-content-wrap">
+    <div class="td-main-content-wrap td-container-wrap">
         <div class="td-container <?php echo $td_sidebar_position; ?>">
             <div class="td-crumb-container">
                 <?php echo td_page_generator::get_taxonomy_breadcrumbs($current_term_obj); // get the breadcrumbs - /includes/wp_booster/td_page_generator.php ?>

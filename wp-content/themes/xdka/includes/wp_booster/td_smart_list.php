@@ -174,21 +174,21 @@ abstract class td_smart_list {
             // first page
             $buffy .= '<div class="td-smart-list-pagination">';
                 $buffy .= '<span class="td-smart-list-button td-smart-back td-smart-disable"><i class="td-icon-left"></i>' .__td('Back', TD_THEME_NAME). '</span>';
-                $buffy .= '<a class="td-smart-list-button td-smart-next" href="' . $this->_wp_link_page($current_page + 1) . '">' .__td('Next', TD_THEME_NAME). '<i class="td-icon-right"></i></a>';
+                $buffy .= '<a class="td-smart-list-button td-smart-next" rel="next" href="' . $this->_wp_link_page($current_page + 1) . '">' .__td('Next', TD_THEME_NAME). '<i class="td-icon-right"></i></a>';
             $buffy .= '</div>';
         }
         elseif ($current_page == $total_pages) {
             // last page
             $buffy .= '<div class="td-smart-list-pagination">';
-                $buffy .= '<a class="td-smart-list-button td-smart-back" href="' . $this->_wp_link_page($current_page - 1) . '"><i class="td-icon-left"></i>' .__td('Back', TD_THEME_NAME). '</a>';
+                $buffy .= '<a class="td-smart-list-button td-smart-back" rel="prev" href="' . $this->_wp_link_page($current_page - 1) . '"><i class="td-icon-left"></i>' .__td('Back', TD_THEME_NAME). '</a>';
                 $buffy .= '<span class="td-smart-list-button td-smart-next td-smart-disable">' .__td('Next', TD_THEME_NAME). '<i class="td-icon-right"></i></span>';
             $buffy .= '</div>';
         }
         else {
             // middle page
             $buffy .= '<div class="td-smart-list-pagination">';
-                $buffy .= '<a class="td-smart-list-button td-smart-back" href="' . $this->_wp_link_page($current_page - 1) . '"><i class="td-icon-left"></i>' .__td('Back', TD_THEME_NAME). '</a>';
-                $buffy .=  '<a class="td-smart-list-button td-smart-next" href="' . $this->_wp_link_page($current_page + 1) . '">' .__td('Next', TD_THEME_NAME). '<i class="td-icon-right"></i></a>';
+                $buffy .= '<a class="td-smart-list-button td-smart-back" rel="prev" href="' . $this->_wp_link_page($current_page - 1) . '"><i class="td-icon-left"></i>' .__td('Back', TD_THEME_NAME). '</a>';
+                $buffy .=  '<a class="td-smart-list-button td-smart-next" rel="next" href="' . $this->_wp_link_page($current_page + 1) . '">' .__td('Next', TD_THEME_NAME). '<i class="td-icon-right"></i></a>';
             $buffy .= '</div>';
         }
 
@@ -280,6 +280,13 @@ abstract class td_smart_list {
     }
 
 
+
+	/*
+	 * @todo The next _wp_link_page function should be moved to td_util class, this being a custom helper function.
+	 * The access specifier was changed from 'private' to 'public'
+	 *
+	 */
+
     /**
      * This function returns the pagination link for the current post
      * TAGDIV: - taken from wordpress wp-includes/post-template.php
@@ -294,7 +301,7 @@ abstract class td_smart_list {
      * @param int $i Page number.
      * @return string Link.
      */
-    private function _wp_link_page( $i ) {
+    public function _wp_link_page( $i ) {
         global $wp_rewrite;
         $post = get_post();
 
@@ -340,7 +347,43 @@ abstract class td_smart_list {
     }
 
 
+	/**
+	 * Split the content into items and return the item list.
+	 * For the moment it's used to compute the canonical links by a wp_head callback function.
+	 *
+	 * Obs. It's too late to hook on wp_head from here, that's why this helper function is called
+	 * from a wp_head callback function early registered in booster functions.
+	 *
+	 * @param $smart_list_settings
+	 *
+	 * @return array
+	 */
+	function get_formatted_list_items($smart_list_settings) {
+		$this->counting_order_asc = $smart_list_settings['counting_order_asc'];
 
+		// make a new tokenizer
+		$td_tokenizer = new td_tokenizer();
+		$td_tokenizer->token_title_start = $smart_list_settings['td_smart_list_h'];
+		$td_tokenizer->token_title_end = $smart_list_settings['td_smart_list_h'];
+
+
+		// get the list items
+		$list_items = $td_tokenizer->split_to_list_items(array(
+				'content' => $smart_list_settings['post_content'],
+				'extract_first_image' => $smart_list_settings['extract_first_image']
+			)
+		);
+
+		// no items found, we return the content as is
+		if (empty($list_items['list_items'])) {
+			return $smart_list_settings['post_content'];
+		}
+
+		// we need to number all the items before pagination because item 2 can have number 4 if the counting method is desc
+		$list_items = $this->add_numbers_to_list_items($list_items);
+
+		return $list_items;
+	}
 
 }
 
@@ -477,12 +520,12 @@ class td_tokenizer {
             'title' => '',
             'first_img_id' => '',
             'description' => '',
-            'read_more_link' => ''
+            'read_more_link' => '',
+            'first_img_link' => '',
+            'first_img_link_target' => '',
+            'first_img_caption' => ''
         );
     }
-
-
-
 
     private function is_title_open($token) {
         $this->log_step(__FUNCTION__, $token);
@@ -632,6 +675,10 @@ class td_tokenizer {
 
 
             $this->current_list_item['first_img_id'] = $this->get_image_id_from_token($token);
+            $this->current_list_item['first_img_link'] = $this->get_image_link_from_token($token);
+            $this->current_list_item['first_img_link_target'] = $this->get_image_link_target_from_token($token);
+            $this->current_list_item['first_img_caption'] = $this->get_caption_from_token($token);
+
             return true;
         } else {
             return false;
@@ -646,7 +693,7 @@ class td_tokenizer {
      * @return mixed
      */
     private function extract_description_from_first_image($token) {
-        $matches = '';
+        $matches = array();
         $buffy = '';
 
 
@@ -662,8 +709,14 @@ class td_tokenizer {
             foreach ($matches[0] as $match) {
                 if (strpos($match, '<img') !== false) { //check each link if we have an image in it
                     // we need the extra str_replace because the $match is user entered in tinymce
-                    $match = str_replace('(', '\(', $match);
-                    $match = str_replace(')', '\)', $match);
+                    // special chars added in the image alternative text must be escaped - [\^$.|?*+(){}
+                    $special_chars = array("(", ")", "^", "$", "|", "?", "*", "+", "{", "}");
+                    foreach ($special_chars as $char) {
+                        $escaped_char = '\\' . $char;
+                        $match = str_replace($char, $escaped_char, $match);
+                    }
+//                    $match = str_replace('(', '\(', $match);
+//                    $match = str_replace(')', '\)', $match);
                     $buffy = preg_replace('/' . $this->fix_regex($match) . '/', '', $token, 1); //remove the first image because that will be used as first_image
                     break;
                 }
@@ -673,12 +726,25 @@ class td_tokenizer {
         //2. no match found
         if ($buffy == '') {
             //search for the FIRST img if we didn't find any links in the block of text
-            $matches = '';
+            $matches = array();
             preg_match('/<img.*\/>/U', $token, $matches); //extract first image
             if (!empty($matches[0])) {
                 // we need the extra str_replace because the $matches[0] is user entered in tinymce
-                $input_regex = str_replace('(', '\(', $matches[0]);
-                $input_regex = str_replace(')', '\)', $input_regex);
+                // special chars added in the image alternative text must be escaped - [\^$.|?*+(){}
+                $special_chars = array("(", ")", "^", "$", "|", "?", "*", "+", "{", "}");
+                $char_count = 0;
+                foreach ($special_chars as $char) {
+                    $escaped_char = '\\' . $char;
+                    if ($char_count == 0) {
+                        // first time target the matches array
+                        $input_regex = str_replace($char, $escaped_char, $matches[0]);
+                        $char_count++;
+                    } else {
+                        $input_regex = str_replace($char, $escaped_char, $input_regex);
+                    }
+                }
+//                $input_regex = str_replace('(', '\(', $matches[0]);
+//                $input_regex = str_replace(')', '\)', $input_regex);
                 $buffy = preg_replace('/' . $this->fix_regex($input_regex) . '/', '', $token, 1); //remove the first image because that will be used as first_image
             }
         }
@@ -717,6 +783,48 @@ class td_tokenizer {
         }
     }
 
+
+    private function get_image_link_from_token($token) {
+        $matches = array();
+
+        if ( strpos($token, '</figcaption>') !== false) {
+            preg_match('/<figure(.*)href="([^\\"]+)(.*)<figcaption/', $token, $matches);
+            if (!empty($matches[2])) {
+                return $matches[2];
+            } else {
+                return '';
+            }
+        }
+
+        preg_match('/href="([^\\"]+)"/', $token, $matches);
+        if (!empty($matches[1])) {
+            return $matches[1];
+        } else {
+            return '';
+        }
+    }
+
+
+    private function get_image_link_target_from_token($token) {
+        $matches = array();
+        preg_match('/target="([^\\"]+)"/', $token, $matches);
+        if (!empty($matches[1])) {
+            return 'target="' . $matches[1] . '"';
+        } else {
+            return '';
+        }
+    }
+
+
+    private function get_caption_from_token($token) {
+        $matches = array();
+        preg_match('/<figcaption[^<>]*>(.*)<\/figcaption>/', $token, $matches);
+        if (!empty($matches[1])) {
+            return $matches[1];
+        } else {
+            return '';
+        }
+    }
 
 
     private function log_step($function_name, $token = '') {

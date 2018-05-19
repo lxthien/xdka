@@ -3,7 +3,8 @@
     <div class="top-bar-style-4">
         <?php locate_template('parts/header/top-widget.php', true); ?>
         <?php locate_template('parts/header/top-menu.php', true); ?>
-
     </div>
 
-<?php } ?> 
+<?php }
+    locate_template('parts/header/td-login-modal.php', true);
+?>

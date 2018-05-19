@@ -53,7 +53,7 @@ abstract class td_module {
 
         //get the review metadata
         //$this->td_review = get_post_meta($this->post->ID, 'td_review', true); @todo $this->td_review variable name must be replaced and the 'get_quotes_on_blocks', 'get_category' methods also
-	    $this->td_review = get_post_meta($this->post->ID, 'td_post_theme_settings', true);
+	    $this->td_review = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
 
 	    if (!empty($this->td_review['has_review']) and (
 			    !empty($this->td_review['p_review_stars']) or
@@ -100,6 +100,11 @@ abstract class td_module {
             $buffy .= ' td_module_no_thumb';
         }
 
+        // fix the meta info space when all options are off
+        if (td_util::get_option('tds_m_show_author_name') == 'hide' and td_util::get_option('tds_m_show_date') == 'hide' and td_util::get_option('tds_m_show_comments') == 'hide') {
+            $buffy .= ' td-meta-info-hide';
+        }
+
 	    if ($additional_classes_array != '' && is_array($additional_classes_array)) {
 		    $buffy .= ' ' . implode(' ', $additional_classes_array);
 	    }
@@ -115,13 +120,13 @@ abstract class td_module {
         $buffy = '';
 
         if ($this->is_review === false) {
-            if (td_util::get_option('tds_p_show_author_name') != 'hide') {
-                $buffy .= '<div class="td-post-author-name">';
+            if (td_util::get_option('tds_m_show_author_name') != 'hide') {
+                $buffy .= '<span class="td-post-author-name">';
                 $buffy .= '<a href="' . get_author_posts_url($this->post->post_author) . '">' . get_the_author_meta('display_name', $this->post->post_author) . '</a>' ;
-                if (td_util::get_option('tds_p_show_author_name') != 'hide' and td_util::get_option('tds_p_show_date') != 'hide') {
+                if (td_util::get_option('tds_m_show_author_name') != 'hide' and td_util::get_option('tds_m_show_date') != 'hide') {
                     $buffy .= ' <span>-</span> ';
                 }
-                $buffy .= '</div>';
+                $buffy .= '</span>';
             }
 
         }
@@ -132,7 +137,7 @@ abstract class td_module {
 
     function get_date($show_stars_on_review = true) {
         $visibility_class = '';
-        if (td_util::get_option('tds_p_show_date') == 'hide') {
+        if (td_util::get_option('tds_m_show_date') == 'hide') {
             $visibility_class = ' td-visibility-hidden';
         }
 
@@ -144,11 +149,11 @@ abstract class td_module {
             $buffy .= '</div>';
 
         } else {
-            if (td_util::get_option('tds_p_show_date') != 'hide') {
+            if (td_util::get_option('tds_m_show_date') != 'hide') {
                 $td_article_date_unix = get_the_time('U', $this->post->ID);
-                $buffy .= '<div class="td-post-date">';
+                $buffy .= '<span class="td-post-date">';
                     $buffy .= '<time class="entry-date updated td-module-date' . $visibility_class . '" datetime="' . date(DATE_W3C, $td_article_date_unix) . '" >' . get_the_time(get_option('date_format'), $this->post->ID) . '</time>';
-                $buffy .= '</div>';
+                $buffy .= '</span>';
             }
         }
 
@@ -157,7 +162,7 @@ abstract class td_module {
 
     function get_comments() {
         $buffy = '';
-        if (td_util::get_option('tds_p_show_comments') != 'hide') {
+        if (td_util::get_option('tds_m_show_comments') != 'hide') {
             $buffy .= '<div class="td-module-comments">';
                 $buffy .= '<a href="' . get_comments_link($this->post->ID) . '">';
                     $buffy .= get_comments_number($this->post->ID);
@@ -175,9 +180,11 @@ abstract class td_module {
      * @param $thumbType
      * @return string
      */
-    function get_image($thumbType) {
+    function get_image($thumbType, $css_image = false) {
         $buffy = ''; //the output buffer
         $tds_hide_featured_image_placeholder = td_util::get_option('tds_hide_featured_image_placeholder');
+        //retina image
+        $srcset_sizes = '';
 
         // do we have a post thumb or a placeholder?
         if (!is_null($this->post_thumb_id) or ($tds_hide_featured_image_placeholder != 'hide_placeholder')) {
@@ -202,8 +209,13 @@ abstract class td_module {
                         $td_temp_image_url[2] = $_wp_additional_image_sizes[$thumbType]['height'];
                     }
 
+					// For custom wordpress sizes (not 'thumbnail', 'medium', 'medium_large' or 'large'), get the image path using the api (no_image_path)
+	                $thumb_disabled_path = td_global::$get_template_directory_uri;
+	                if (strpos($thumbType, 'td_') === 0) {
+			            $thumb_disabled_path = td_api_thumb::get_key($thumbType, 'no_image_path');
+		            }
+			        $td_temp_image_url[0] = $thumb_disabled_path . '/images/thumb-disabled/' . $thumbType . '.png';
 
-                    $td_temp_image_url[0] = td_global::$get_template_directory_uri . '/images/thumb-disabled/' . $thumbType . '.png';
                     $attachment_alt = 'alt=""';
                     $attachment_title = '';
 
@@ -225,6 +237,13 @@ abstract class td_module {
                     if (empty($td_temp_image_url[2])) {
                         $td_temp_image_url[2] = '';
                     }
+
+                    //retina image
+                    //don't display srcset_sizes on DEMO - it messes up Pagespeed score (8 March 2017)
+                    if (TD_DEPLOY_MODE != 'demo') {
+                        $srcset_sizes = td_util::get_srcset_sizes($this->post_thumb_id, $thumbType, $td_temp_image_url[1], $td_temp_image_url[0]);
+                    }
+
                 } // end panel thumb enabled check
 
 
@@ -248,15 +267,23 @@ abstract class td_module {
                 /**
                  * get thumb height and width via api
                  * first we check the global in case a custom thumb is used
+                 *
+                 * The api thumb is checked only for additional sizes registered and if at least one of the settings (width or height) is empty.
+                 * This should be enough to avoid getting a non existing id using api thumb.
                  */
-                if (($td_temp_image_url[1] == '') and ($td_temp_image_url[2] == '')) {
+	            if (!empty($_wp_additional_image_sizes) && array_key_exists($thumbType, $_wp_additional_image_sizes) && ($td_temp_image_url[1] == '' || $td_temp_image_url[2] == '')) {
                     $td_thumb_parameters = td_api_thumb::get_by_id($thumbType);
-                    $td_temp_image_url[1] = $td_thumb_parameters['width'];
+	                $td_temp_image_url[1] = $td_thumb_parameters['width'];
                     $td_temp_image_url[2] = $td_thumb_parameters['height'];
                 }
 
+	            // For custom wordpress sizes (not 'thumbnail', 'medium', 'medium_large' or 'large'), get the image path using the api (no_image_path)
+	            $no_thumb_path = td_global::$get_template_directory_uri;
+	            if (strpos($thumbType, 'td_') === 0) {
+		            $no_thumb_path = rtrim(td_api_thumb::get_key($thumbType, 'no_image_path'), '/');
+	            }
+		        $td_temp_image_url[0] = $no_thumb_path . '/images/no-thumb/' . $thumbType . '.png';
 
-                $td_temp_image_url[0] = td_global::$get_template_directory_uri . '/images/no-thumb/' . $thumbType . '.png';
                 $attachment_alt = 'alt=""';
                 $attachment_title = '';
             } //end    if ($this->post_has_thumb) {
@@ -268,28 +295,44 @@ abstract class td_module {
                     $buffy .= '<a class="td-admin-edit" href="' . get_edit_post_link($this->post->ID) . '">edit</a>';
                 }
 
-                $buffy .='<a href="' . $this->href . '" rel="bookmark" title="' . $this->title_attribute . '">';
-                    $buffy .= '<img width="' . $td_temp_image_url[1] . '" height="' . $td_temp_image_url[2] . '" class="entry-thumb" src="' . $td_temp_image_url[0] . '" ' . $attachment_alt . $attachment_title . '/>';
 
-                        // on videos add the play icon
-                        if (get_post_format($this->post->ID) == 'video') {
+                $buffy .= '<a href="' . $this->href . '" rel="bookmark" title="' . $this->title_attribute . '">';
 
-                            $use_small_post_format_icon_size = false;
-                            // search in all the thumbs for the one that we are currently using here and see if it has post_format_icon_size = small
-                            foreach (td_api_thumb::get_all() as $thumb_from_thumb_list) {
-                                if ($thumb_from_thumb_list['name'] == $thumbType and $thumb_from_thumb_list['post_format_icon_size'] == 'small') {
-                                    $use_small_post_format_icon_size = true;
-                                    break;
-                                }
+                    // css image
+                    if ($css_image === true) {
+                        // retina image
+                        if (td_util::get_option('tds_thumb_' . $thumbType . '_retina') == 'yes' && !empty($td_temp_image_url[1])) {
+                            $retina_url = wp_get_attachment_image_src($this->post_thumb_id, $thumbType . '_retina');
+                            if (!empty($retina_url[0])) {
+                                $td_temp_image_url[0] = $retina_url[0];
                             }
+                        }
+                        $buffy .= '<span class="entry-thumb td-thumb-css" style="background-image: url(' . $td_temp_image_url[0] . ')"></span>';
 
-                            // load the small or medium play icon
-                            if ($use_small_post_format_icon_size === true) {
-                                $buffy .= '<span class="td-video-play-ico td-video-small"><img width="20" class="td-retina" src="' . td_global::$get_template_directory_uri . '/images/icons/video-small.png' . '" alt="video"/></span>';
-                            } else {
-                                $buffy .= '<span class="td-video-play-ico"><img width="40" class="td-retina" src="' . td_global::$get_template_directory_uri . '/images/icons/ico-video-large.png' . '" alt="video"/></span>';
+                    // normal image
+                    } else {
+                        $buffy .= '<img width="' . $td_temp_image_url[1] . '" height="' . $td_temp_image_url[2] . '" class="entry-thumb" src="' . $td_temp_image_url[0] . '"' . $srcset_sizes . ' ' . $attachment_alt . $attachment_title . '/>';
+                    }
+
+                    // on videos add the play icon
+                    if (get_post_format($this->post->ID) == 'video') {
+
+                        $use_small_post_format_icon_size = false;
+                        // search in all the thumbs for the one that we are currently using here and see if it has post_format_icon_size = small
+                        foreach (td_api_thumb::get_all() as $thumb_from_thumb_list) {
+                            if ($thumb_from_thumb_list['name'] == $thumbType and $thumb_from_thumb_list['post_format_icon_size'] == 'small') {
+                                $use_small_post_format_icon_size = true;
+                                break;
                             }
-                        } // end on video if
+                        }
+
+                        // load the small or medium play icon
+                        if ($use_small_post_format_icon_size === true) {
+                            $buffy .= '<span class="td-video-play-ico td-video-small"><img width="20" height="20" class="td-retina" src="' . td_global::$get_template_directory_uri . '/images/icons/video-small.png' . '" alt="video"/></span>';
+                        } else {
+                            $buffy .= '<span class="td-video-play-ico"><img width="40" height="40" class="td-retina" src="' . td_global::$get_template_directory_uri . '/images/icons/ico-video-large.png' . '" alt="video"/></span>';
+                        }
+                    } // end on video if
 
                 $buffy .= '</a>';
             $buffy .= '</div>'; //end wrapper
@@ -391,48 +434,96 @@ abstract class td_module {
 
 
     function get_category() {
+
         $buffy = '';
+	    $selected_category_obj = '';
+	    $selected_category_obj_id = '';
+	    $selected_category_obj_name = '';
 
-        //read the post meta to get the custom primary category
-        $td_post_theme_settings = get_post_meta($this->post->ID, 'td_post_theme_settings', true);
-        if (!empty($td_post_theme_settings['td_primary_cat'])) {
-            //we have a custom category selected
-            $selected_category_obj = get_category($td_post_theme_settings['td_primary_cat']);
-        } else {
+	    $current_post_type = get_post_type($this->post->ID);
+	    $builtin_post_types = get_post_types(array('_builtin' => true));
 
-            //get one auto
-            $categories = get_the_category($this->post->ID);
+	    if (array_key_exists($current_post_type, $builtin_post_types)) {
+
+		    // default post type
+
+		    //read the post meta to get the custom primary category
+		    $td_post_theme_settings = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
+		    if (!empty($td_post_theme_settings['td_primary_cat'])) {
+			    //we have a custom category selected
+			    $selected_category_obj = get_category($td_post_theme_settings['td_primary_cat']);
+		    } else {
+
+			    //get one auto
+			    $categories = get_the_category($this->post->ID);
+
+			    if (is_category()) {
+				    foreach ($categories as $category) {
+					    if ($category->term_id == get_query_var('cat')) {
+						    $selected_category_obj = $category;
+						    break;
+					    }
+				    }
+			    }
+
+			    if (empty($selected_category_obj) and !empty($categories[0])) {
+				    if ($categories[0]->name === TD_FEATURED_CAT and !empty($categories[1])) {
+					    $selected_category_obj = $categories[1];
+				    } else {
+					    $selected_category_obj = $categories[0];
+				    }
+			    }
+		    }
+
+		    if (!empty($selected_category_obj)) {
+			    $selected_category_obj_id = $selected_category_obj->cat_ID;
+			    $selected_category_obj_name = $selected_category_obj->name;
+		    }
+
+	    } else {
+
+		    // custom post type
+
+		    // Validate that the current queried term is a term
+		    global $wp_query;
+		    $current_queried_term = $wp_query->get_queried_object();
+
+		    if ( $current_queried_term instanceof WP_Term ) {
+			    $current_term = term_exists( $current_queried_term->name, $current_queried_term->taxonomy );
+
+			    if ($current_term !== 0 && $current_term !== null) {
+				    $selected_category_obj = $current_queried_term;
+			    }
+		    }
 
 
-            $selected_category_obj = '';
+		    // Get and validate the custom taxonomy according to the validated queried term
+		    if (!empty($selected_category_obj)) {
 
+			    $taxonomy_objects = get_object_taxonomies($this->post, 'objects');
+			    $custom_taxonomy_object = '';
 
-            if (is_category()) {
-                foreach ($categories as $category) {
-                    if ($category->term_id == get_query_var('cat')) {
-                        $selected_category_obj = $category;
-                        break;
-                    }
-                }
-            }
+			    foreach ($taxonomy_objects as $taxonomy_object) {
 
+				    if ($taxonomy_object->_builtin !== 1 && $taxonomy_object->name === $selected_category_obj->taxonomy) {
+					    $custom_taxonomy_object = $taxonomy_object;
+					    break;
+				    }
+			    }
 
-            if (empty($selected_category_obj) and !empty($categories[0])) {
-                if ($categories[0]->name === TD_FEATURED_CAT and !empty($categories[1])) {
-                    $selected_category_obj = $categories[1];
-                } else {
-                    $selected_category_obj = $categories[0];
-                }
-            }
+			    // Invalid taxonomy
+			    if (empty($custom_taxonomy_object)) {
+				    return $buffy;
+			    }
 
+			    $selected_category_obj_id = $selected_category_obj->term_id;
+			    $selected_category_obj_name = $selected_category_obj->name;
+		    }
+	    }
 
-
-        }
-
-
-        if (!empty($selected_category_obj)) { //@todo catch error here
-            $buffy .= '<a href="' . get_category_link($selected_category_obj->cat_ID) . '" class="td-post-category">'  . $selected_category_obj->name . '</a>' ;
-        }
+	    if (!empty($selected_category_obj_id) && !empty($selected_category_obj_name)) { //@todo catch error here
+		    $buffy .= '<a href="' . get_category_link($selected_category_obj_id) . '" class="td-post-category">'  . $selected_category_obj_name . '</a>' ;
+	    }
 
         //return print_r($post, true);
         return $buffy;
@@ -443,13 +534,13 @@ abstract class td_module {
     function get_quotes_on_blocks() {
 
         // do not show the quote on WordPress loops
-        if (td_global::$is_wordpress_loop === true or td_util::vc_get_column_number() != 1) {
+        if (td_global::$is_wordpress_loop === true or td_global::vc_get_column_number() != 1) {
             return '';
         }
 
 
         //get quotes data from database
-        $post_data_from_db = get_post_meta($this->post->ID, 'td_post_theme_settings', true);
+        $post_data_from_db = td_util::get_post_meta_array($this->post->ID, 'td_post_theme_settings');
 
         if(!empty($post_data_from_db['td_quote_on_blocks'])) {
             return '<div class="td_quote_on_blocks">' . $post_data_from_db['td_quote_on_blocks'] . '</div>';

@@ -1,14 +1,14 @@
 <div class="td-paragraph-padding-1">
 
-Happy Sunday from <a href="http://www.tagdiv.com">Software Expand!</a> In this week's edition of Feedback Loop, we talk about the future of Windows Phone, whether it makes sense to build media centers discuss the preferences for metal vs. plastic on smartphones. All that and more past the break the proof of concept can make.
+Happy Sunday from <a href="#">Software Expand!</a> In this week's edition of Feedback Loop, we talk about the future of Windows Phone, whether it makes sense to build media centers discuss the preferences for metal vs. plastic on smartphones. All that and more past the break the proof of concept can make.
 
-Just because you can do something, should you? Samsung thinks so. Its second <a href="http://www.tagdiv.com">experimentally screened</a> phone taps into its hardware R&amp;D and production clout to offer something not many other companies.
+Just because you can do something, should you? Samsung thinks so. Its second <a href="#">experimentally screened</a> phone taps into its hardware R&amp;D and production clout to offer something not many other companies.
 <h3 style="text-align: center;"><strong>WHAT DO YOU WANT FROM WINDOWS PHONE?</strong></h3>
 </div>
 <a href="xxx_td_pic_p1_xxx"><img class=" td-modal-image aligncenter wp-image-252 size-full" src="xxx_td_pic_p1_xxx" alt="fotolia_73526765" width="1200" height="600" /></a>
 <div class="td-paragraph-padding-1">
 
-And so, following the Galaxy Round, here's the Galaxy Edge. If you take the basic shape and concept, it's the spitting image of the curved-screen <a href="http://www.tagdiv.com">Youm prototype</a> spied at CES a little less than two years ago US. Fortunately.
+And so, following the Galaxy Round, here's the Galaxy Edge. If you take the basic shape and concept, it's the spitting image of the curved-screen <a href="#">Youm prototype</a> spied at CES a little less than two years ago US. Fortunately.
 
 Now, though, it's a for-real smartphone you can buy. I've been testing it out in Japan, where it launched instead of the Note 4, although both the Note 4 and the Note Edge will eventually be available.
 
@@ -54,11 +54,11 @@ If you're looking to learn more about the stylus uses, I'd advise a quick read o
 
 But let's focus on what's different here: that edge. There are two display modes you can flit between: a slender, unassuming bar that can display a customized message and a more substantial column that attempts to offer extra functionality, notifications or context-dependent menus for certain apps, like the camera.
 <h3><strong>The front-facing camera is also a top-end sensor compared to the competition, 3.7 megapixels with an f/1.9 lens.</strong></h3>
-While I'm not a huge selfie taker, you'll have to ask our <a href="http://www.tagdiv.com">Senior Selfie Editor</a>, but I do take a whole lot of photos with my smartphone.
+While I'm not a huge selfie taker, you'll have to ask our <a href="#">Senior Selfie Editor</a>, but I do take a whole lot of photos with my smartphone.
 
 </div>
 
-[caption id="attachment_264" align="alignleft" width="244"]<a href="xxx_td_pic_p4_xxx"><img class=" td-modal-image wp-image-264" src="xxx_td_pic_p4_xxx" alt="The same high-resolution 2,560 × 1,600 screen we're certain 1080p Plus" width="244" height="624" /></a> The same high-resolution 2,560 × 1,600 screen we're certain 1080p Plus[/caption]
+[caption id="attachment_264" align="alignleft" width="244"]<a href="xxx_td_pic_p4_xxx"><img class=" td-modal-image wp-image-264" src="xxx_td_pic_p4_xxx" alt="The same high-resolution 2,560 x 1,600 screen we're certain 1080p Plus" width="244" height="624" /></a> The same high-resolution 2,560 x 1,600 screen we're certain 1080p Plus[/caption]
 
 When it's expanded, the UI is a basic row of icons, which you can navigate with a little swipe. This may look a little unusual, but swishing through the various mini-screens is immensely satisfying.
 

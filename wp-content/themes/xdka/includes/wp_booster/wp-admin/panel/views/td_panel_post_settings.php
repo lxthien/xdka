@@ -5,7 +5,7 @@
 	<div class="td-box-row">
 		<div class="td-box-description">
 			<span class="td-box-title">SHOW CATEGORIES TAGS</span>
-			<p>Enable or disable the categories tags <br>(on single posts and custom post types)</p>
+			<p>Enable or disable the categories tags (on single posts and custom post types)</p>
 		</div>
 		<div class="td-box-control-full">
 			<?php
@@ -19,11 +19,38 @@
 		</div>
 	</div>
 
+    <!-- Show categories -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">CATEGORY TAGS DISPLAY ORDER</span>
+            <p>
+                Set the post category tags display order.
+                <?php td_util::tooltip_html('
+                            <h3>Post category tags display order</h3>
+                            <ul>
+                                <li>Disable - display the parent category tag first</li>
+                                <li>Enable - display the category tags alphabetically</li>
+                            </ul>
+                          ', 'right')?>
+            </p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_default_category_display',
+                'true_value' => 'true',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
+    </div>
+
     <!-- Show author name -->
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">SHOW AUTHOR NAME</span>
-            <p>Enable or disable the author name <br>(on blocks, modules &amp; single post page)</p>
+            <p>Enable or disable the author name (on single post page)</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -41,7 +68,7 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">SHOW DATE</span>
-            <p>Enable or disable the post date <br>(on blocks, modules &amp; single post page)</p>
+            <p>Enable or disable the post date (on single post page)</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -60,7 +87,7 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">SHOW POST VIEWS</span>
-            <p>Enable or disable the post views <br>(on blocks, modules &amp; single post page)</p>
+            <p>Enable or disable the post views (on single post page)</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -79,7 +106,7 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">SHOW COMMENT COUNT</span>
-            <p>Enable or disable comment number <br>(on blocks, modules &amp; single post page)</p>
+            <p>Enable or disable comment number (on single post page)</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -100,7 +127,7 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">SHOW TAGS</span>
-            <p>Enable or disable the post tags <br>(bottom of single post pages and CPT)</p>
+            <p>Enable or disable the post tags (bottom of single post pages and CPT)</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -119,7 +146,7 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">SHOW AUTHOR BOX</span>
-            <p>Enable or disable the author box <br>(bottom of single post pages)</p>
+            <p>Enable or disable the author box (bottom of single post pages)</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -138,7 +165,7 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">SHOW NEXT AND PREVIOUS POSTS</span>
-            <p>Show or hide `next` and `previous` posts <br>(bottom of single post pages)</p>
+            <p>Show or hide `next` and `previous` posts (bottom of single post pages)</p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -646,7 +673,13 @@
     <!-- text -->
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
-            <p>Enabling this feature will update the post view count using ajax on both pages and single post page. This feature is best used if you have a caching plugin active. On pages it will retrieve from the server the correct post view count. On single post page this feature will also increment the post view counter. When this feature is enabled, the default (classic) post counter incrementation is disabled. After enabling or disabling this feature please be sure to empty all caches.  </p>
+            <p>Enabling this feature will update the post view count, on single post page, using ajax.</p>
+            <ul>
+                <li>This feature is best used if you have a caching plugin active.</li>
+                <li>When enabled, on single post pages, this feature will also increment the post view counter.</li>
+                <li>When this feature is enabled, the default(classic) post counter incrementation is disabled.</li>
+                <li>After enabling or disabling this feature make sure to empty all caches.</li>
+            </ul>
         </div>
         <div class="td-box-row-margin-bottom"></div>
     </div>
@@ -659,7 +692,7 @@
     <div class="td-box-row">
         <div class="td-box-description td-no-short-description">
             <span class="td-box-title">ENABLE / DISABLE AJAX POST VIEW COUNT</span>
-            <p>Usefull if you are using a caching plugin</p>
+            <p>Useful if you are using a caching plugin</p>
         </div>
         <div class="td-box-control-full">
             <?php

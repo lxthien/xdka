@@ -7,29 +7,31 @@ class td_block_17 extends td_block {
         parent::render($atts); // sets the live atts, $this->atts, $this->block_uid, $this->td_query (it runs the query)
 
         if (empty($td_column_number)) {
-            $td_column_number = td_util::vc_get_column_number(); // get the column width of the block from the page builder API
+            $td_column_number = td_global::vc_get_column_number(); // get the column width of the block from the page builder API
         }
 
         $buffy = ''; //output buffer
 
+        $buffy .= '<div class="' . $this->get_block_classes() . ' td-column-' . $td_column_number . '" ' . $this->get_block_html_atts() . '>';
 
-        //get the js for this block
-        $buffy .= $this->get_block_js();
+		    //get the block js
+		    $buffy .= $this->get_block_css();
 
-        $buffy .= '<div class="' . $this->get_block_classes() . '">';
+		    //get the js for this block
+		    $buffy .= $this->get_block_js();
 
-        //get the block title
-        $buffy .= $this->get_block_title();
+            // block title wrap
+            $buffy .= '<div class="td-block-title-wrap">';
+                $buffy .= $this->get_block_title(); //get the block title
+                $buffy .= $this->get_pull_down_filter(); //get the sub category filter for this block
+            $buffy .= '</div>';
 
-        //get the sub category filter for this block
-        $buffy .= $this->get_pull_down_filter();
+	        $buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner td-column-' . $td_column_number . '">';
+	        $buffy .= $this->inner($this->td_query->posts, $td_column_number); //inner content of the block
+	        $buffy .= '</div>';
 
-        $buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner td-column-' . $td_column_number . '">';
-        $buffy .= $this->inner($this->td_query->posts, $td_column_number); //inner content of the block
-        $buffy .= '</div>';
-
-        //get the ajax pagination for this block
-        $buffy .= $this->get_block_pagination();
+	        //get the ajax pagination for this block
+	        $buffy .= $this->get_block_pagination();
         $buffy .= '</div> <!-- ./block -->';
         return $buffy;
     }

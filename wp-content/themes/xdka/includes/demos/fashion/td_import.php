@@ -80,9 +80,10 @@ td_demo_menus::add_link(array(
 /*  ----------------------------------------------------------------------------
     background - leave empty if you want to make sure that there is NO background on the demo - td_demo_misc::update_background('');
  */
-td_demo_misc::update_background('');
+td_demo_misc::update_background_mobile('td_pic_p1');
 
-
+// login bg image
+td_demo_misc::update_background_login('td_pic_p1');
 
 /*  ----------------------------------------------------------------------------
     logo
@@ -104,7 +105,7 @@ td_demo_misc::update_footer_logo(array(
 /*  ----------------------------------------------------------------------------
     footer text
  */
-td_demo_misc::update_footer_text('Newspaper 6 offers a first look at the season’s collections and trends including insightful reviews, full collection slideshows, backstage beauty, and street style.');
+td_demo_misc::update_footer_text('Newspaper offers a first look at the season’s collections and trends including insightful reviews, full collection slideshows, backstage beauty, and street style.');
 
 
 
@@ -171,6 +172,12 @@ td_demo_widgets::add_widget_to_sidebar('td_demo_category', 'td_block_15_widget',
 
 //default sidebar
 td_demo_widgets::remove_widgets_from_sidebar('default');
+
+//remove footer widgets > remove existing widgets from footer widgets areas
+td_demo_widgets::remove_widgets_from_sidebar('footer-1');
+td_demo_widgets::remove_widgets_from_sidebar('footer-2');
+td_demo_widgets::remove_widgets_from_sidebar('footer-3');
+
 td_demo_widgets::add_widget_to_sidebar('default', 'td_block_15_widget',
     array (
         'sort' => 'featured',
@@ -185,9 +192,6 @@ td_demo_widgets::add_widget_to_sidebar('default', 'td_block_ad_box_widget',
         'spot_id' => 'sidebar'
     )
 );
-
-
-
 
 /*  ---------------------------------------------------------------------------
     categories

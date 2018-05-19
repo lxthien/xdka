@@ -1,8 +1,71 @@
 <?php
 
 
+class td_demo_base {
 
-class td_demo_history {
+
+	/**
+	 * Checks if one of the needles from $needle_array is found in the $haystack
+	 * @param $haystack
+	 * @param $needle_array
+	 *
+	 * @return bool
+	 */
+	protected static function multi_instring($haystack, $needle_array) {
+		foreach ($needle_array as $needle) {
+			if (strpos($haystack, $needle) !== false) {
+				return $needle;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * If one of the $requiered_keys is missing from the $received_array we will kill the execution
+	 * @param $class - the calling __CLASS__
+	 * @param $function - the calling __FUNCTION__
+	 * @param $received_array - the array of parameter_key => 'value' received from the caller
+	 * @param $requiered_keys - the expected array of parameter_key => 'error_string'
+	 */
+	protected static function check_params($class, $function, $received_array, $requiered_keys) {
+		foreach ($requiered_keys as $requiered_key => $requiered_msg) {
+			if (empty($received_array[$requiered_key])) {
+				self::kill($class, $function, $requiered_key . ' - ' . $requiered_msg, $received_array);
+			}
+		}
+	}
+
+
+	/**
+	 * kill the execution and show an error message
+	 * @param $class
+	 * @param $function
+	 * @param $msg
+	 * @param string $additional_info
+	 */
+	protected static function kill($class, $function, $msg, $additional_info = '') {
+		echo PHP_EOL . 'ERROR - '. $class . '::' . $function . ' - ' . $msg;
+
+		if (!empty($additional_info)) {
+			if (is_array($additional_info)) {
+				echo PHP_EOL . 'More info:' . PHP_EOL;
+				foreach ($additional_info as $key => $value) {
+					echo $key . ' - ' . $value . PHP_EOL;
+				}
+			}
+		}
+
+		die;
+	}
+}
+
+
+/**
+ * Class td_demo_history - saves and restores a history point for our demos.
+ */
+class td_demo_history extends td_demo_base {
     private $td_demo_history = array();
 
     /**
@@ -13,7 +76,12 @@ class td_demo_history {
     }
 
 
+	/**
+	 * saves one demo history ONLY. If we already have one saved, it will do nothing
+	 */
     function save_all() {
+
+	    // do not save another demo history if we already have one
         if (isset($this->td_demo_history['demo_settings_date'])) {
             return;
         }
@@ -36,18 +104,16 @@ class td_demo_history {
             }
         }
 
-        //print_r( get_option('sidebars_widgets'));
         $local_td_demo_history['theme_options'] = get_option(TD_THEME_OPTIONS_NAME);
-
-
         $local_td_demo_history['td_social_networks'] = get_option('td_social_networks');
-
         $local_td_demo_history['demo_settings_date'] = time();
         update_option(TD_THEME_NAME . '_demo_history', $local_td_demo_history);
-
     }
 
 
+	/**
+	 * Restores a demo history point. After the restore, the saved state is deleted from the database
+	 */
     function restore_all() {
         update_option('page_on_front', $this->td_demo_history['page_on_front']);
         update_option('show_on_front',  $this->td_demo_history['show_on_front']);
@@ -60,8 +126,17 @@ class td_demo_history {
             }
         }
 
-        update_option(TD_THEME_OPTIONS_NAME, $this->td_demo_history['theme_options']);
 
+	    $td_options = &td_options::get_all_by_ref();
+
+		// put the old theme settings back
+	    $td_options = $this->td_demo_history['theme_options'];
+
+	    td_options::schedule_save();
+
+	    //update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
+
+	    // ?
         update_option('td_social_networks', $this->td_demo_history['td_social_networks']);
 
         // delete the demo history
@@ -69,6 +144,11 @@ class td_demo_history {
     }
 
 
+	/**
+	 * returns the widget names used on each sidebar .... not 100% sure
+	 * @param $sidebar_widgets_option
+	 * @return array
+	 */
     private function get_used_widgets($sidebar_widgets_option) {
         $used_widgets = array();
         if ( is_array($sidebar_widgets_option) ) {
@@ -90,9 +170,22 @@ class td_demo_history {
 }
 
 
-class td_demo_state {
 
 
+
+
+/**
+ * Class td_demo_state - keeps the demo state. What demo is installed and how it's installed (full or no_content). We have a similar function in
+ * @see td_util::get_loaded_demo_id for the front end
+ */
+class td_demo_state extends td_demo_base {
+
+
+	/**
+	 * updates the current installed demo state
+	 * @param $demo_id string - the demo id that is installed
+	 * @param $demo_install_type string "empty"|full|no_content  (full - a full install, no_content - a settings only install)
+	 */
     static function update_state($demo_id, $demo_install_type) {
         $new_state = array(
             'demo_id' => $demo_id,
@@ -105,6 +198,11 @@ class td_demo_state {
 
     /**
      * @return bool|array
+     *  false - if there is no demo installed
+     *  array - array(
+	                    'demo_id' => '',
+	                    'demo_install_type' => ''    "empty"|full|no_content
+                    );
      */
     static function get_installed_demo() {
         $demo_state = get_option(TD_THEME_NAME . '_demo_state');
@@ -115,13 +213,22 @@ class td_demo_state {
     }
 }
 
-class td_demo_misc {
+
+
+
+
+
+/**
+ * Class td_demo_misc - misc stuff for demos. All the settings form here are removed via the td_demo_history when the theme settings are loaded back.
+ */
+class td_demo_misc extends td_demo_base {
 
     /**
      * updates the logo of the site, will be rollback via the td_demo_history when the theme settings are loaded back
      * @param $logo_params array
      */
     static function update_logo($logo_params) {
+
         if(empty($logo_params['normal'])) {
             td_util::update_option('tds_logo_upload', '');
         } else {
@@ -134,33 +241,45 @@ class td_demo_misc {
             td_util::update_option('tds_logo_upload_r', td_demo_media::get_image_url_by_td_id($logo_params['retina']));
         }
 
-
         if (empty($logo_params['mobile'])) {
             td_util::update_option('tds_logo_menu_upload', '');
         } else {
             td_util::update_option('tds_logo_menu_upload', td_demo_media::get_image_url_by_td_id($logo_params['mobile']));
         }
-
-
-
     }
 
 
+	/**
+	 * Adds the social icons to the panel.
+	 * @param $social_icons
+	 */
     static function add_social_buttons($social_icons) {
-        td_util::update_option('td_social_networks', $social_icons);
+        td_options::update_array('td_social_networks', $social_icons);
     }
 
+
+	/**
+	 * remove all the ads from the theme options. Must be called before adding custom ads
+	 */
     static function clear_all_ads() {
-        td_util::update_option('td_ads', '');
+        td_options::update_array('td_ads', array());
     }
 
-    static function add_ad_image($ad_spot_name, $td_pic_id) {
-        $td_ad_spots = td_util::get_option('td_ads');
-        $new_ad_spot['ad_code']= '<div class="td-all-devices"><a href="#"><img src="' . td_demo_media::get_image_url_by_td_id($td_pic_id) . '"/></a></div>';
+
+	/**
+	 * ads an ad image via a td_pic_id to an ad spot
+	 * @param $ad_spot_name - the adspot id that you want to use. You should get this from the panel or other demos
+	 * @param $td_image_id
+	 */
+    static function add_ad_image($ad_spot_name, $td_image_id) {
+        $td_ad_spots = td_options::get_array('td_ads');
+        $new_ad_spot['ad_code']= '<div class="td-all-devices"><a href="#" target="_blank"><img src="' . td_demo_media::get_image_url_by_td_id($td_image_id) . '"/></a></div>';
         $new_ad_spot['current_ad_type']= 'other';
         $td_ad_spots[strtolower($ad_spot_name)] = $new_ad_spot;
-        td_util::update_option('td_ads', $td_ad_spots);
+        td_options::update_array('td_ads', $td_ad_spots);
     }
+
+
 
 
     static function update_background($td_image_id, $stretch = true) {
@@ -175,11 +294,34 @@ class td_demo_misc {
     }
 
 
+    static function update_background_header($td_image_id) {
+        if ($td_image_id == '') {
+            td_util::update_option('tds_header_background_image', '');
+        }
+        td_util::update_option('tds_header_background_image', td_demo_media::get_image_url_by_td_id($td_image_id));
+    }
+
+
     static function update_background_footer($td_image_id) {
         if ($td_image_id == '') {
             td_util::update_option('tds_footer_background_image', '');
         }
         td_util::update_option('tds_footer_background_image', td_demo_media::get_image_url_by_td_id($td_image_id));
+    }
+
+
+    static function update_background_mobile($td_image_id) {
+        if ($td_image_id == '') {
+            td_util::update_option('tds_mobile_background_image', '');
+        }
+        td_util::update_option('tds_mobile_background_image', td_demo_media::get_image_url_by_td_id($td_image_id));
+    }
+
+    static function update_background_login($td_image_id) {
+        if ($td_image_id == '') {
+            td_util::update_option('tds_login_background_image', '');
+        }
+        td_util::update_option('tds_login_background_image', td_demo_media::get_image_url_by_td_id($td_image_id));
     }
 
 
@@ -209,16 +351,86 @@ class td_demo_misc {
             td_util::update_option('tds_footer_retina_logo_upload', td_demo_media::get_image_url_by_td_id($logo_params['retina']));
         }
     }
+
+
+    /**
+     * resets themes uploaded images for demo export
+     */
+    static function clear_uploads_for_demo_export() {
+
+        //header logos
+        td_util::update_option('tds_logo_upload', '');
+        td_util::update_option('tds_logo_upload_r', '');
+
+        //favicon
+        td_util::update_option('tds_favicon_upload', '');
+
+        //mobile logos
+        td_util::update_option('tds_logo_menu_upload', '');
+        td_util::update_option('tds_logo_menu_upload_r', '');
+
+        //ios bookmarklets
+        td_util::update_option('tds_ios_icon_76', '');
+        td_util::update_option('tds_ios_icon_114', '');
+        td_util::update_option('tds_ios_icon_120', '');
+        td_util::update_option('tds_ios_icon_144', '');
+        td_util::update_option('tds_ios_icon_152', '');
+
+        //backgrounds
+        td_util::update_option('tds_site_background_image', '');
+        td_util::update_option('tds_header_background_image', '');
+        td_util::update_option('tds_mobile_background_image', '');
+        td_util::update_option('tds_login_background_image', '');
+        td_util::update_option('tds_footer_background_image', '');
+
+        //footer logos
+        td_util::update_option('tds_footer_logo_upload', '');
+        td_util::update_option('tds_footer_retina_logo_upload', '');
+
+        //categories bg img
+        $td_options = &td_options::get_all_by_ref();
+        $categories = get_categories( array(
+                'hide_empty' => 0
+            ));
+
+        foreach ( $categories as $category ) {
+            if ( isset ($td_options['category_options'][$category->cat_ID]['tdc_image']) ) {
+                $td_options['category_options'][$category->cat_ID]['tdc_image'] = '';
+            }
+        }
+
+        //recompile user css
+        td_options::update('tds_user_compile_css', td_css_generator());
+
+    }
 }
 
 
 
-class td_demo_category {
+
+
+
+class td_demo_category extends td_demo_base {
 
 
     static function add_category($params_array) {
 
-        $new_cat_id = wp_create_category($params_array['category_name'], $params_array['parent_id']);
+    	// it's probably safe to also schedule a save here
+	    $td_options = &td_options::get_all_by_ref();
+
+
+		self::check_params(__CLASS__, __FUNCTION__, $params_array, array(
+		    'category_name' => 'Param is requiered!',
+		));
+
+
+	    if (empty($params_array['parent_id'])) {
+		    $new_cat_id = wp_create_category($params_array['category_name']);
+	    } else {
+		    $new_cat_id = wp_create_category($params_array['category_name'], $params_array['parent_id']);
+	    }
+
+
 
         //update category descriptions
         if(!empty($params_array['description'])) {
@@ -230,51 +442,53 @@ class td_demo_category {
 
         // update the category top post style
         if (!empty($params_array['top_posts_style'])) {
-            td_global::$td_options['category_options'][$new_cat_id]['tdc_category_top_posts_style'] = $params_array['top_posts_style'];
+	        $td_options['category_options'][$new_cat_id]['tdc_category_top_posts_style'] = $params_array['top_posts_style'];
         }
 
 
         // update the category top post grid style
         if (!empty($params_array['tdc_category_td_grid_style'])) {
-            td_global::$td_options['category_options'][$new_cat_id]['tdc_category_td_grid_style'] = $params_array['tdc_category_td_grid_style'];
+	        $td_options['category_options'][$new_cat_id]['tdc_category_td_grid_style'] = $params_array['tdc_category_td_grid_style'];
         }
 
         if (!empty($params_array['tdc_color'])) {
-            td_global::$td_options['category_options'][$new_cat_id]['tdc_color'] = $params_array['tdc_color'];
+	        $td_options['category_options'][$new_cat_id]['tdc_color'] = $params_array['tdc_color'];
         }
 
 
         // update the category template
         if (!empty($params_array['category_template'])) {
-            td_global::$td_options['category_options'][$new_cat_id]['tdc_category_template'] = $params_array['category_template'];
+	        $td_options['category_options'][$new_cat_id]['tdc_category_template'] = $params_array['category_template'];
         }
 
 
         // update the background if needed
         if (!empty($params_array['background_td_pic_id'])) {
-            td_global::$td_options['category_options'][$new_cat_id]['tdc_image'] = td_demo_media::get_image_url_by_td_id($params_array['background_td_pic_id']);
-            td_global::$td_options['category_options'][$new_cat_id]['tdc_bg_repeat'] = 'stretch';
+	        $td_options['category_options'][$new_cat_id]['tdc_image'] = td_demo_media::get_image_url_by_td_id($params_array['background_td_pic_id']);
+	        $td_options['category_options'][$new_cat_id]['tdc_bg_repeat'] = 'stretch';
         }
 
 
         // update the sidebar if needed
         if (!empty($params_array['sidebar_id'])) {
-            td_global::$td_options['category_options'][$new_cat_id]['tdc_sidebar_name'] = $params_array['sidebar_id'];
+	        $td_options['category_options'][$new_cat_id]['tdc_sidebar_name'] = $params_array['sidebar_id'];
         }
 
         // moduel id to sue 123456 (NO MODULE JUST THE NUMBER)
         if (!empty($params_array['tdc_layout'])) {
-            td_global::$td_options['category_options'][$new_cat_id]['tdc_layout'] = $params_array['tdc_layout'];
+	        $td_options['category_options'][$new_cat_id]['tdc_layout'] = $params_array['tdc_layout'];
         }
 
         // update the sidebar position
         // sidebar_left, sidebar_right, no_sidebar
         if (!empty($params_array['tdc_sidebar_pos'])) {
-            td_global::$td_options['category_options'][$new_cat_id]['tdc_sidebar_pos'] = $params_array['tdc_sidebar_pos'];
+	        $td_options['category_options'][$new_cat_id]['tdc_sidebar_pos'] = $params_array['tdc_sidebar_pos'];
         }
 
         //update once the category options
-        update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
+	    td_options::schedule_save();
+
+	    //update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options);
 
 
 
@@ -299,11 +513,34 @@ class td_demo_category {
     }
 }
 
-class td_demo_content {
+
+
+
+
+
+class td_demo_content extends td_demo_base {
 
 
     static private function parse_content_file($file_path) {
+
+	    if (!file_exists($file_path)) {
+		    self::kill(__CLASS__, __FUNCTION__, 'file not found: ' . $file_path);
+	    }
+
         $file_content = file_get_contents($file_path);
+
+	    $search_in_file = self::multi_instring($file_content, array(
+			'0div',
+		    'localhost',
+		    '192.168.0.'
+	    ));
+
+		if ($search_in_file !== false) {
+			self::kill(__CLASS__, __FUNCTION__, 'found in file content: ' . $search_in_file);
+		}
+
+
+
 
         preg_match_all("/xxx_(.*)_xxx/U", $file_content, $matches, PREG_PATTERN_ORDER);
         /*
@@ -345,11 +582,80 @@ class td_demo_content {
             }
         }
 
+
+	    preg_match_all( "/tdc_css=\"\S*\"/", $file_content, $css_matches, PREG_PATTERN_ORDER );
+	    if ( !empty( $css_matches ) and is_array( $css_matches ) ) {
+
+//		    echo '<pre>';
+//		    var_dump( $css_matches );
+//		    echo '</pre>';
+
+		    foreach ( $css_matches[0] as $css_key => $css_match ) {
+
+			    $match = str_replace( array('tdc_css="', '"' ), '', $css_match );
+
+			    $decoded_match = base64_decode( $match );
+
+
+
+			    $img_matches = array();
+			    preg_match_all("/url\((\S*)xxx_(\S*)_xxx(\S*)\)/U", $decoded_match, $img_matches );
+
+			    if ( !empty( $img_matches ) &&
+			         count( $img_matches ) >= 3 &&
+			         is_array( $img_matches[0] ) && ! empty( $img_matches[0] ) &&
+			         is_array( $img_matches[1] ) &&
+			         is_array( $img_matches[2] ) ) {
+
+//				    echo '<pre>';
+//				    var_dump( $decoded_match );
+//				    echo '</pre>';
+//
+//				    echo '<pre>';
+//				    var_dump( $img_matches );
+//				    echo '</pre>';
+//				    //die;
+
+				    foreach ( $img_matches[0] as $index => $img_match ) {
+
+//					    echo '<pre>';
+//					    echo $img_matches[2][$index];
+//					    echo '</pre>';
+//
+					    $decoded_match = str_replace( $img_match, 'url(\"' . td_demo_media::get_image_url_by_td_id($img_matches[2][$index]) . '\")', $decoded_match );
+//
+//					    echo '<pre>';
+//					    echo $decoded_match;
+//					    echo '</pre>';
+
+				    }
+			    }
+
+			    $file_content = str_replace( $css_matches[0][$css_key], 'tdc_css="' . base64_encode( $decoded_match ) . '"' , $file_content );
+		    }
+		    //echo $file_content;
+	    }
+
         return $file_content;
     }
 
 
+	/**
+	 * @param $params
+	 * @return int|WP_Error
+	 */
     static function add_post($params) {
+
+
+	    self::check_params(__CLASS__, __FUNCTION__, $params, array(
+		    'title' => 'Param is requiered!',
+		    'file' => 'Param is requiered!',
+		    'categories_id_array' => 'Param is requiered!',
+		    'featured_image_td_id' => 'Param is requiered!',
+	    ));
+
+
+
         $new_post = array(
             'post_title' => $params['title'],
             'post_status' => 'publish',
@@ -402,6 +708,13 @@ class td_demo_content {
 
 
     static function add_page($params) {
+
+	    self::check_params(__CLASS__, __FUNCTION__, $params, array(
+		    'title' => 'Param is requiered!',
+		    'file' => 'Param is requiered!',
+	    ));
+
+
         $new_post = array(
             'post_title' => $params['title'],
             'post_status' => 'publish',
@@ -413,6 +726,14 @@ class td_demo_content {
 
         //new post / page
         $page_id = wp_insert_post ($new_post);
+
+	    if (is_wp_error($page_id)) {
+		    self::kill(__CLASS__, __FUNCTION__, $page_id->get_error_message());
+	    }
+
+	    if ($page_id === 0) {
+		    self::kill(__CLASS__, __FUNCTION__, 'wp_insert_post returned 0. Not ok! Page title: ' . $params['title']);
+	    }
 
         // add our demo custom meta field, using this field we will delete all the pages
         update_post_meta($page_id, 'td_demo_content', true);
@@ -469,6 +790,9 @@ class td_demo_content {
 		    update_post_meta($page_id, 'td_page', $td_page);
 	    }
 
+	    // Flag used by tagDiv Composer - do not set the page as modified in wp admin backend (there's a 'save_post' hook on composer which set it to 1)
+	    update_post_meta($page_id, 'tdc_dirty_content', false);
+
         return $page_id;
     }
 
@@ -489,36 +813,66 @@ class td_demo_content {
 }
 
 
-class td_demo_widgets {
+
+
+
+
+class td_demo_widgets extends td_demo_base {
 
     private static $last_widget_instance = 70;
     private static $last_sidebar_widget_position = 0;
 
 
+
+	private static $hard_coded_sidebars = array (
+		'td-default',
+		'td-footer-1',
+		'td-footer-2',
+		'td-footer-3'
+	);
+
+
+
+
     /**
+     * adds a new sidebar
      * @param $sidebar_name string - must begin with td_demo_
      */
     static function add_sidebar($sidebar_name) {
         if (substr($sidebar_name, 0, 8) != 'td_demo_') {
-            td_util::error(__FILE__, 'All sidebars used in the demo must begin with td_demo_');
-            return;
+	        self::kill(__CLASS__, __FUNCTION__, 'All sidebars used in the demo must begin with td_demo_');
         }
-        $tmp_sidebars = td_util::get_option('sidebars');
+        $tmp_sidebars = td_options::get_array('sidebars');
         $tmp_sidebars[]= $sidebar_name;
         td_util::update_option('sidebars', $tmp_sidebars);
     }
 
 
-
-    //adds a widget to the default sidebar
+	/**
+	 * adds a widget to a sidebar
+	 * WARNING "td-" is automatically added to the sidebar name
+	 * @param $sidebar_id
+	 *          - default - to add to the default sidebar
+	 *          - footer-1 - to add to the footer 1
+	 *          - footer-2 - to add to the footer 2
+	 *          - footer-3 - to add to the footer 3
+	 *          - OR any custom sidebar created with @see td_demo_widgets::add_sidebar()
+	 * @param $widget_name - the id of the widget
+	 * @param $atts
+	 */
     static function add_widget_to_sidebar($sidebar_id, $widget_name, $atts) {
 
-        $tmp_sidebars = td_util::get_option('sidebars');
+        $tmp_sidebars = td_options::get_array('sidebars');
+	    if (empty($tmp_sidebars)) {
+		    $tmp_sidebars = array();
+	    }
+
+
         if (
-            $sidebar_id != 'default' and
+            !in_array('td-' . $sidebar_id, self::$hard_coded_sidebars) and
             !in_array($sidebar_id, $tmp_sidebars)
         ) {
-            td_util::error(__FILE__, 'td_demo_widgets::add_widget_to_sidebar - No sidebar with the name provided! - ' . $sidebar_id);
+	        self::kill(__CLASS__, __FUNCTION__, 'td_demo_widgets::add_widget_to_sidebar - No sidebar with the name provided! - td-' . $sidebar_id . ' (note that "td-" is automatically added to the sidebars name). Current registered sidebars: ', array_merge(self::$hard_coded_sidebars, $tmp_sidebars));
         }
 
         $widget_instances = get_option('widget_' . $widget_name);
@@ -542,13 +896,24 @@ class td_demo_widgets {
 
     }
 
-    static function remove_widgets_from_sidebar($sidebar_id) {
+
+	/**
+	 * Removes all widgets from the default sidebar.
+	 * @param $sidebar_id - one of the following: default, footer-1, footer-2, footer-3
+	 */
+    static function remove_widgets_from_sidebar($sidebar_id = 'default') {
+
+	    if (!in_array('td-' . $sidebar_id, self::$hard_coded_sidebars)) {
+		    self::kill(__CLASS__, __FUNCTION__, 'You can only remove widgets from the hardcoded sidebars. For custom made sidebars during the import, there is no need to remove the widgets', self::$hard_coded_sidebars);
+	    }
+
+
         $sidebar_id = td_util::sidebar_name_to_id($sidebar_id);
         $sidebars_widgets = get_option( 'sidebars_widgets' );
 
         if (isset($sidebars_widgets['td-' . $sidebar_id])) {
             //empty the default sidebar
-            unset($sidebars_widgets['td-' . $sidebar_id]);
+            $sidebars_widgets['td-' . $sidebar_id] = array();
             update_option('sidebars_widgets', $sidebars_widgets);
         }
     }
@@ -558,20 +923,25 @@ class td_demo_widgets {
      * remove the sidebars that begin with td_demo_
      */
     static function remove() {
-        $tmp_sidebars = td_util::get_option('sidebars');
+        $tmp_sidebars = td_options::get_array('sidebars');
         if (!empty($tmp_sidebars)) {
             foreach ($tmp_sidebars as $index => $sidebar) {
                 if (substr($sidebar, 0, 8) == 'td_demo_') {
                     unset($tmp_sidebars[$index]);
                 }
             }
+	        td_options::update_array('sidebars', $tmp_sidebars);
         }
-        td_util::update_option('sidebars', $tmp_sidebars);
+
     }
 }
 
 
-class td_demo_menus {
+/**
+ * tagDiv menu creating class
+ * Class td_demo_menus
+ */
+class td_demo_menus extends td_demo_base {
 
 
     private static $allowed_menu_names = array(
@@ -586,33 +956,49 @@ class td_demo_menus {
      * creates a menu and adds it to a location of the theme
      * @param $menu_name
      * @param $location
-     * @return bool
+     * @return int menu id
      */
     static function create_menu($menu_name, $location) {
         if (!in_array($menu_name, self::$allowed_menu_names)) {
-            td_util::error(__FILE__, 'td_stacks_menu::create_menu - menu_name is not in allowed_menu_names');
-            return false;
+	        self::kill(__CLASS__, __FUNCTION__, 'menu_name is not in allowed_menu_names. Menu name must be one of: ', self::$allowed_menu_names);
         }
 
-        $menu_id = wp_create_nav_menu($menu_name);
-        if (is_wp_error($menu_id)) {
-            return false;
-        }
+	    $menu_exists = wp_get_nav_menu_object( $menu_name );
+		if ($menu_exists === false) { // check if the menu already exists
+			$menu_id = wp_create_nav_menu($menu_name);
+			if (is_wp_error($menu_id)) {
+				self::kill(__CLASS__, __FUNCTION__, $menu_id->get_error_message());
+			}
 
-        $menu_spots_array = get_theme_mod('nav_menu_locations');
-        // activate the menu only if it's not already active
-        if (!isset($menu_spots_array[$location]) or $menu_spots_array[$location] != $menu_id) {
-            $menu_spots_array[$location] = $menu_id;
-            set_theme_mod('nav_menu_locations', $menu_spots_array);
-        }
-        return $menu_id;
+			$menu_spots_array = get_theme_mod('nav_menu_locations');
+			// activate the menu only if it's not already active
+			if (!isset($menu_spots_array[$location]) or $menu_spots_array[$location] != $menu_id) {
+				$menu_spots_array[$location] = $menu_id;
+				set_theme_mod('nav_menu_locations', $menu_spots_array);
+			}
+
+			return $menu_id;
+		} else {
+			return $menu_exists->term_id;
+		}
     }
 
 
-
-
+	/**
+	 * Adds a link to a menu
+	 * @param $menu_params
+	 * @return int|WP_Error
+	 */
     static function add_link($menu_params) {
-        $itemData =  array(
+	    // requiered parameters
+	    self::check_params(__CLASS__, __FUNCTION__, $menu_params, array(
+		    'title' => 'Param is requiered!',
+		    'url' => 'Param is requiered!',
+		    'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is requiered'
+	    ));
+
+
+	    $itemData =  array (
             'menu-item-object' => '',
             'menu-item-type'      => 'custom',
             'menu-item-title'    => $menu_params['title'],
@@ -629,9 +1015,23 @@ class td_demo_menus {
     }
 
 
-
-
+	/**
+	 * @param $menu_params
+	 *  - requiered -
+	 *      - page_id
+	 *      - add_to_menu_id
+	 *  - optional -
+	 *      - parent_id -
+	 */
     static function add_page($menu_params) {
+
+	    // requiered parameters
+	    self::check_params(__CLASS__, __FUNCTION__, $menu_params, array(
+			'page_id' => 'To add a page to the menu, you need a page_ID. To add links or empty items, use td_demo_menus::add_link()',
+		    'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is requiered'
+	    ));
+
+
         //$menu_id, $title='', $page_id, $parent_id = ''
         $itemData =  array(
             'menu-item-object-id' => $menu_params['page_id'],
@@ -645,21 +1045,33 @@ class td_demo_menus {
             $itemData['menu-item-parent-id'] = $menu_params['parent_id'];
         }
 
+	    // if no titlte is provided, wordpress will show the title of the page
         if (!empty($menu_params['title'])) {
             $itemData['menu-item-title'] = $menu_params['title'];
         }
 
+		// we do not use the menu id anywhere for now
         $menu_item_id = wp_update_nav_menu_item($menu_params['add_to_menu_id'], 0, $itemData);
-        return $menu_item_id;
     }
 
 
     /**
+     * adds a mega menu to a menu
      * @param $menu_params
      * @return int|WP_Error
      */
     static function add_mega_menu($menu_params) {
-        $itemData =  array(
+
+	    // requiered parameters
+	    self::check_params(__CLASS__, __FUNCTION__, $menu_params, array(
+		    'title' => 'Param is requiered!',
+		    'category_id' => 'Param is requiered! - this is the category id that will be used to generate the mega menu',
+		    'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is requiered'
+	    ));
+
+
+
+	    $itemData =  array(
             'menu-item-object' => '',
             'menu-item-type'      => 'custom',
             'menu-item-title'    => $menu_params['title'],
@@ -673,8 +1085,20 @@ class td_demo_menus {
     }
 
 
-
+	/**
+	 * adds a category to a menu
+	 * @param $menu_params
+	 */
     static function add_category($menu_params) {
+
+	    // requiered parameters
+	    self::check_params(__CLASS__, __FUNCTION__, $menu_params, array(
+		    'title' => 'Param is requiered!',
+		    'category_id' => 'Param is requiered! - this is the category id that will be used to generate the mega menu',
+		    'add_to_menu_id' => 'A menu id generated by td_demo_menus::create_menu is requiered'
+	    ));
+
+
         $itemData =  array(
             'menu-item-title' => $menu_params['title'],
             'menu-item-object-id' => $menu_params['category_id'],
@@ -694,7 +1118,7 @@ class td_demo_menus {
 
 
     /**
-     * removes all the menus
+     * removes all the menus, used by uninstall
      */
     static function remove() {
         foreach (self::$allowed_menu_names as $menu_name) {
@@ -704,8 +1128,12 @@ class td_demo_menus {
 }
 
 
+
+
+
+
 //$td_stacks_media->td_media_sideload_image('http://demo.tagdiv.com/newsmag/wp-content/uploads/2014/08/38.jpg', '');
-class td_demo_media {
+class td_demo_media extends td_demo_base {
     /**
      * Download an image from the specified URL and attach it to a post.
      *

@@ -1,5 +1,7 @@
 <?php
 
+
+
 require_once "td_view_header.php";
 ?>
 <div class="about-wrap td-admin-wrap">
@@ -24,11 +26,25 @@ require_once "td_view_header.php";
         Theme config
      */
 
+    // Theme registration key - display it only if the theme requires activation
+    if (td_api_features::is_enabled('require_activation')) {
+        td_system_status::add('Theme config', array(
+            'check_name' => 'Registration key',
+            'tooltip' => 'Registration key',
+            'value' =>  td_util::get_registration(),
+            'status' => 'info'
+        ));
+    }
+
     // Theme name
+    $theme_premium_version = '';
+    if (defined('TD_DEPLOY_IS_PREMIUM') && TD_DEPLOY_IS_PREMIUM === false) {
+        $theme_premium_version = ' - Free Version - <a href="https://www.wpion.com/pricing/">Get the premium version now</a>';
+    }
     td_system_status::add('Theme config', array(
         'check_name' => 'Theme name',
         'tooltip' => 'Theme name',
-        'value' =>  TD_THEME_NAME,
+        'value' =>  TD_THEME_NAME . $theme_premium_version,
         'status' => 'info'
     ));
 
@@ -36,7 +52,7 @@ require_once "td_view_header.php";
     td_system_status::add('Theme config', array(
         'check_name' => 'Theme version',
         'tooltip' => 'Theme current version',
-        'value' =>  TD_THEME_VERSION,
+        'value' =>  td_util::get_theme_version(),
         'status' => 'info'
     ));
 
@@ -48,20 +64,15 @@ require_once "td_view_header.php";
         'status' => 'info'
     ));
 
-    // Theme aurora version
-    td_system_status::add('Theme config', array(
-	    'check_name' => 'Theme aurora version',
-	    'tooltip' => 'Aurora is our plugins framework',
-	    'value' =>  TD_AURORA_VERSION,
-	    'status' => 'info'
-    ));
+
 
 
     // Theme remote http channel used by the theme
-    $td_remote_http = td_util::get_option('td_remote_http');
+    $td_remote_http = td_options::get_array('td_remote_http');
+    $http_reset_button = ' <a class="td-button-system-status td-reset-channel" href="admin.php?page=td_system_status&reset_http_channel=1" data-action="reset the theme http channel and remote cache?">Reset channel</a>';
 
     if (empty($td_remote_http['test_status'])) {
-//	    // not runned yet
+//	    // not runned yet - DO NOTHING BECAUSE IT CREATES PANIC if not runned yet is shown
 //	    td_system_status::add('Theme config', array(
 //		    'check_name' => 'HTTP channel test',
 //		    'tooltip' => 'The test will run when the theme has to get information from other sites. Like the number of likes, tweets etc...',
@@ -74,7 +85,7 @@ require_once "td_view_header.php";
 		    'check_name' => 'HTTP channel test',
 		    'tooltip' => 'The theme cannot connect to other data sources. We are unable to get the number of likes, video information, tweets etc. This is usually due to a
 		    misconfigured server or firewall',
-		    'value' =>  $td_remote_http['test_status'],
+		    'value' =>  $td_remote_http['test_status'] . $http_reset_button,
 		    'status' => 'red'
 	    ));
     } else {
@@ -88,28 +99,30 @@ require_once "td_view_header.php";
     }
 
 
-    $td_demo = td_demo_state::get_installed_demo();
-    if ($td_demo !== false) {
+	$td_demo = td_demo_state::get_installed_demo();
+	if ($td_demo !== false) {
 
-	    $td_demo_api_data = td_global::$demo_list[$td_demo['demo_id']];
+		$td_demo_api_data = td_global::$demo_list[$td_demo['demo_id']];
 
 
-	    // The demo id + install type
-	    td_system_status::add('Theme config', array(
-		    'check_name' => 'Installed demo',
-		    'tooltip' => '
+		// The demo id + install type
+		td_system_status::add('Theme config', array(
+			'check_name' => 'Installed demo',
+			'tooltip' => '
 			Here you can see the installed demo id and the install type. All of our demos can be installed and uninstalled using the - Install demos - panel
 
 			',
-		    'value' =>
-			    $td_demo_api_data['text']  .
-			    '<span class="td-status-small-text">' .
-			    ' - demo ID: ' . $td_demo['demo_id'] . ' | install type: ' . $td_demo['demo_install_type'] . '<br>' .
-			    '</span>'
-	    ,
-		    'status' => 'info'
-	    ));
-    }
+			'value' =>
+				$td_demo_api_data['text']  .
+				'<span class="td-status-small-text">' .
+				' - demo ID: ' . $td_demo['demo_id'] . ' | install type: ' . $td_demo['demo_install_type'] . '<br>' .
+				'</span>'
+			,
+			'status' => 'info'
+		));
+	}
+
+
 
 
 
@@ -118,6 +131,7 @@ require_once "td_view_header.php";
 	    $show_mobile_theme_status = true;
 	    $jetpack_mobile_version_is_active = false;
 	    $w3_total_cache_is_active = false;
+	    $tagdiv_mobile_plugin_is_active = false;
 
 	    $td_mobile_theme_tooltip = '';
 	    $td_mobile_theme_value = '';
@@ -137,25 +151,29 @@ require_once "td_view_header.php";
 		    }
 	    }
 
-	    if ( is_plugin_active( 'w3-total-cache/w3-total-cache.php' ) ) {
+	    if (is_plugin_active( 'w3-total-cache/w3-total-cache.php')) {
 		    $w3_total_cache_is_active = true;
 	    }
 
-	    if (true === td_is_td_mobile_plugin_active()) {
+	    if (is_plugin_active('td-mobile-plugin/td-mobile-plugin.php')) {
+		    $tagdiv_mobile_plugin_is_active = true;
+	    }
+
+	    if ($tagdiv_mobile_plugin_is_active === true) {
 		    $td_mobile_theme_tooltip = 'The mobile version of the  ' . TD_THEME_NAME;
 		    $td_mobile_theme_value = TD_THEME_NAME . ' mobile version';
 		    $td_mobile_theme_status = 'green';
 
-		    if (true === $jetpack_mobile_version_is_active) {
+		    if ($jetpack_mobile_version_is_active === true) {
 			    $td_mobile_theme_tooltip = 'The mobile version of the  ' . TD_THEME_NAME . ' can\'t be seen because the Jetpack mobile theme is still active. Please deactivate it';
 			    $td_mobile_theme_value = 'Jetpack mobile version';
 			    $td_mobile_theme_status = 'red';
-		    } else if (true === $w3_total_cache_is_active) {
+		    } else if ($w3_total_cache_is_active === true) {
 			    $td_mobile_theme_tooltip = 'The mobile version of the  ' . TD_THEME_NAME . ' isn\'t compatible with the W3 Total Cache plugin. Use instead the WP Super Cache plugin';
 			    $td_mobile_theme_status = 'red';
 		    }
 	    } else {
-		    if (true === $jetpack_mobile_version_is_active) {
+		    if ($jetpack_mobile_version_is_active === true) {
 			    $td_mobile_theme_tooltip = 'Jetpack mobile theme is not fully compatible with ' . TD_THEME_NAME . '. For best results, activate the TAGDIV mobile plugin and use the ' . TD_THEME_NAME . ' mobile version';
 			    $td_mobile_theme_value = 'Jetpack mobile version';
 			    $td_mobile_theme_status = 'yellow';
@@ -165,7 +183,7 @@ require_once "td_view_header.php";
 		    }
 	    }
 
-	    if (true === $show_mobile_theme_status) {
+	    if ($show_mobile_theme_status === true) {
 		    td_system_status::add('Theme config', array(
 			    'check_name' => 'Theme Mobile',
 			    'tooltip' => $td_mobile_theme_tooltip,
@@ -174,7 +192,6 @@ require_once "td_view_header.php";
 		    ));
 	    }
     }
-
     td_set_mobile_theme_settings();
 
 
@@ -238,7 +255,7 @@ require_once "td_view_header.php";
     td_system_status::add('php.ini configuration', array(
         'check_name' => 'post_max_size',
         'tooltip' => 'Sets max size of post data allowed. This setting also affects file upload. To upload large files you have to increase this value and in some cases you also have to increase the upload_max_filesize value.',
-        'value' =>  ini_get('post_max_size') . '<span class="td-status-small-text"> - You cannot upload images, themes and plugins that have a size bigger than this value. To see how you can change this please check our guide <a href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
+        'value' =>  ini_get('post_max_size') . '<span class="td-status-small-text"> - You cannot upload images, themes and plugins that have a size bigger than this value. To see how you can change this please check our guide <a target="_blank" href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
         'status' => 'info'
     ));
 
@@ -255,7 +272,7 @@ require_once "td_view_header.php";
         td_system_status::add('php.ini configuration', array(
             'check_name' => 'max_execution_time',
             'tooltip' => 'This sets the maximum time in seconds a script is allowed to run before it is terminated by the parser. The theme demos download images from our servers and depending on the connection speed this process may require a longer time to execute. We recommend that you should increase it 60 or more.',
-            'value' =>  $max_execution_time . '<span class="td-status-small-text"> - the execution time should be bigger than 60 if you plan to use the demos. To see how you can change this please check our guide <a href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
+            'value' =>  $max_execution_time . '<span class="td-status-small-text"> - the execution time should be bigger than 60 if you plan to use the demos. To see how you can change this please check our guide <a target="_blank" href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
             'status' => 'yellow'
         ));
     }
@@ -274,7 +291,7 @@ require_once "td_view_header.php";
         td_system_status::add('php.ini configuration', array(
             'check_name' => 'max_input_vars',
             'tooltip' => 'This sets how many input variables may be accepted (limit is applied to $_GET, $_POST and $_COOKIE superglobal separately). By default this parameter is set to 1000 and this may cause issues when saving the menu, we recommend that you increase it to 2000 or more. ',
-            'value' =>  $max_input_vars . '<span class="td-status-small-text"> - the max_input_vars should be bigger than 2000, otherwise it can cause incomplete saves in the menu panel in WordPress. To see how you can change this please check our guide <a href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
+            'value' =>  $max_input_vars . '<span class="td-status-small-text"> - the max_input_vars should be bigger than 2000, otherwise it can cause incomplete saves in the menu panel in WordPress. To see how you can change this please check our guide <a target="_blank" href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
             'status' => 'yellow'
         ));
     }
@@ -291,7 +308,7 @@ require_once "td_view_header.php";
         td_system_status::add('php.ini configuration', array(
             'check_name' => 'SUHOSIN Installed',
             'tooltip' => 'Suhosin is an advanced protection system for PHP installations. It was designed to protect servers and users from known and unknown flaws in PHP applications and the PHP core. If it\'s installed on your host you have to increase the suhosin.post.max_vars and suhosin.request.max_vars parameters to 2000 or more.',
-            'value' =>  'SUHOSIN is installed - <span class="td-status-small-text">it may cause problems with saving the theme panel if it\'s not properly configured. You have to increase the suhosin.post.max_vars and suhosin.request.max_vars parameters to 2000 or more. To see how you can change this please check our guide <a href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
+            'value' =>  'SUHOSIN is installed - <span class="td-status-small-text">it may cause problems with saving the theme panel if it\'s not properly configured. You have to increase the suhosin.post.max_vars and suhosin.request.max_vars parameters to 2000 or more. To see how you can change this please check our guide <a target="_blank" href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
             'status' => 'yellow'
         ));
 
@@ -328,6 +345,25 @@ require_once "td_view_header.php";
                 'status' => 'yellow'
             ));
         }
+
+    }
+
+
+    // mbstring
+    if (extension_loaded('mbstring')) {
+        td_system_status::add('php.ini configuration', array(
+            'check_name' => 'mbstring',
+            'tooltip' => 'mbstring extension is loaded. The thmeme uses it\'s functions for various string operations.',
+            'value' => 'available',
+            'status' => 'green'
+        ));
+    } else {
+        td_system_status::add('php.ini configuration', array(
+            'check_name' => 'mbstring',
+            'tooltip' => 'mbstring extension is not available. The thmeme uses it\'s functions for various string operations. Functionality is not broken, we use alternative functions.',
+            'value' => 'not available',
+            'status' => 'yellow'
+        ));
     }
 
 
@@ -398,8 +434,8 @@ require_once "td_view_header.php";
     if ( $memory_limit < 67108864 ) {
         td_system_status::add('WordPress and plugins', array(
             'check_name' => 'WP Memory Limit',
-            'tooltip' => 'By default in wordpress the PHP memory limit is set to 40MB. With some plugins this limit may be reached and this affects your website functionality. To avoid this increase the memory limit to at least 64MB.',
-            'value' => size_format( $memory_limit ) . '/request <span class="td-status-small-text">- We recommend setting memory to at least 64MB. The theme is well tested with a 40MB/request limit, but if you are using multiple plugins that may not be enough. See: <a href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP" target="_blank">Increasing memory allocated to PHP</a>. You can also check our guide <a href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
+            'tooltip' => 'By default in WordPress the PHP memory limit is set to 40MB. With some plugins this limit may be reached and this affects your website functionality. To avoid this increase the memory limit to at least 64MB.',
+            'value' => size_format( $memory_limit ) . '/request <span class="td-status-small-text">- We recommend setting memory to at least 64MB. The theme is well tested with a 40MB/request limit, but if you are using multiple plugins that may not be enough. See: <a target="_blank" href="http://codex.wordpress.org/Editing_wp-config.php#Increasing_memory_allocated_to_PHP">Increasing memory allocated to PHP</a>. You can also check our guide <a target="_blank" href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
             'status' => 'yellow'
         ));
     } else {
@@ -417,7 +453,7 @@ require_once "td_view_header.php";
         td_system_status::add('WordPress and plugins', array(
             'check_name' => 'WP_DEBUG',
             'tooltip' => 'The debug mode is intended for development and it may display unwanted messages. You should disable it on your side.',
-            'value' => 'WP_DEBUG is enabled. <span class="td-status-small-text">It may display unwanted messages. To see how you can change this please check our guide <a href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
+            'value' => 'WP_DEBUG is enabled. <span class="td-status-small-text">It may display unwanted messages. To see how you can change this please check our guide <a target="_blank" href="http://forum.tagdiv.com/system-status-parameters-guide/">here</a>.</span>',
             'status' => 'yellow'
         ));
     } else {
@@ -437,20 +473,20 @@ require_once "td_view_header.php";
     // caching
     $caching_plugin_list = array(
         'wp-super-cache/wp-cache.php' => array(
-            'name' => 'WP super cache - <span class="td-status-small-text">for best performance please check the plugin configuration guide <a href="http://forum.tagdiv.com/cache-plugin-install-and-configure/">here</a>.</span>',
+            'name' => 'WP super cache - <span class="td-status-small-text">for best performance please check the plugin configuration guide <a target="_blank" href="http://forum.tagdiv.com/cache-plugin-install-and-configure/">here</a>.</span>',
             'status' => 'green',
         ),
         'w3-total-cache/w3-total-cache.php' => array(
-            'name' => 'W3 total cache - <span class="td-status-small-text">we recommend <a href="https://ro.wordpress.org/plugins/wp-super-cache/">WP super cache</a></span>',
+            'name' => 'W3 total cache - <span class="td-status-small-text">we recommend <a target="_blank" href="https://ro.wordpress.org/plugins/wp-super-cache/">WP super cache</a></span>',
             'status' => 'yellow',
         ),
         'wp-fastest-cache/wpFastestCache.php' => array(
-            'name' => 'WP Fastest Cache - <span class="td-status-small-text">we recommend <a href="https://ro.wordpress.org/plugins/wp-super-cache/">WP super cache</a></span>',
+            'name' => 'WP Fastest Cache - <span class="td-status-small-text">we recommend <a target="_blank" href="https://ro.wordpress.org/plugins/wp-super-cache/">WP super cache</a></span>',
             'status' => 'yellow',
         ),
     );
     $active_plugins = get_option('active_plugins');
-    $caching_plugin = 'No caching plugin detected - <span class="td-status-small-text">for best performance we recommend using <a href="https://wordpress.org/plugins/wp-super-cache/">WP Super Cache</a></span>';
+    $caching_plugin = 'No caching plugin detected - <span class="td-status-small-text">for best performance we recommend using <a target="_blank" href="https://wordpress.org/plugins/wp-super-cache/">WP Super Cache</a></span>';
     $caching_plugin_status = 'yellow';
     foreach ($active_plugins as $active_plugin) {
         if (isset($caching_plugin_list[$active_plugin])) {
@@ -469,19 +505,64 @@ require_once "td_view_header.php";
     td_system_status::render_tables();
 
     // Clear the Social Counter cache - only if the reset button is used
-    if(!empty($_REQUEST['clear_social_counter_cache']) and $_REQUEST['clear_social_counter_cache'] == 1) {
+    if(!empty($_REQUEST['clear_social_counter_cache']) && $_REQUEST['clear_social_counter_cache'] == 1) {
         //clear social counter cache
-        update_option('td_social_api_v3_last_val', '');
+        //update_option('td_social_api_v3_last_val', '');
+        td_remote_cache::delete_group('td_social_api');
         ?>
         <!-- redirect page -->
         <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status';?>");</script>
-        <?php
+    <?php
+    }
+
+    // Clear Remote cache individual items
+    if(!empty($_REQUEST['td_remote_cache_group']) && !empty($_REQUEST['td_remote_cache_item'])) {
+        td_remote_cache::delete_item($_REQUEST['td_remote_cache_group'], $_REQUEST['td_remote_cache_item']);
+        ?>
+        <!-- redirect page -->
+        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status';?>");</script>
+    <?php
     }
 
     // Clear the Remote cache - only if the reset button is used
-    if(!empty($_REQUEST['clear_remote_cache']) and $_REQUEST['clear_remote_cache'] == 1) {
+    if(!empty($_REQUEST['clear_remote_cache']) && $_REQUEST['clear_remote_cache'] == 1) {
         //clear remote cache
-        update_option(TD_THEME_OPTIONS_NAME . '_remote_cache', '');
+        update_option(TD_THEME_OPTIONS_NAME . '_remote_cache', array());
+        ?>
+        <!-- redirect page -->
+        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status';?>");</script>
+
+    <?php
+    }
+
+    // Clear the Video playlists cache - only if the reset button is used
+    if(!empty($_REQUEST['clear_video_cache']) && $_REQUEST['clear_video_cache'] == 1) {
+        foreach (td_system_status::get_video_playlists_meta('video_playlists_posts_ids') as $post_ID) {
+            update_post_meta($post_ID, 'td_playlist_video', '');
+        }
+        ?>
+        <!-- redirect page -->
+        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status';?>");</script>
+
+    <?php
+    }
+
+    //Remove the registration key
+    if(!empty($_REQUEST['reset_registration']) && $_REQUEST['reset_registration'] == 1) {
+        td_util::reset_registration();
+        ?>
+        <!-- redirect page -->
+        <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status';?>");</script>
+
+    <?php
+    }
+
+    //Remove the registration key
+    if(!empty($_REQUEST['reset_http_channel']) && $_REQUEST['reset_http_channel'] == 1) {
+        //reset http channel
+        td_options::update_array('td_remote_http', array());
+        //reset cache
+        update_option(TD_THEME_OPTIONS_NAME . '_remote_cache', array());
         ?>
         <!-- redirect page -->
         <script>window.location.replace("<?php echo admin_url() . 'admin.php?page=td_system_status';?>");</script>
@@ -498,19 +579,21 @@ require_once "td_view_header.php";
     <div class="td-debug-area<?php echo $td_debug_area_visible; ?>">
         <?php
         // social counter cache
-        $cache_content = get_option('td_social_api_v3_last_val', '');
+        //$cache_content = get_option('td_social_api_v3_last_val', '');
+        $cache_content = td_remote_cache::get('td_social_api', 'td_social_api_v3_last_val');
         td_system_status::render_social_cache($cache_content);
-
-
-        // td log panel
-        $td_log_content = get_option(TD_THEME_OPTIONS_NAME . '_log');
-        td_system_status::render_td_log($td_log_content);
-
 
         // remote cache panel
         // td_remote_cache::set('group1', '1', array(0 => 'parameter1', 1 => 'parameter2'), time() - 10);
         $td_remote_cache_content = get_option(TD_THEME_OPTIONS_NAME . '_remote_cache');
         td_system_status::render_td_remote_cache($td_remote_cache_content);
+
+        //td video playlist data
+        td_system_status::render_td_video_playlists();
+
+        // td log panel
+        $td_log_content = get_option(TD_THEME_OPTIONS_NAME . '_log');
+        td_system_status::render_td_log($td_log_content);
         ?>
     </div>
 
@@ -695,7 +778,7 @@ require_once "td_view_header.php";
        static function render_td_log($td_log_content) {
            if (!empty($td_log_content) and is_array($td_log_content)) {
                ?>
-               <table class="widefat td-system-status-table" cellspacing="0">
+               <table class="widefat td-system-status-table td-log-table" cellspacing="0">
                    <thead>
                    <tr>
                        <th colspan="5">TD Log</th>
@@ -742,19 +825,40 @@ require_once "td_view_header.php";
                            </td>
                            <td><?php echo $td_log_params['function']; ?></td>
                            <td><?php echo $td_log_params['msg']; ?></td>
-                           <td>
+                           <td class="td_log_more_data">
                                <div class="td_log_more_data_container">
                                    <?php
-                               if (is_array($td_log_params['more_data']) or is_object($td_log_params['more_data'])) {
-                                   // details button
-                                   echo '<div><a class="td-button-system-status-details">View Details</a></div>';
-                                   // array data container
-                                   echo '<div class="td-array-viewer"><pre>';
-                                   print_r($td_log_params['more_data']);
-                                   echo '</pre></div>';
-                               } else {
-                               echo $td_log_params['more_data']; // if it's not an array-object it displays the string
-                               } ?>
+                                   //array or object display it in a container
+	                               if (is_array($td_log_params['more_data']) || is_object($td_log_params['more_data'])) {
+		                               // details button
+		                               echo '<div><a class="td-button-system-status-details">View Details</a></div>';
+		                               // array data container
+		                               echo '<div class="td-array-viewer"><pre>';
+		                               print_r( $td_log_params['more_data'] );
+		                               echo '</pre></div>';
+
+		                           //string > 200 characters display it in a container
+	                               } elseif (is_string($td_log_params['more_data']) && strlen($td_log_params['more_data']) > 200) {
+		                               // details button
+		                               echo '<div><a class="td-button-system-status-details">View Details</a></div>';
+		                               // array data container
+		                               echo '<div class="td-array-viewer">';
+		                               echo htmlentities($td_log_params['more_data']);
+		                               echo '</div>';
+
+                                   //string < 200 characters
+                                   } elseif (is_string($td_log_params['more_data'])){
+                                       echo htmlentities($td_log_params['more_data']); //display small strings directly in the table
+
+                                   //other type of data
+                                   } else {
+                                       // details button
+                                       echo '<div><a class="td-button-system-status-details">View Details</a></div>';
+                                       // object data container
+                                       echo '<div class="td-array-viewer"><pre>';
+                                       var_dump($td_log_params['more_data']);
+                                       echo '</pre></div>';
+                                   }?>
                                </div>
                            </td>
 
@@ -790,56 +894,201 @@ require_once "td_view_header.php";
                    <tbody>
                    <?php
 
-                   $td_remote_cache_element_counter = 0; // used to generate a unique class on each element
                    foreach ($td_remote_cache_content as $td_remote_cache_group => $td_remote_cache_group_content) {
 
                        foreach ($td_remote_cache_group_content as $td_remote_cache_group_id => $td_remote_cache_group_parameters) {
                        ?>
 
                        <tr>
-                           <td><?php echo $td_remote_cache_group ?></td> <!-- Group -->
+                           <td><?php echo $td_remote_cache_group; ?></td> <!-- Group -->
 
-                               <td><?php echo $td_remote_cache_group_id ?></td> <!-- ID -->
+                               <td><a class="td-remote-cache-item" href="<?php admin_url(); ?>admin.php?page=td_system_status&td_remote_cache_group=<?php echo $td_remote_cache_group; ?>&td_remote_cache_item=<?php echo $td_remote_cache_group_id; ?>"><?php echo $td_remote_cache_group_id; ?></a></td> <!-- ID -->
 
                                <td> <!-- Value -->
                                    <div class="td-remote-value-data-container">
                                        <?php
-                                       if (is_array($td_remote_cache_group_parameters['value']) or is_object($td_remote_cache_group_parameters['value'])) {
-
+                                       //array or object display it in a container
+                                       if (is_array($td_remote_cache_group_parameters['value']) || is_object($td_remote_cache_group_parameters['value'])) {
                                            // details button
                                            echo '<div><a class="td-button-system-status-details">View Details</a></div>';
                                            // array data container
                                            echo '<div class="td-array-viewer"><pre>';
                                            print_r($td_remote_cache_group_parameters['value']);
                                            echo '</pre></div>';
+
+	                                   //string > 200 characters display it in a container
+                                       } elseif ( is_string($td_remote_cache_group_parameters['value']) && strlen($td_remote_cache_group_parameters['value']) > 200) {
+	                                       // details button
+	                                       echo '<div><a class="td-button-system-status-details">View Details</a></div>';
+	                                       // array data container
+	                                       echo '<div class="td-array-viewer">';
+	                                       echo  htmlentities($td_remote_cache_group_parameters['value']);
+	                                       echo '</div>';
+
                                        } else {
-                                           echo $td_remote_cache_group_parameters['value']; // if it's not an array-object it displays the string
+                                           echo htmlentities($td_remote_cache_group_parameters['value']); // if it's not an array-object it displays the string
                                        }
-                                       $td_remote_cache_element_counter++;
                                        ?>
                                    </div>
                                </td>
 
-                               <td><?php echo $td_remote_cache_group_parameters['expires'] ?></td> <!-- Expires -->
-                               <td><?php echo gmdate("H:i:s", time() - $td_remote_cache_group_parameters['timestamp'])?>ago</td> <!-- Timestamp -->
+                               <td><?php echo $td_remote_cache_group_parameters['expires']; ?></td> <!-- Expires -->
+                               <td><?php echo gmdate("H:i:s", time() - $td_remote_cache_group_parameters['timestamp']); ?>ago</td> <!-- Timestamp -->
                            <?php } ?>
 
                        </tr>
                    <?php
                    } ?>
-
-                   <tr> <!-- Remote cache reset button -->
-                       <td colspan="5">
-                           <a class="td-remote-cache-reset" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_remote_cache=1">Clear the Remote cache</a>
-                       </td>
-                   </tr>
-
                    </tbody>
                </table>
-           <?php
-           }
+           <?php } ?>
+
+           <!-- Remote cache reset button -->
+           <table class="widefat td-system-status-table td-cache-reset-table" cellspacing="0">
+               <thead>
+               <tr>
+                   <th colspan="1">Remote cache reset</th>
+               </tr>
+               </thead>
+               <tbody>
+               <tr>
+                   <td><a class="td-remote-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_remote_cache=1">Clear the Remote cache</a></td>
+               </tr>
+               </tbody>
+           </table>
+
+
+
+<?php
        }
 
+       static function render_td_video_playlists () {
+
+           $td_playlist_videos = td_system_status::get_video_playlists_meta();
+           /*
+           echo '<pre>';
+           print_r($td_playlist_videos);
+           echo '</pre>';
+           */
+
+           ?>
+
+           <!-- Video playlist cached youtube and vimeo ids from the DB -->
+           <table class="widefat td-system-status-table td-video-table" cellspacing="0">
+               <?php if (!empty($td_playlist_videos)) {?>
+               <thead>
+               <tr>
+                   <th colspan="3">Video playlist cached youtube and vimeo ids</th>
+               </tr>
+               <tr>
+                   <th>Item ID:</th>
+                   <th>Youtube ids:</th>
+                   <th>Vimeo ids:</th>
+               </tr>
+               </thead>
+               <tbody>
+               <?php foreach ($td_playlist_videos as $post_id => $post_video_data) { ?>
+                   <tr>
+                       <td><?php echo $post_id; ?></td>
+
+                       <?php
+                       foreach ( $post_video_data as $video_service => $video_service_ids ) {
+                           if ( $video_service === "youtube_ids" ) {
+                               echo "<td>";
+                               foreach ($video_service_ids as $video_service_id => $data ) {
+                                   echo '<div class="td-remote-value-data-container">';
+                                   // the youtube video ID
+                                   echo '<div class="td-video-id-container">' . $video_service_id . '</div>';
+                                   // details button
+                                   echo '<div class="td-video-id-details"><a class="td-button-system-status-details">View Details</a></div>';
+                                   // array data container
+                                   echo '<div class="td-array-viewer"><pre>';
+                                   print_r($data);
+                                   echo '</pre></div>';
+                                   echo '</div>';
+                               }
+                               echo "</td>";
+                           }
+
+                           if ( $video_service === "vimeo_ids" ) {
+                               echo "<td>";
+                               foreach ($video_service_ids as $video_service_id => $data ) {
+                                   echo '<div class="td-remote-value-data-container">';
+                                   // the vimeo video ID
+                                   echo '<div class="td-video-id-container">' . $video_service_id . '</div>';
+                                   // details button
+                                   echo '<div class="td-video-id-details"><a class="td-button-system-status-details">View Details</a></div>';
+                                   // array data container
+                                   echo '<div class="td-array-viewer"><pre>';
+                                   print_r($data);
+                                   echo '</pre></div>';
+                                   echo '</div>';
+                               }
+                               echo "</td>";
+                           }
+                       }
+                       ?>
+                   </tr>
+               <?php } ?>
+               </tbody>
+               <?php } else {
+               echo '<tr><td>There is no cached data for youtube and/or vimeo video playlists!</td></tr>';
+               }
+               ?>
+           </table>
+
+           <!-- Video playlist cache reset button -->
+           <table class="widefat td-system-status-table td-video-reset-table" cellspacing="0">
+               <thead>
+               <tr>
+                   <th colspan="1">Video playlist cache reset</th>
+               </tr>
+               </thead>
+               <tbody>
+               <tr>
+                   <td><a class="td-video-cache-reset td-button-system-status td-reset-channel" href="<?php admin_url(); ?>admin.php?page=td_system_status&clear_video_cache=1">Clear the Video playlist cache</a></td>
+               </tr>
+               </tbody>
+           </table>
+
+           <?php
+       }
+
+       /**
+        * @param string $return_type
+        * @return array|string - the posts ids for posts that use video playlists or the posts video playlists meta
+        */
+       static function get_video_playlists_meta($return_type = 'video_playlists_meta') {
+           $posts_video_playlist_meta_array = array();
+           $posts_with_video_playlists_array = array();
+
+           $args = array(
+               'numberposts' => 500,
+               'post_type' => array( 'post', 'page'),
+               'meta_key' => 'td_playlist_video'
+           );
+
+           $posts = get_posts($args);
+
+           foreach ( $posts as $post) {
+               $post_video_playlist_meta = td_util::get_post_meta_array($post->ID, 'td_playlist_video');
+
+               if ( !empty ($post_video_playlist_meta)) {
+                   $posts_video_playlist_meta_array[$post->ID]=$post_video_playlist_meta;
+
+                   //update the video playlists posts array with the post id
+                   $posts_with_video_playlists_array[]=$post->ID;
+               }
+           }
+
+           if (!empty($posts_video_playlist_meta_array) && $return_type === "video_playlists_meta"){
+               return $posts_video_playlist_meta_array;
+           } elseif ( !empty($posts_with_video_playlists_array) && $return_type === "video_playlists_posts_ids") {
+               return $posts_with_video_playlists_array;
+           } else {
+               return array();
+           }
+       }
 
        static function render_diagnostics() {
 

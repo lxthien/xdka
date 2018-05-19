@@ -27,7 +27,7 @@ td_global::$current_author_obj = $part_cur_auth_obj;
 
 ?>
 
-<div class="td-main-content-wrap">
+<div class="td-main-content-wrap td-container-wrap">
     <div class="td-container <?php echo $td_sidebar_position; ?>">
         <div class="td-crumb-container">
             <?php echo td_page_generator::get_author_breadcrumbs($part_cur_auth_obj); // generate the breadcrumbs ?>

@@ -16,18 +16,21 @@ function td_css_demo_gen() {
     	.td-health .td-module-comments a:after {
         	border-color: @theme_color transparent transparent transparent;
     	}
+
+    	/* @submenu_hover_color */
     	.td-health .td-header-style-6 .sf-menu > li > a:hover,
 	    .td-health .td-header-style-6 .sf-menu > .sfHover > a,
 	    .td-health .td-header-style-6 .sf-menu > .current-menu-item > a,
 	    .td-health .td-header-style-6 .sf-menu > .current-menu-ancestor > a,
 	    .td-health .td-header-style-6 .sf-menu > .current-category-ancestor > a {
-	        color: @theme_color !important;
+	        color: @submenu_hover_color !important;
 	    }
 	</style>
 	";
 
 	$td_demo_css_compiler = new td_css_compiler($td_demo_custom_css);
 	$td_demo_css_compiler->load_setting('theme_color');
+	$td_demo_css_compiler->load_setting('submenu_hover_color');
 
 	return $td_demo_css_compiler->compile_css();
 }

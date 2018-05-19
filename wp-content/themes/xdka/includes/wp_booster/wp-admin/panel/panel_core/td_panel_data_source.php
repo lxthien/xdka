@@ -6,14 +6,13 @@ class td_panel_data_source {
 
 
 
-
     /**
      * Reads an individual setting - only one setting!
      * @param $read_array -
      * 'ds' => 'data source ID',
       'item_id' = > 'the category id for example', - OPTIONAL category id or author id or page id
      * 'option_id' => 'the option id ex: background'
-     * @return returns the value of the setting
+     * @return string returns the value of the setting
      */
     static function read($read_array) {
         switch ($read_array['ds']) {
@@ -34,29 +33,19 @@ class td_panel_data_source {
                 return td_util::get_option($read_array['option_id']);//htmlspecialchars()
                 break;
 
-            case 'wp_option':
+            case 'wp_option': //@todo - se poate sa nu mai fie folosita
                 return htmlspecialchars(get_option($read_array['option_id']));
                 break;
 
-            case 'td_homepage':
-                // here we get all the options for the homepage (including widgets?)
-                break;
 
-            case 'td_page_option':
-
-                break;
-
-            case 'td_widget':
-
-                break;
 
             //author metadata
-            case 'td_author':
+            case 'td_author': //@todo - se poate sa nu fie folosita
                 return get_the_author_meta($read_array['option_id'], $read_array['item_id']);
                 break;
 
 
-            //wordpress theme mod datasource
+            //wordpress theme mod datasource @todo - se poate a nu mai fie folosita
             case 'wp_theme_mod':
                 return htmlspecialchars(get_theme_mod($read_array['option_id']));
                 break;
@@ -77,7 +66,7 @@ class td_panel_data_source {
             //translation data source
             case 'td_translate':
                 //get all the translations (they are stored in the td_008 variable)
-                $translations = td_util::get_option('td_translation_map_user');
+                $translations = td_options::get_array('td_translation_map_user');
                 if (!empty($translations[$read_array['option_id']])) {
                     return $translations[$read_array['option_id']];//htmlspecialchars()
                 } else {
@@ -91,7 +80,7 @@ class td_panel_data_source {
             //[ds] => td_ads [option_id] => current_ad_type [item_id] => header - has to become [item_id][option_id]
             case 'td_ads':
                 //get all the ad spots (they are stored in the td_008 variable)
-                $ads = td_util::get_option('td_ads');
+                $ads = td_options::get_array('td_ads');
                 if (!empty($ads[$read_array['item_id']]) and !empty($ads[$read_array['item_id']][$read_array['option_id']])) {
                     return htmlspecialchars($ads[$read_array['item_id']][$read_array['option_id']]);
                 } else {
@@ -102,7 +91,7 @@ class td_panel_data_source {
 
             //social networks
             case 'td_social_networks':
-                $social_array = td_util::get_option('td_social_networks');
+                $social_array = td_options::get_array('td_social_networks');
                 if (!empty($social_array[$read_array['option_id']])) {
                     return $social_array[$read_array['option_id']];
                 } else {
@@ -111,7 +100,7 @@ class td_panel_data_source {
                 break;
 
             case 'td_fonts_user_insert':
-                $fonts_user_inserted = td_util::get_option('td_fonts_user_inserted');
+                $fonts_user_inserted = td_options::get_array('td_fonts_user_inserted');
                 if(!empty($fonts_user_inserted[$read_array['option_id']])) {
                     return $fonts_user_inserted[$read_array['option_id']];
                 }
@@ -119,7 +108,7 @@ class td_panel_data_source {
 
 
             case 'td_fonts':
-                $fonts_user_inserted = td_util::get_option('td_fonts');
+                $fonts_user_inserted = td_options::get_array('td_fonts');
                 if(!empty($fonts_user_inserted[$read_array['item_id']][$read_array['option_id']])) {
                     return $fonts_user_inserted[$read_array['item_id']][$read_array['option_id']];
                 }
@@ -128,37 +117,73 @@ class td_panel_data_source {
 
             case 'td_block_styles':
                 //get the hole block style array
-                $td_block_styles = td_util::get_option('td_block_styles');
+                $td_block_styles = td_options::get_array('td_block_styles');
 
                 if(!empty($td_block_styles) and !empty($td_block_styles[$read_array['item_id']][$read_array['option_id']])) {
                     return $td_block_styles[$read_array['item_id']][$read_array['option_id']];
                 }
                 break;
-
-
-            // fake datasource for demo import panel, we just use the panel to render controls but we save on our own @todo - find a solution to this
-            case 'td_import_theme_styles':
-                break;
-
-            // fake datasource for metaboxes, we just use the panel to render controls but we save on our own  @todo - find a solution to this
-            case 'td_page':
-                break;
-            case 'td_homepage_loop':
-                break;
-            case 'td_post_theme_settings':
-                break;
-            case 'td_update_theme_options':
-                break;
-
-
-            default:
-                // try to get options for plugins
-                return tdx_options::get_option($read_array['ds'], $read_array['option_id']);
-                //return tdx_api_panel::get_data_from_datasource($read_array['ds'], $read_array['option_id']);
-                break;
         }
+
+        return '';
     }
 
+
+
+
+    static function preview_patch_options() {
+
+	    // die if request is fake
+	    check_ajax_referer('td-update-panel', 'td_magic_token');
+
+
+	    //if user is logged in and can switch themes
+	    if (!current_user_can('switch_themes')) {
+		    die;
+	    }
+
+
+	    foreach ($_POST as $post_data_source => $post_value) {
+		    switch ($post_data_source) {
+			    case 'td_option':
+				    self::update_td_option($post_value);
+				    break;
+		    }
+	    }
+
+
+
+	    //compile user css if any
+	    //td_global::$td_options['tds_user_compile_css'] = td_css_generator();
+    }
+
+
+
+//* --------------------------------------------
+//* This will be used by preview '.tdc-view-page'
+//* --------------------------------------------
+//	static function post_preview_patch_options( $post_id ) {
+//
+////	    // die if request is fake
+////	    check_ajax_referer('td-update-panel', 'td_magic_token');
+////
+////
+////	    //if user is logged in and can switch themes
+////	    if (!current_user_can('switch_themes')) {
+////		    die;
+////	    }
+//
+//		$td_options = &td_options::get_all_by_ref();
+//
+//		$tdc_preview_options = get_post_meta( $post_id, 'tdc_preview_options', true );
+//
+//		//var_dump( $tdc_preview_options );
+//
+//	    foreach($tdc_preview_options as $options_id => $option_value) {
+//
+//        	$td_options[$options_id] = $option_value;
+//		}
+//    }
 
 
     /*
@@ -169,15 +194,19 @@ class td_panel_data_source {
     */
     static function update() {
 
-        //load all the theme's settings
-        td_global::$td_options = get_option(TD_THEME_OPTIONS_NAME);
+	    // die if request is fake
+	    check_ajax_referer('td-update-panel', 'td_magic_token');
 
+	    //if user is logged in and can switch themes
+	    if (!current_user_can('switch_themes')) {
+		    die;
+	    }
 
-        /*  ----------------------------------------------------------------------------
-            save the data
-         */
-
-        //print_r($_POST);
+	    /**
+	     * @since 20 sept 2016
+	     *  - we look in the $_POST variable and we save if we recognize the keys. Otherwise we ignore them (keys like td_magic_token, action etc are ignored)
+	     *  - we removed the aurora hook
+	     */
         foreach ($_POST as $post_data_source => $post_value) {
             switch ($post_data_source) {
 
@@ -198,7 +227,8 @@ class td_panel_data_source {
                     self::update_td_option($post_value);
                     break;
 
-                case 'wp_option':
+	            // wp
+                case 'wp_option': //@todo - se poate sa nu mai fie folosita
                     self::update_wp_option($post_value);
                     break;
 
@@ -207,18 +237,12 @@ class td_panel_data_source {
 	            case 'td_default': // here we store the default values. Each datasource that needs defaults, will parse the $_POST['td_default'] directly
 		            break;
 
-                case 'td_page_option':
-                    break;
-
-                case 'td_author':
+	            //wp
+                case 'td_author': //@todo - se poate sa nu mai fie folosita
                     self::update_td_author($post_value);
                     break;
 
-                case 'wp_widget':
-                    self::update_wp_widget($post_value);
-                    break;
-
-                case 'wp_theme_mod':
+                case 'wp_theme_mod': //@todo - se poate sa nu mai fie folosita
                     self::update_wp_theme_mod($post_value);
                     break;
 
@@ -239,6 +263,10 @@ class td_panel_data_source {
                     self::update_td_social_networks($post_value);
                     break;
 
+                case 'td_fonts_user_insert':
+                    self::update_td_fonts_user_insert($post_value);
+                    break;
+
                 case 'td_fonts':
                     self::update_td_fonts($post_value);
                     break;
@@ -248,17 +276,30 @@ class td_panel_data_source {
                     break;
 
                 default:
-                    tdx_options::set_data_to_datasource($post_data_source, $post_value);
+	                // here we had aurora hooked - removed in 20 sep 2016
+                    //tdx_options::set_data_to_datasource($post_data_source, $post_value);
                     break;
             }
         }
 
         //compile user css if any
-        td_global::$td_options['tds_user_compile_css'] = td_css_generator();
+	    td_options::update('tds_user_compile_css', td_css_generator());
+        //td_global::$td_options['tds_user_compile_css'] = td_css_generator();
+
+        /*
+         * compile mobile theme user css only if the theme is installed
+         * in wp-admin the main theme is loaded and the mobile theme functions are not included
+         * td_css_generator_mob() - is loaded in functions.php
+         * @todo - look for a more elegant solution
+         */
+        if (td_util::is_mobile_theme() && function_exists('td_css_generator_mob')){
+	        td_options::update('tds_user_compile_css_mob', td_css_generator_mob());
+            //td_global::$td_options['tds_user_compile_css_mob'] = td_css_generator_mob();
+        }
 
         //save all the themes settings (td_options + td_category)
-        update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options );
-
+	    td_options::schedule_save();
+	    //update_option( TD_THEME_OPTIONS_NAME, td_global::$td_options );
     }
 
 
@@ -291,17 +332,20 @@ class td_panel_data_source {
      * @param $ds string - the data source that you want to update
      */
     private static function update_array_data_source($post_values, $ds) {
+    	/** we schedule a save in @see td_panel_data_source::update() this function is used only there */
+    	$td_options = &td_options::get_all_by_ref();
+
         foreach ($post_values as $item_id => $options) {
             foreach ($options as $option_id => $option_value) {
                 if ($option_value != '') {
-                    td_global::$td_options[$ds][$item_id][$option_id] = $option_value;
+	                $td_options[$ds][$item_id][$option_id] = $option_value;
                 } else {
                     //delete the option from the parent
-                    unset(td_global::$td_options[$ds][$item_id][$option_id]);
+                    unset($td_options[$ds][$item_id][$option_id]);
 
                     //also delete the parent if there are no more options
-                    if (isset(td_global::$td_options[$ds][$item_id]) and count(td_global::$td_options[$ds][$item_id], COUNT_RECURSIVE) == 0) {
-                        unset(td_global::$td_options[$ds][$item_id]);
+                    if (isset($td_options[$ds][$item_id]) and count($td_options[$ds][$item_id], COUNT_RECURSIVE) == 0) {
+                        unset($td_options[$ds][$item_id]);
                     }
                 }
             }
@@ -360,8 +404,11 @@ class td_panel_data_source {
             }   // end ad_code if
         }       // end for each
 
+
+	    /** we schedule a save in @see td_panel_data_source::update() this function is used only there */
+	    $td_options = &td_options::get_all_by_ref();
         foreach($wp_option_array as $box_add => $values){
-            td_global::$td_options['td_ads'][$box_add] = $values;
+	        $td_options['td_ads'][$box_add] = $values;
         }
 
     }
@@ -372,7 +419,8 @@ class td_panel_data_source {
      * @param $wp_option_array
      */
     private static function update_td_translate($wp_option_array) {
-        td_global::$td_options['td_translation_map_user'] = $wp_option_array;
+    	td_options::update_array('td_translation_map_user', $wp_option_array);
+        //td_global::$td_options['td_translation_map_user'] = $wp_option_array;
     }
 
 
@@ -414,25 +462,6 @@ class td_panel_data_source {
     }
 
 
-    /**
-     * @param $wp_widgets_array
-     * Array (
-     * [testing] => Array (  //sidebar name
-     *  [td_block4_widget] => Array (  //widget name
-     *      [sort] => ra    //att_key => att value
-     *      [custom_title] => test )
-     *  )
-     * )
-     */
-    private static function update_wp_widget($wp_widgets_array) {
-        //print_r($wp_widgets_array);
-        $td_demo_site = new td_demo_site();
-        foreach($wp_widgets_array as $sidebar => $widgets) {
-            foreach ($widgets as $widget_name => $widget_atts) {
-                $td_demo_site->add_widget_to_sidebar($sidebar, $widget_name, $widget_atts);
-            }
-        }
-    }
 
 
     /**
@@ -449,17 +478,28 @@ class td_panel_data_source {
     /**
      * @param $td_option_array
      * Array ( [option_id] => options_value, [option_id_2] => options_value )
+     * Used to clean up default values, for example if the user submitted value is 5 and the default is 5, in the database we will
+     * save ''
      */
     private static function update_td_option($td_option_array) {
-        //get defaults array
-        $default_array = $_POST['td_default'];
+
+	    /** we schedule a save in @see td_panel_data_source::update() this function is used only there */
+    	$td_options = &td_options::get_all_by_ref();
 
         foreach($td_option_array as $options_id => $option_value) {
-            //check for default values
-            if(!empty($default_array['td_option'][$options_id]) and strtolower($default_array['td_option'][$options_id]) == strtolower($option_value)) {
-                $option_value = '';
-            }
-            td_global::$td_options[$options_id] = $option_value;
+
+        	// search for the default value, only if we have at least one default. The live panel may not have defaults in testing
+        	if (isset($_POST['td_default'])) {
+		        //get defaults array
+		        $default_array = $_POST['td_default'];
+
+		        //check for default values
+		        if(!empty($default_array['td_option'][$options_id]) and strtolower($default_array['td_option'][$options_id]) == strtolower($option_value)) {
+			        $option_value = '';
+		        }
+	        }
+
+	        $td_options[$options_id] = $option_value;
         }
     }
 
@@ -514,6 +554,8 @@ class td_panel_data_source {
             }
         }
 
+
+        //print_r(td_options::$td_options);
     }
 
 
@@ -521,22 +563,39 @@ class td_panel_data_source {
     //update a category setting - it deletes the settings if there are empty
     //it is also used by the import script
     public static function update_category_option($category_id, $option_id, $new_value) {
+
+	    /** we schedule a save in @see td_panel_data_source::update() this function is used only there */
+    	$td_options = &td_options::get_all_by_ref();
+	    //print_r($td_options);
+
         if ($new_value != '') {
-            td_global::$td_options['category_options'][$category_id][$option_id] = $new_value;
+	        $td_options['category_options'][$category_id][$option_id] = $new_value;
 
         } else {
-            //delete the option from the parent category
-            unset(td_global::$td_options['category_options'][$category_id][$option_id]);
+
+
+	        /**
+	         * delete the option from the parent category
+	         *  @23 may 2016 - we encountered an issue with unset on a string index - td_global::$td_options['category_options'][$category_id] was string
+	         *  @see td_demo_installer::import_panel_settings() - category_options is updated to ''
+	         *  - we must leave the isset check for backwards compatibility
+	         */
+	        if (isset($td_options['category_options'][$category_id][$option_id])) {
+		        unset($td_options['category_options'][$category_id][$option_id]);
+	        }
+
 
             //also delete the parent if there are no more options
-            if (isset(td_global::$td_options['category_options'][$category_id]) and count(td_global::$td_options['category_options'][$category_id], COUNT_RECURSIVE) == 0) {
-                unset(td_global::$td_options['category_options'][$category_id]);
+            if (isset($td_options['category_options'][$category_id]) and count($td_options['category_options'][$category_id], COUNT_RECURSIVE) == 0) {
+                unset($td_options['category_options'][$category_id]);
             }
         }
+
+
     }
 
 
-    public static function update_td_social_networks($social_networks_array) {
+    private static function update_td_social_networks($social_networks_array) {
         $save_social_networks = array();
 
         foreach ($social_networks_array as $social_net_id => $social_net_link) {
@@ -545,28 +604,67 @@ class td_panel_data_source {
             }
         }
 
-        td_global::$td_options['td_social_networks'] = $save_social_networks;
+        td_options::update_array('td_social_networks', $save_social_networks);
+        //td_global::$td_options['td_social_networks'] = $save_social_networks;
     }
+
 
 
     /**
-     * insert user fonts
-     * @param $user_font_option_array
-     * @return bool
+     * saves custom fonts settings
+     * @param $td_option_array
      */
-    public static function insert_in_system_fonts_user($user_font_option_array) {
-        //save the inserted user fonts into themes td_options
-        td_global::$td_options['td_fonts_user_inserted'] = $user_font_option_array;
+    private static function update_td_fonts_user_insert($td_option_array) {
 
-        //save all the themes settings
-        if(update_option(TD_THEME_OPTIONS_NAME, td_global::$td_options )) {
-            return true;
-        } else{
-            return false;
+        /** we schedule a save in @see td_panel_data_source::update() this function is used only there */
+        $td_options = &td_options::get_all_by_ref();
+
+        //get defaults array
+        $default_array = $_POST['td_fonts_user_insert'];
+        /*
+        $js_buffer = used for fonts who use javascript to add @font-face (typekit.com)
+        $css_buffer = used for font link to files
+        */
+        $js_buffer = $css_buffer = '';
+        $google_subset_buffer = ''; //store google subset
+
+        foreach ($default_array as $custom_font_option_id => $custom_font_option_value) {
+            //save font settings in database
+            $td_options['td_fonts_user_inserted'][$custom_font_option_id] = $custom_font_option_value;
+
+            //set fonts js buffer
+            if ($custom_font_option_id == 'typekit_js') {
+                $js_buffer = $custom_font_option_value;
+            }
+
+            //explode font options into identifier and id - ex. g_21 is a google font with id 21
+            $explode_font_option = explode('_', $custom_font_option_id);
+
+            //set font css buffer
+            if ($explode_font_option[1] == 'family' && !empty($custom_font_option_value)) {
+
+                $font_file_link = $td_options['td_fonts_user_inserted']['font_file_' . $explode_font_option[2]];
+                $font_file_family = $td_options['td_fonts_user_inserted']['font_family_' . $explode_font_option[2]];
+
+                $css_buffer .= '
+                                    @font-face {
+                                      font-family: "' . $font_file_family . '";
+                                      src: local("' . $font_file_family . '"), url("' . $font_file_link . '") format("woff");
+                                    }
+                                ';
+            }
+
+
         }
+
+
+
+
+        //add the font buffers to the option string that going to the database
+        td_options::update('td_fonts_css_buffer', $css_buffer);
+        td_options::update('td_fonts_js_buffer', $js_buffer);
+
     }
-
-
 
     /**
      * @used to save the fonts
@@ -575,17 +673,9 @@ class td_panel_data_source {
         //get defaults array
         $default_array = $_POST['td_default'];
 
-        /*
-        $js_buffer = used for fonts who use javascript to add @font-face (typekit.com)
-        $css_buffer = used for font link to files
-        $css_files = used to pull fonts from google
-        */
 
-        //declare variable
-        $js_buffer = $css_buffer = $css_files = $temp_css_google_files = '';
-
-        //collect google fonts from all fields
-        $temp_google_fonts = array();
+        //temporary store google font families string
+        $temp_css_google_files = '';
 
         //collect all place_name arrays in this array
         $td_fonts_save = array();
@@ -598,58 +688,11 @@ class td_panel_data_source {
                 //if the $font_option_value is not empty then added to the place name font array
                 if(!empty($font_option_value)) {
                     $td_fonts_save[$font_place][$font_option_id] = $font_option_value;
-
-                    //check field values for buffer outputs
-                    if($font_option_id == 'font_family') {
-                        $explode_font_family = explode('_', $font_option_value);
-
-                        $id_font = $explode_font_family[1];
-
-                        switch ($explode_font_family[0]) {
-                            //fonts from files (links to files)
-                            case 'file':
-                                $font_file_link = td_global::$td_options['td_fonts_user_inserted']['font_file_' . $id_font];
-                                $font_file_family = td_global::$td_options['td_fonts_user_inserted']['font_family_' . $id_font];
-
-                                $css_buffer .= '
-                                                @font-face {
-                                                  font-family: "' . $font_file_family . '";
-                                                  src: local("' . $font_file_family . '"), url("' . $font_file_link . '") format("woff");
-}
-                                ';
-
-                                break;
-
-                            //fonts from type kit
-                            case 'tk':
-                                $js_buffer = td_global::$td_options['td_fonts_user_inserted']['typekit_js'];
-                                break;
-
-                            //fonts from font stacks
-                            case 'fs':
-                                /*$css_buffer .= '
-                                    @font-face {
-                                        font-family: ' . td_fonts::$font_stack_list['fs_' . $id_font] .';
-                                    }
-                                ';*/
-                                break;
-
-                            //fonts from google
-                            case 'g':
-                                if(!in_array($id_font, $temp_google_fonts)) {
-                                    $temp_google_fonts[] = $id_font;
-                                }
-                                break;
-                        }
-
-                    }
                 }
-
-                //check the color font option for non empty values
+                //@deprecated - check the color font option for non empty values
                 if(!empty($default_array['td_fonts'][$font_place]['color'])) {
                     $td_fonts_save[$font_place]['color'] = $default_array['td_fonts'][$font_place]['color'];
                 }
-
             }
 
             //if the array for the place name is empty then remove it from the td_fonts array
@@ -658,30 +701,17 @@ class td_panel_data_source {
             }
         }
 
-
-        /**
-         * form css_files buffer for google
-        **/
-        //add to google style link the fonts names
-        if(!empty($temp_google_fonts)) {
-            foreach($temp_google_fonts as $font_id_from_list) {
-                if(!empty($temp_css_google_files)) {
-                    $temp_css_google_files .= '|';
-                }
-                $temp_css_google_files .= str_replace(' ', '+', td_fonts::$font_names_google_list[$font_id_from_list]) . ':400,700';
-            }
-        }
-
-
-
         //check sections from db and add them to the saving array if ar not set to empty by the user
-        $font_sections_from_db = td_util::get_option('td_fonts');//get the fonts from db
+        $font_sections_from_db = td_options::get_array('td_fonts');//get the fonts from db
 
         foreach (td_global::$typography_settings_list as $panel_section => $font_settings_array) {
             foreach ($font_settings_array as $font_setting_id => $font_setting_name) {
 
                 //check each item from section, and delete the empty ones
-                $typo_section = array_filter($user_custom_fonts_array[$font_setting_id]);
+                $typo_section = array();
+                if (isset($user_custom_fonts_array[$font_setting_id]) and is_array($user_custom_fonts_array[$font_setting_id])) {
+                    $typo_section = array_filter($user_custom_fonts_array[$font_setting_id]);
+                }
 
                 //if the section is set but empty, don't added to the  $td_fonts_save
                 if (isset($user_custom_fonts_array[$font_setting_id]) and empty($typo_section)) {
@@ -697,21 +727,10 @@ class td_panel_data_source {
 
 
 
-        //form the google css files buffer
-        if(!empty($temp_css_google_files)) {
-            $css_files = "://fonts.googleapis.com/css?family=" . $temp_css_google_files . td_fonts::get_google_fonts_subset_query();
-        }
-
         //add the user font settings to the option string that going to the database
-        td_global::$td_options['td_fonts'] = $td_fonts_save;
-
-        //add the font buffers to the option string that going to the database
-        td_global::$td_options['td_fonts_js_buffer'] = $js_buffer;
-        td_global::$td_options['td_fonts_css_buffer'] = $css_buffer;
-        td_global::$td_options['td_fonts_css_files'] = $css_files;
+	    td_options::update_array('td_fonts', $td_fonts_save);
 
     }
-
 
 
     /**
@@ -744,6 +763,10 @@ class td_panel_data_source {
      *
      */
     private static function update_td_block_styles($td_option_array) {
+
+	    /** we schedule a save in @see td_panel_data_source::update() this function is used only there */
+    	$td_options = &td_options::get_all_by_ref();
+
         //get defaults array
         $default_array = $_POST['td_default'];
 
@@ -756,9 +779,9 @@ class td_panel_data_source {
 
                 //add or remove options for the block styles
                 if($option_value == '') {
-                    unset(td_global::$td_options['td_block_styles'][$style_id][$option_id]);
+                    unset($td_options['td_block_styles'][$style_id][$option_id]);
                 } else {
-                    td_global::$td_options['td_block_styles'][$style_id][$option_id] = $option_value;
+	                $td_options['td_block_styles'][$style_id][$option_id] = $option_value;
                 }
             }
         }
@@ -778,7 +801,11 @@ class td_panel_data_source {
 
 
 //AJAX FORM SAVING
-add_action( 'wp_ajax_nopriv_td_ajax_update_panel', array('td_panel_data_source', 'update') );
 add_action( 'wp_ajax_td_ajax_update_panel', array('td_panel_data_source', 'update') );//print_r($_POST);
 
+
+// patch td_global::$td_options for td composer preview
+if ( isset($_GET['td_action']) &&  $_GET['td_action'] == 'tdc_edit' && isset($_POST['tdc_action']) && $_POST['tdc_action'] === 'preview' ) {
+	td_panel_data_source::preview_patch_options();
+}
 

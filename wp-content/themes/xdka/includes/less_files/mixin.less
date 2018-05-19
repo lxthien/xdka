@@ -48,6 +48,13 @@
   transition: @transition;
 }
 
+.transition_important(@transition) {
+  -webkit-transition: @transition !important;
+  -moz-transition: @transition !important;
+  -o-transition: @transition !important;
+  transition: @transition !important;
+}
+
 .transition(@transition1, @transition2) {
   -webkit-transition: @transition1, @transition2;
   -moz-transition: @transition1, @transition2;
@@ -55,6 +62,27 @@
   transition: @transition1, @transition2;
 }
 
+.transition(@transition1, @transition2, @transition3) {
+  -webkit-transition: @transition1, @transition2, @transition3;
+  -moz-transition: @transition1, @transition2, @transition3;
+  -o-transition: @transition1, @transition2, @transition3;
+  transition: @transition1, @transition2, @transition3;
+}
+
+.transform-origin(@string) {
+  -webkit-transform-origin: @string;
+  -moz-transform-origin: @string;
+  -o-transform-origin: @string;
+  transform-origin: @string;
+}
+
+// Opacity
+.opacity(@value) {
+  @ieval: @value*100;
+  opacity: @value;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity="@ieval")";
+  filter: alpha(opacity=@ieval);
+}
 
 // Drop shadows
 .box-shadow(@shadow) {
@@ -81,16 +109,6 @@
 
 .toRGBA( @color, @alpha) {
   color: rgba(red(@color), green(@color), blue(@color), @alpha)
-}
-
-
-
-.td-dispaly-none {
-  display: none;
-}
-
-.td-dispaly-block{
-  display: block;
 }
 
 

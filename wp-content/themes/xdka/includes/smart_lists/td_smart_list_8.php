@@ -29,8 +29,10 @@ class td_smart_list_8 extends td_smart_list {
         // render the pagination
         $buffy .= $this->callback_render_drop_down_pagination();
 
+        $tds_smart_list_8_title = td_util::get_option('tds_smart_list_8_title');
+
         // ad smart list 8
-        $buffy .= td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'smart_list_8'));
+        $buffy .= td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'smart_list_8', 'spot_title' => $tds_smart_list_8_title));
 
         //creating each slide
         $buffy .= '<div class="td-item">';

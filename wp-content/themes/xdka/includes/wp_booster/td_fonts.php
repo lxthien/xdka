@@ -672,11 +672,94 @@ class td_fonts {
         650 => 'Yeseva One',
         651 => 'Yesteryear',
         652 => 'Zeyada',
+        653 => 'Work Sans',
+        654 => 'Alegreya Sans',
+        655 => 'Alegreya Sans SC',
+        656 => 'Amiri',
+        657 => 'Amita',
+        658 => 'Arya',
+        659 => 'Asar',
+        660 => 'Biryani',
+        661 => 'Cambay',
+        662 => 'Catamaran',
+        663 => 'Caveat',
+        664 => 'Caveat Brush',
+        665 => 'Chonburi',
+        666 => 'Dekko',
+        667 => 'Dhurjati',
+        668 => 'Eczar',
+        669 => 'Ek Mukta',
+        670 => 'Exo 2',
+        671 => 'Fira Mono',
+        672 => 'Fira Sans',
+        673 => 'Gidugu',
+        674 => 'Gurajada',
+        675 => 'Halant',
+        676 => 'Hind',
+        677 => 'Hind Siliguri',
+        678 => 'Hind Vadodara',
+        679 => 'Inknut Antiqua',
+        680 => 'Itim',
+        681 => 'Jaldi',
+        682 => 'Kadwa',
+        683 => 'Kalam',
+        684 => 'Kantumruy',
+        685 => 'Karma',
+        686 => 'Kdam Thmor',
+        687 => 'Khand',
+        688 => 'Khula',
+        689 => 'Kurale',
+        690 => 'Laila',
+        691 => 'Lakki Reddy',
+        692 => 'Lateef',
+        693 => 'Mallanna',
+        694 => 'Mandali',
+        695 => 'Martel',
+        696 => 'Martel Sans',
+        697 => 'Modak',
+        698 => 'NTR',
+        699 => 'Palanquin',
+        700 => 'Palanquin Dark',
+        701 => 'Peddana',
+        702 => 'Poppins',
+        703 => 'Pragati Narrow',
+        704 => 'Rajdhani',
+        705 => 'Ramabhadra',
+        706 => 'Ramaraja',
+        707 => 'Ranga',
+        708 => 'Ravi Prakash',
+        709 => 'Rhodium Libre',
+        710 => 'Roboto Mono',
+        711 => 'Rozha One',
+        712 => 'Rubik',
+        713 => 'Rubik Mono One',
+        714 => 'Rubik One',
+        715 => 'Sahitya',
+        716 => 'Sarala',
+        717 => 'Sarpanch',
+        718 => 'Scheherazade',
+        719 => 'Slabo 13px',
+        720 => 'Slabo 27px',
+        721 => 'Source Serif Pro',
+        722 => 'Sree Krushnadevaraya',
+        723 => 'Sumana',
+        724 => 'Sura',
+        725 => 'Suranna',
+        726 => 'Suravaram',
+        727 => 'Teko',
+        728 => 'Tenali Ramakrishna',
+        729 => 'Tillana',
+        730 => 'Timmana',
+        731 => 'Vesper Libre',
+        732 => 'Yantramanav'
     );
 
 
     //returns the font family for css generator
     public static function css_get_font_family($css_array) {
+
+    	$td_options = td_options::get_all();
+
         if(!empty($css_array['font_family'])) {
             $explode_font_family = explode('_', $css_array['font_family']);
 
@@ -685,12 +768,12 @@ class td_fonts {
             switch ($explode_font_family[0]) {
                 //fonts from files (links to files)
                 case 'file':
-                    $css_array['font_family'] = stripcslashes(td_global::$td_options['td_fonts_user_inserted']['font_family_' . $font_id]);
+                    $css_array['font_family'] = stripcslashes($td_options['td_fonts_user_inserted']['font_family_' . $font_id]);
                     break;
 
                 //fonts from type kit
                 case 'tk':
-                    $css_array['font_family'] = stripcslashes(td_global::$td_options['td_fonts_user_inserted']['type_kit_font_family_' . $font_id]);
+                    $css_array['font_family'] = stripcslashes($td_options['td_fonts_user_inserted']['type_kit_font_family_' . $font_id]);
                     break;
 
                 //fonts from font stacks
@@ -723,14 +806,15 @@ class td_fonts {
      */
     public static function td_get_typography_sections_from_db() {
 
+	    $td_options = td_options::get_all();
         $typography_sections_css_array = array();
 
         foreach (td_global::$typography_settings_list as $panel_section => $font_settings_array) {
             foreach($font_settings_array as $font_setting_id => $font_setting_name) {
 
                 //store $typography section array in a variable
-                if(!empty(td_global::$td_options['td_fonts'][$font_setting_id])) {
-                    $section_css = td_global::$td_options['td_fonts'][$font_setting_id];
+                if(!empty($td_options['td_fonts'][$font_setting_id])) {
+                    $section_css = $td_options['td_fonts'][$font_setting_id];
                     /**
                      * replace the font family in this section
                      * - in database the font family is stored like g_xxx for google, tk_x for typekit, fs_x for font stacks, where x are integers
@@ -772,42 +856,129 @@ class td_fonts {
         }
     }
 
+
+    /**
+     * Generate the google font family and font width string: ex: ABeeZee:400,700|Abel:400,700
+     * NOTE: it also applies the default font family's from @see td_config @see td_global::$default_google_fonts_list
+     *          - on the default font widths it will also add the global panel font width settings
+     *          - 400 font width is hardcoded because if a font has only 400 the font will not load for other widths if 400 is missing
+     * @param $fonts_ids_array - array of google fonts IDs from td_fonts::$font_names_google_list
+     * @return string - font string for google ABeeZee:400,700|Abel:400,700
+     * @since 6.1.2017
+     */
     static function get_google_fonts_names($fonts_ids_array) {
-        $temp_css_google_files = '';
-        if(!empty($fonts_ids_array)) {
-            foreach($fonts_ids_array as $g_font_id) {
-                $font_id = str_replace('g_', '', $g_font_id);
-                if(!empty($temp_css_google_files)) {
-                    $temp_css_google_files .= '|';
-                }
-                $temp_css_google_files .= str_replace(' ', '+', td_fonts::$font_names_google_list[$font_id]) . ':400,700';
+
+        $td_options = td_options::get_all();
+
+        //check the character set saved in the database
+        $array_google_font_styles = array(
+            'g_100_thin',
+            'g_100_thin_italic',
+            'g_200_extra_light',
+            'g_200_extra_light_italic',
+            'g_300_light',
+            'g_300_light_italic',
+            'g_400_normal_italic',
+            'g_500_medium',
+            'g_500_medium_italic',
+            'g_600_semi_bold',
+            'g_600_semi_bold_italic',
+            'g_700_bold',
+            'g_700_bold_italic',
+            'g_800_extra_bold',
+            'g_800_extra_bold_italic',
+            'g_900_black',
+            'g_900_black_italic'
+        );
+
+
+        $tmp_google_font_styles_array = array();
+        foreach($array_google_font_styles as $val_font_style ) {
+            if(!empty($td_options['td_fonts_user_inserted'][$val_font_style])) {
+                $tmp_google_font_styles_array[] = $td_options['td_fonts_user_inserted'][$val_font_style];
             }
         }
-        return $temp_css_google_files;
+
+        $theme_width_settings = array (
+            400 // ramane default
+        );
+
+        //merge the panel font settings
+        $theme_width_settings = array_merge($theme_width_settings, $tmp_google_font_styles_array);
+
+        $load_ids_array = array();
+
+
+        // 1. make our ids array from the theme panel settings
+        if(!empty($fonts_ids_array)) {
+            foreach($fonts_ids_array as $g_font_id) {
+                $load_ids_array[$g_font_id] = $theme_width_settings;
+            }
+        }
+
+
+        // 2. marge the default font list with the list from the panel
+        if (!empty(td_global::$default_google_fonts_list)) {
+            foreach (td_global::$default_google_fonts_list  as $default_g_font_id => $default_g_font_widths_array) {
+                $load_ids_array[$default_g_font_id] = array_unique(array_merge($default_g_font_widths_array, $theme_width_settings));
+            }
+        }
+
+
+
+        // 3. render the font id array to string...
+        $tmp_google_font_family = ''; // ex: ABeeZee:400,700|Abel:400,700 (it holds the width and style too)
+        foreach($load_ids_array as $g_font_id => $g_font_widths_array) {
+            $font_id = str_replace('g_', '', $g_font_id);
+            if(!empty($tmp_google_font_family)) {
+                $tmp_google_font_family .= '|';
+            }
+            $tmp_google_font_family .= str_replace(' ', '+', td_fonts::$font_names_google_list[$font_id]) . ':' . implode(',', $g_font_widths_array);
+        }
+
+
+        //print_r($tmp_google_font_family);
+        return $tmp_google_font_family;
     }
 
 
+
+    /**
+     * reads the google fonts subset from the database and makes it a string for the URL
+     * @return string
+     */
     static function get_google_fonts_subset_query() {
+
+	    $td_options = td_options::get_all();
+
+
         //check the character set saved in the database
         $array_google_char_set = array(
-            'g_latin',
-            'g_latin-ext',
+            'g_arabic',
+            'g_bengali',
             'g_cyrillic',
             'g_cyrillic-ext',
+            'g_devanagari',
             'g_greek',
             'g_greek-ext',
-            'g_devanagari',
-            'g_vietnamese',
-            'g_khmer'
+            'g_gujarati',
+            'g_hebrew',
+            'g_khmer',
+            'g_latin',
+            'g_latin-ext',
+            'g_tamil',
+            'g_telugu',
+            'g_thai',
+            'g_vietnamese'
         );
 
         $tmp_google_subset = '';
         foreach($array_google_char_set as $val_charset) {
-            if(!empty(td_global::$td_options['td_fonts_user_inserted'][$val_charset])) {
+            if(!empty($td_options['td_fonts_user_inserted'][$val_charset])) {
                 if (empty($tmp_google_subset)) {
-                    $tmp_google_subset = td_global::$td_options['td_fonts_user_inserted'][$val_charset];
+                    $tmp_google_subset = $td_options['td_fonts_user_inserted'][$val_charset];
                 } else {
-                    $tmp_google_subset .= ',' . td_global::$td_options['td_fonts_user_inserted'][$val_charset];
+                    $tmp_google_subset .= ',' . $td_options['td_fonts_user_inserted'][$val_charset];
                 }
 
             }

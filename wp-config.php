@@ -17,7 +17,8 @@
  *
  * @package WordPress
  */
-
+define( 'WPCACHEHOME', '/Applications/XAMPP/xamppfiles/htdocs/xaydungkimanh/wp-content/plugins/wp-super-cache/' );
+define('WP_CACHE', true);
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define('DB_NAME', 'xaydungkimanh');
@@ -37,7 +38,12 @@ define('DB_CHARSET', 'utf8mb4');
 /** The Database Collate type. Don't change this if in doubt. */
 define('DB_COLLATE', '');
 
+/** Install plugin direct */
 define('FS_METHOD', 'direct');
+
+/** WP supper cache */
+define('WP_CACHE', true);
+
 
 /**#@+
  * Authentication Unique Keys and Salts.

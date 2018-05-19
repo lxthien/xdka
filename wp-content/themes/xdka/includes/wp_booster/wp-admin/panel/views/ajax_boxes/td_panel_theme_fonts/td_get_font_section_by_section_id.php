@@ -56,10 +56,12 @@ class td_panel_custom_typography_ajax {
 
         $buffy[] = array('text' => 'Default font', 'val' => '');
 
-        //read the user fonts array
-        if(!empty(td_global::$td_options['td_fonts_user_inserted'])) {
+	    $td_options = &td_options::get_all();
 
-            $user_fonts = td_global::$td_options['td_fonts_user_inserted'];
+        //read the user fonts array
+        if(!empty($td_options['td_fonts_user_inserted'])) {
+
+            $user_fonts = $td_options['td_fonts_user_inserted'];
 
 
             //custom font links & typekit
@@ -180,10 +182,16 @@ class td_panel_custom_typography_ajax {
      *
      */
     public function get_td_font_weight() {
-        $buffy_font_weight[0] = array('text' => 'Default font weight', 'val' => '');
-        $buffy_font_weight[1] = array('text' => 'Normal', 'val' => 'normal');
-        $buffy_font_weight[2] = array('text' => 'Bold', 'val' => 'bold');
-
+        $buffy_font_weight[] = array('text' => 'Default font weight', 'val' => '');
+        $buffy_font_weight[] = array('text' => '100 - Thin (Hairline)', 'val' => '100');
+        $buffy_font_weight[] = array('text' => '200 - Extra light (Ultra light)', 'val' => '200');
+        $buffy_font_weight[] = array('text' => '300 - Light', 'val' => '300');
+        $buffy_font_weight[] = array('text' => '400 - Normal', 'val' => 'normal');
+        $buffy_font_weight[] = array('text' => '500 - Medium', 'val' => '500');
+        $buffy_font_weight[] = array('text' => '600 - Semi Bold (Demi bold)', 'val' => '600');
+        $buffy_font_weight[] = array('text' => '700 - Bold', 'val' => 'bold');
+        $buffy_font_weight[] = array('text' => '800 - Extra Bold (Ultra bold)', 'val' => '800');
+        $buffy_font_weight[] = array('text' => '900 - Black (Heavy)', 'val' => '900');
         return $buffy_font_weight;
     }
 

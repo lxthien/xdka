@@ -5,7 +5,7 @@ class td_category_template_8 extends td_category_template {
         ?>
 
         <!-- subcategory -->
-        <div class="td-category-header td-image-gradient-style8">
+        <div class="td-category-header td-image-gradient-style8 td-container-wrap">
             <div class="td-container">
                 <div class="td-crumb-container"><?php echo parent::get_breadcrumbs(); ?></div>
                 <div class="td-category-title-holder">

@@ -10,7 +10,7 @@
         </div>
         <div class="td-box-control-full">
             <?php
-            echo td_panel_generator::radio_button_control(array(
+            echo td_panel_generator::visual_select_o(array(
                 'ds' => 'td_option',
                 'option_id' => 'tds_header_style',
                 'values' => td_api_header_style::_helper_generate_tds_header_style()
@@ -18,6 +18,29 @@
             ?>
         </div>
     </div>
+
+    <?php
+    if ('ionMag' == TD_THEME_NAME) { ?>
+        <!-- SEARCH POSITION -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">SEARCH POSITION</span>
+                <p>Select the search button placement area</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::radio_button_control(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'tds_search_placement',
+                    'values' => array (
+                        array('text' => '<strong>Main menu</strong> - Default', 'val' => ''),
+                        array('text' => '<strong>Top bar</strong>', 'val' => 'top_bar')
+                    )
+                ));
+                ?>
+            </div>
+        </div>
+    <?php } ?>
 
 
 <?php echo td_panel_generator::box_end();?>
@@ -154,7 +177,16 @@
     <div class="td-box-row">
         <div class="td-box-description">
             <span class="td-box-title">Show sign in / join</span>
-            <p>Show or hide the Sign In / Register links (default is hidden)</p>
+            <p>Enable/disable the theme login modal. (default is disabled).
+                <?php td_util::tooltip_html('
+                        <h3>Show sign in / join:</h3>
+                        <ul>
+                            <li>If it\'s enabled the Sign In / Register link shows up in the top menu</li>
+                            <li>If it\'s enabled but the top menu is disabled the modal will still appear for users who want to post a comment(if posting a comment is set to require login/registration)</li>
+                            <li>If it\'s disabled the login/registration will be done via the WordPress default interface</li>
+                        </ul>
+                ', 'right')?>
+            </p>
         </div>
         <div class="td-box-control-full">
             <?php
@@ -209,10 +241,28 @@
         </div>
     </div>
 
-<?php if (td_global::$feature_locked === false) { ?>
-<div class="td-box-section-separator"></div>
+    <!-- Date: format -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">JAVASCRIPT DATE</span>
+            <p>Enable this if you use a cache plugin, it displays the local data.</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::checkbox(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_data_js',
+                'true_value' => 'true',
+                'false_value' => ''
+            ));
+            ?>
+        </div>
+    </div>
+
+
+<div class="td-box-section-separator td-box-weather"></div>
 	<!-- Weather: enable disable -->
-	<div class="td-box-row">
+	<div class="td-box-row td-box-weather">
 		<div class="td-box-description">
 			<span class="td-box-title">SHOW WEATHER</span>
 			<p>Hide or show the weather info in the top menu</p>
@@ -229,9 +279,24 @@
 		</div>
 	</div>
 
+	<!-- Weather: api key -->
+<div class="td-box-row td-box-weather">
+    <div class="td-box-description">
+        <span class="td-box-title">Weather api key</span>
+        <p><a href="https://forum.tagdiv.com/weather-widget/" target="_blank">How to get an api key</a></p>
+    </div>
+    <div class="td-box-control-full">
+        <?php
+        echo td_panel_generator::input(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_weather_key_top_menu'
+        ));
+        ?>
+    </div>
+</div>
 
 	<!-- Weather: location -->
-	<div class="td-box-row">
+	<div class="td-box-row td-box-weather">
 		<div class="td-box-description">
 			<span class="td-box-title">Location</span>
 			<p><a href="http://openweathermap.org/find" target="_blank">Find your location</a> - You can use "city name" (ex: London) or "city name,country code" (ex: London,uk)</p>
@@ -248,7 +313,7 @@
 
 
 	<!-- Weather: Units -->
-	<div class="td-box-row">
+	<div class="td-box-row td-box-weather">
 		<div class="td-box-description">
 			<span class="td-box-title">Units</span>
 			<p>Choose what units to use when showing the temperature</p>
@@ -266,7 +331,7 @@
 			?>
 		</div>
 	</div>
-<?php } ?>
+
 
 
 
@@ -359,6 +424,28 @@
 			?>
 		</div>
 	</div>
+
+    <div class="td-box-section-separator"></div>
+
+    <?php if ('ionMag' == TD_THEME_NAME) { ?>
+        <!-- Social networks: enable disable -->
+        <div class="td-box-row">
+            <div class="td-box-description">
+                <span class="td-box-title">Show social icons</span>
+                <p>Enable / Disable social networks in main menu</p>
+            </div>
+            <div class="td-box-control-full">
+                <?php
+                echo td_panel_generator::checkbox(array(
+                    'ds' => 'td_option',
+                    'option_id' => 'td_social_networks_menu_show',
+                    'true_value' => 'show',
+                    'false_value' => ''
+                ));
+                ?>
+            </div>
+        </div>
+    <?php } ?>
 
 <?php echo td_panel_generator::box_end();?>
 
@@ -453,14 +540,17 @@
         </div>
     </div>
 
+<?php if (td_api_features::is_enabled('text_logo') === true) { ?>
 
+    <!-- Text header LOGO description -->
     <div class="td-box-row" style="margin-top: 85px;">
         <div class="td-box-description td-box-full">
-            <span class="td-box-title"><?php echo td_global::$td_wp_admin_text_list['text_header_logo'] ?></span>
-            <p><?php echo td_global::$td_wp_admin_text_list['text_header_logo_description'] ?></p>
+            <span class="td-box-title"><?php echo td_api_text::get('text_header_logo') ?></span>
+            <p><?php echo td_api_text::get('text_header_logo_description') ?></p>
         </div>
         <div class="td-box-row-margin-bottom"></div>
     </div>
+
 
 	<!-- Text LOGO -->
 	<div class="td-box-row">
@@ -496,6 +586,9 @@
 			?>
 		</div>
 	</div>
+
+<?php } ?>
+
 <?php echo td_panel_generator::box_end();?>
 
 
@@ -506,9 +599,9 @@
 
     <div class="td-box-row">
         <div class="td-box-description td-box-full">
-            <p>You can optionally load a different logo on mobile phones and small screens. Usually the logo is smaller so that it can fit in the smart affix menu. iPhone, iPad, Samsung S3 S4 S5 and a lot of phones use the retina logo.</p>
+            <p>You can optionally load a different logo on mobile phones and small screens. Usually the logo is smaller so that it can fit in the smart affix menu. iPhone, iPad, Samsung and a lot of phones use the retina logo.</p>
             <p>If you don't upload any Logo Mobile by default will be used the Logo that you uploaded in the section above. This Option is recommended when your logo will not scale perfect on mobile devices.</p>
-	        <p><strong>Notice: </strong>Don't upload a logo for Mobile if you use <strong>Header Style: </strong><?php echo td_global::$td_wp_admin_text_list['text_header_logo_mobile'] ?></strong>, It's not necessary.</p>
+	        <p><strong>Notice: </strong>Don't upload a logo for Mobile if you use <strong>Header Style: </strong> <?php echo td_api_text::get('text_header_logo_mobile') ?>, It's not necessary.</p>
         </div>
         <div class="td-box-row-margin-bottom"></div>
     </div>
@@ -520,7 +613,7 @@
 		<div class="td-box-description">
 			<span class="td-box-title">LOGO MOBILE</span>
 			<p>Upload your logo</p>
-            <p><strong>Note: </strong>For best results logo mobile size: <?php echo td_global::$td_wp_admin_text_list['text_header_logo_mobile_image'] ?></p>
+            <p><strong>Note: </strong>For best results logo mobile size: <?php echo td_api_text::get('text_header_logo_mobile_image') ?></p>
 		</div>
 		<div class="td-box-control-full">
 			<?php
@@ -537,7 +630,7 @@
 		<div class="td-box-description">
 			<span class="td-box-title">RETINA LOGO MOBILE</span>
 			<p>Upload your retina logo (double size)</p>
-            <p><strong>Note: </strong>For best results retina logo mobile size: <?php echo td_global::$td_wp_admin_text_list['text_header_logo_mobile_image_retina'] ?></p>
+            <p><strong>Note: </strong>For best results retina logo mobile size: <?php echo td_api_text::get('text_header_logo_mobile_image_retina') ?></p>
 		</div>
 		<div class="td-box-control-full">
 			<?php
@@ -552,7 +645,112 @@
 <?php echo td_panel_generator::box_end();?>
 
 
+<?php
+if ('ionMag' == TD_THEME_NAME) { ?>
 
+    <!-- HEADER BACKGROUND -->
+    <?php echo td_panel_generator::box_start('Header background', false); ?>
+
+    <!-- BACKGROUND UPLOAD -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">HEADER BACKGROUND</span>
+            <p>Upload a header background image</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::upload_image(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_header_background_image'
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- Background Repeat -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">REPEAT</span>
+            <p>How the background image will be displayed</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::radio_button_control(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_header_background_repeat',
+                'values' => array(
+                    array('text' => 'No Repeat', 'val' => ''),
+                    array('text' => 'Tile', 'val' => 'repeat'),
+                    array('text' => 'Tile Horizontally', 'val' => 'repeat-x'),
+                    array('text' => 'Tile Vertically', 'val' => 'repeat-y')
+                )
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- Background Size -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">SIZE</span>
+            <p>Set the background image size</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::radio_button_control(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_header_background_size',
+                'values' => array(
+                    array('text' => 'Auto', 'val' => ''),
+                    array('text' => 'Full Width', 'val' => '100% auto'),
+                    array('text' => 'Full Height', 'val' => 'auto 100%'),
+                    array('text' => 'Cover', 'val' => 'cover'),
+                    array('text' => 'Contain', 'val' => 'contain')
+                )
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- Background position -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">POSITION</span>
+            <p>Position your background image</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::radio_button_control(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_header_background_position',
+                'values' => array(
+                    array('text' => 'Bottom', 'val' => ''),
+                    array('text' => 'Center', 'val' => 'center center'),
+                    array('text' => 'Top', 'val' => 'center top')
+                )
+            ));
+            ?>
+        </div>
+    </div>
+
+    <!-- Background opacity -->
+    <div class="td-box-row">
+        <div class="td-box-description">
+            <span class="td-box-title">BACKGROUND OPACITY</span>
+            <p>Set the background image transparency (Example: 0.3)</p>
+        </div>
+        <div class="td-box-control-full">
+            <?php
+            echo td_panel_generator::input(array(
+                'ds' => 'td_option',
+                'option_id' => 'tds_header_background_opacity'
+            ));
+            ?>
+        </div>
+    </div>
+
+    <?php echo td_panel_generator::box_end();?>
+<?php } ?>
 
 
 <!-- iOS Bookmarklet -->

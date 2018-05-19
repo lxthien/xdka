@@ -10,11 +10,220 @@
 
 class td_global {
 
+	// Flag set by vc_row template
+	private static $in_row = false;
 
-	static $feature_locked = true; // lock features that are not ready
+	// Flag set by vc_row_inner template
+	private static $in_inner_row = false;
+
+	// Flag set by vc_set_custom_column_number
+	private static $in_custom_area = false;
 
 
-    static $td_options; //here we store all the options of the theme will be used in td_first_install.php
+	// The column number - default 1
+	private static $column_number = 1;
+
+	// The inner column number - default 1
+	private static $inner_column_number = 1;
+
+
+	// The column width - default 1/1 (full width)
+	private static $column_width = '1/1';
+
+	// The inner column width - default 1/1 (full width)
+	private static $inner_column_width = '1/1';
+
+
+	// set from td_util::is_pagebuilder_content($post);
+	private static $is_page_builder_content;
+
+
+	/**
+	 * Set the $in_row
+	 * Used in vc_row template
+	 *
+	 * @param $in_row
+	 */
+	static function set_in_row($in_row) {
+		self::$in_row = $in_row;
+	}
+
+	/**
+	 * Just get the $in_row flag
+	 * @return bool
+	 */
+	static function get_in_row() {
+		return self::$in_row;
+	}
+
+	/**
+	 * Set the $in_inner_row flag
+	 * Used in vc_row_inner template
+	 *
+	 * @param $in_inner_row
+	 */
+	static function set_in_inner_row($in_inner_row) {
+		self::$in_inner_row = $in_inner_row;
+	}
+
+	/**
+	 * Just get $in_inner_row
+	 * @return bool
+	 */
+	static function get_in_inner_row() {
+		return self::$in_inner_row;
+	}
+
+
+	/**
+	 * Set $column_width and $column_number
+	 * @param $column_width
+	 */
+	static function set_column_width($column_width) {
+		self::$column_width = $column_width;
+
+		$columns = 1;
+
+		switch ($column_width) {
+			case '1/1':
+				$columns = 3;
+				break;
+
+			case '1/3':
+				$columns = 1;
+				break;
+
+			case '2/3':
+				$columns = 2;
+				break;
+		}
+
+
+		/**
+		 * For 'page-title-sidebar' current template (the version of page-pagebuilder-title.php file that still has sidebar)
+		 * set properly the column number
+		 */
+
+		if (td_global::$current_template === 'page-title-sidebar') {
+			global $post;
+
+			$td_page = td_util::get_post_meta_array($post->ID, 'td_page');
+
+			//check for this page sidebar position
+			if (empty($td_page['td_sidebar_position'])) {
+				$sidebar_position_pos = td_util::get_option('tds_page_sidebar_pos');
+			} else {
+				$sidebar_position_pos = $td_page['td_sidebar_position'];
+			}
+
+			if ($sidebar_position_pos !== 'no_sidebar' && $columns > 1) {
+				--$columns;
+			}
+		}
+
+		self::$column_number = $columns;
+	}
+
+	/**
+	 * Just get $column_width
+	 * @return string
+	 */
+	static function get_column_width() {
+		return self::$column_width;
+	}
+
+	/**
+	 * Set $inner_column_width and $inner_column_number
+	 * @param $inner_column_width
+	 */
+	static function set_inner_column_width($inner_column_width) {
+		self::$inner_column_width = $inner_column_width;
+
+		$columns = 1;
+
+		switch (self::$inner_column_width) {
+
+			case '1/1':
+
+				switch (self::$column_number) {
+					case 2:
+					case 3:
+						$columns = self::$column_number;
+						break;
+				}
+				break;
+
+			case '2/3':
+
+				switch (self::$column_number) {
+					case 2:
+					case 3:
+						$columns = 2;
+						break;
+				}
+				break;
+		}
+
+		self::$inner_column_number = $columns;
+	}
+
+	/**
+	 * Just get $inner_column_width
+	 * @return string
+	 */
+	static function get_inner_column_width() {
+		return self::$inner_column_width;
+	}
+
+
+	/**
+	 * Just get $is_page_builder_content
+	 * It doesn't make sense to have a set, so function isn't in 'get' format
+	 * @return mixed
+	 */
+	static function is_page_builder_content() {
+
+		if (!isset(self::$is_page_builder_content)) {
+			global $post;
+			self::$is_page_builder_content = td_util::is_pagebuilder_content($post);
+		}
+		return self::$is_page_builder_content;
+	}
+
+
+	/**
+	 * Used only in custom area templates (there where we aren't in row. For example: footer, sidebar, etc)
+	 * Set $column_number to be later used by 'vc_get_column_number' (from block render)	 *
+	 * @param $column_number
+	 */
+	static function vc_set_custom_column_number($column_number) {
+		self::$in_custom_area = true;
+		self::$column_number = $column_number;
+	}
+
+	static function vc_get_column_number() {
+
+		if (self::$in_row || self::$in_custom_area) {
+			if (self::$in_inner_row) {
+				return self::$inner_column_number;
+			}
+			return self::$column_number;
+
+		} else {
+
+			// For special situations like sidebar, or any place outside of row or custom area, where 1 column should be.
+			return 1;
+		}
+	}
+
+
+
+
+	/**
+	 * @deprecated
+	 * @var :)
+	 */
+    //static $td_options; //here we store all the options of the theme will be used in td_first_install.php
 
     static $current_template = ''; //used by page-homepage-loop, 404
 
@@ -32,6 +241,7 @@ class td_global {
 
 
     static $is_woocommerce_installed = false; // at the end of this file we check if woo commerce is installed
+	static $is_bbpress_installed = false; // at the end of this file we check if bbpress is installed
 
 
     /**
@@ -67,8 +277,6 @@ class td_global {
 
 	static $td_viewport_intervals = array(); // the tdViewport intervals are stored
 
-	const TD_MOB_KEY_PAD = '_mob'; // str padding added to the mobile keys settings
-
 
     /**
      * the js files that the theme uses on the front end (file_id - filename) @see td_wp_booster_config
@@ -77,11 +285,15 @@ class td_global {
      */
     static $js_files = array ();
 
+	// the plugins that are installable via the theme > plugins panel & tgma
     static $theme_plugins_list = array();
-    static $theme_plugins_info_list = array();
 
+	// the plugins that are just for information porpuses (the plugin cannot be installed with tgma, usually because the plugin is to big so we included it in the -tf/plugins folder)
+	static $theme_plugins_for_info_list = array();
 
 	static $td_animation_stack_effects = array();
+
+
 
 
     /**
@@ -89,46 +301,31 @@ class td_global {
      * @var array
      */
     static $js_files_for_wp_admin = array (
-        'td_wp_admin' => array(
-	        'url' => '/includes/wp_booster/wp-admin/js/td_wp_admin.js',
-	        'show_only_on_page_slugs' => ''
-        ),
-        'td_wp_admin_color_picker' => array (
-	        'url' => '/includes/wp_booster/wp-admin/js/td_wp_admin_color_picker.js',
-	        'show_only_on_page_slugs' => ''
-        ),
-        'td_wp_admin_panel' => array (
-	        'url' => '/includes/wp_booster/wp-admin/js/td_wp_admin_panel.js',
-	        'show_only_on_page_slugs' => ''
-        ),
-        'td_edit_page' => array (
-	        'url' => '/includes/wp_booster/wp-admin/js/td_edit_page.js',
-	        'show_only_on_page_slugs' => ''
-        ),
-        'td_wp_admin_demos' => array (
-	        'url' => '/includes/wp_booster/wp-admin/js/td_wp_admin_demos.js',
-	        'show_only_on_page_slugs' => ''
-        ),
-        'td_page_options' => array (
-	        'url' => '/includes/wp_booster/wp-admin/js/td_page_options.js',
-	        'show_only_on_page_slugs' => ''
-        ),
-        'td_tooltip' => array (
-	        'url' => '/includes/wp_booster/wp-admin/js/tooltip.js',
-	        'show_only_on_page_slugs' => ''
-        ),
+        'td_wp_admin' => '/includes/wp_booster/wp-admin/js/td_wp_admin.js',
+        'td_wp_admin_color_picker' => '/includes/wp_booster/wp-admin/js/td_wp_admin_color_picker.js',
+        'td_wp_admin_panel' => '/includes/wp_booster/wp-admin/js/td_wp_admin_panel.js',
+        'td_edit_page' => '/includes/wp_booster/wp-admin/js/td_edit_page.js',
 
-		// ace code editor
-	    'td_ace' => array (
-		    'url' => '/includes/wp_booster/wp-admin/external/ace/ace.js',
-		    'show_only_on_page_slugs' => array('td_theme_panel')
-	    ),
-        'td_ace_ext_language_tools' => array (
-	        'url' => '/includes/wp_booster/wp-admin/external/ace/ext-language_tools.js',
-	        'show_only_on_page_slugs' => array('td_theme_panel')
-        )
+        'tdDemoFullInstaller' => '/includes/wp_booster/wp-admin/js/tdDemoFullInstaller.js',
+        'td_wp_admin_demos' => '/includes/wp_booster/wp-admin/js/td_wp_admin_demos.js',
+        'tdDemoProgressBar' => '/includes/wp_booster/wp-admin/js/tdDemoProgressBar.js',
+
+        'td_page_options' => '/includes/wp_booster/wp-admin/js/td_page_options.js',
+        'td_tooltip' => '/includes/wp_booster/wp-admin/js/tooltip.js',
+	    'td_confirm' => '/includes/wp_booster/wp-admin/js/tdConfirm.js',
+	    'td_detect' => '/includes/wp_booster/js_dev/tdDetect.js',
+
+        'td_edit_post' => '/includes/wp_booster/wp-admin/js/td_edit_post.js',
 
     );
+
+
+    // scripts that load only on our panel. This scripts are not minified because ace does not support that
+    static $js_files_for_td_theme_panel = array (
+        'td_ace' => '/includes/wp_booster/wp-admin/external/ace/ace.js',
+        'td_ace_ext_language_tools' => '/includes/wp_booster/wp-admin/external/ace/ext-language_tools.js'
+    );
+
 
 
     /**
@@ -163,7 +360,7 @@ class td_global {
 
 
     /**
-     * @var array
+     * @var array here we keep all the panels from the theme panel
      */
     static $all_theme_panels_list = array();
 
@@ -280,7 +477,7 @@ class td_global {
 
 
     /**
-     * @var string here we keep the typography settings from the THEME FONTS panel.
+     * @var array string here we keep the typography settings from the THEME FONTS panel.
      * this is also used by the css compiler
      */
     public static $typography_settings_list = array ();
@@ -303,7 +500,7 @@ class td_global {
          */
         if (is_single()) {
             //read the post setting
-            $td_post_theme_settings = get_post_meta(self::$post->ID, 'td_post_theme_settings', true);
+            $td_post_theme_settings = td_util::get_post_meta_array(self::$post->ID, 'td_post_theme_settings');
             if (!empty($td_post_theme_settings['td_primary_cat'])) {
                 self::$primary_category = $td_post_theme_settings['td_primary_cat'];
                 return;
@@ -338,7 +535,8 @@ class td_global {
     }
 
 
-
+	//current ad in panel
+	static $current_ad_id = '';
 }
 
 
@@ -352,6 +550,10 @@ if (is_plugin_active('woocommerce/woocommerce.php')) {
     td_global::$is_woocommerce_installed = true;
 }
 
+require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+if (is_plugin_active('bbpress/bbpress.php')) {
+	td_global::$is_bbpress_installed = true;
+}
 
 /**
  * td_global::$get_template_directory must be used instead of get_template_directory()
@@ -367,13 +569,9 @@ $current_theme_name = get_template();
 
 if (empty($current_theme_name) and class_exists('td_mobile_theme')) {
 	td_global::$get_template_directory = td_mobile_theme::$main_dir_path;
-} else {
-	td_global::$get_template_directory = get_template_directory();
-}
-
-if (empty($current_theme_name) and class_exists('td_mobile_theme')) {
 	td_global::$get_template_directory_uri = td_mobile_theme::$main_uri_path;
 } else {
+	td_global::$get_template_directory = get_template_directory();
 	td_global::$get_template_directory_uri = get_template_directory_uri();
 }
 

@@ -2,7 +2,7 @@
 
 
 /**
- * this short code does not have the map function so it dosn't appear in the mega menu @see td_global_blocks::wpb_map_all
+ * this short code does not have the map function so it dosn't appear in the mega menu @see td_global_blocks::td_vc_map_all
  * Class td_block_mega_menu
  */
 
@@ -12,7 +12,7 @@ class td_block_mega_menu extends td_block {
     function render($atts, $content = null){
 
 	    $buffy_categories = '';
-	    $td_no_subcats_class = '';
+
 
 	    extract(shortcode_atts(
 		    array(
@@ -45,6 +45,9 @@ class td_block_mega_menu extends td_block {
 	    //get subcategories, it returns false if there are no categories
 	    $get_block_sub_cats = $this->get_mega_menu_subcategories($atts);
 
+	     $additional_classes = array();
+
+
         //we have subcategories
         if ($get_block_sub_cats !== false) {
             $buffy_categories .= '<div class="td_mega_menu_sub_cats">';
@@ -52,7 +55,7 @@ class td_block_mega_menu extends td_block {
             $buffy_categories .= $get_block_sub_cats;
             $buffy_categories .= '</div>';
         } else {
-            $td_no_subcats_class = ' td-no-subcats';
+            $additional_classes []= 'td-no-subcats';
         }
 
 
@@ -63,10 +66,14 @@ class td_block_mega_menu extends td_block {
         //end custom categories
 
 
-        //get the js for this block
-        $buffy .= $this->get_block_js();
 
-        $buffy .= '<div class="' . $this->get_block_classes(array($td_no_subcats_class)) . '">';
+
+        $buffy .= '<div class="' . $this->get_block_classes($additional_classes) . '" ' . $this->get_block_html_atts() . '>';
+
+
+	    //get the js for this block
+	    $buffy .= $this->get_block_js();
+
 
         //add the categories IF we have some
         $buffy .= $buffy_categories;

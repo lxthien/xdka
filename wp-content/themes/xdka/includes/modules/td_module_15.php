@@ -16,7 +16,7 @@ class td_module_15 extends td_module_single {
         ob_start();
         ?>
 
-        <div class="<?php echo $this->get_module_classes(array_merge(get_post_class())); ?>">
+        <div class="<?php echo $this->get_module_classes(array_merge(get_post_class())); ?> clearfix">
             <div class="item-details">
                 <?php echo $this->get_title();?>
 
@@ -34,7 +34,6 @@ class td_module_15 extends td_module_single {
 	            </div>
             </div>
 
-            <?php echo $this->get_item_scope_meta();?>
         </div>
 
         <?php return ob_get_clean();

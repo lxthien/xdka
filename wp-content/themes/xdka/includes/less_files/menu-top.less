@@ -9,9 +9,9 @@
 
   // font awesome in menu
   .fa {
-    margin-right: 8px;
-    position: relative;
-    top: -1px;
+    text-align: center;
+    min-width: 13px !important;
+    margin-right: 3px;
   }
 
   a {
@@ -26,8 +26,8 @@
 
 /* left menu side */
 .td-header-sp-top-menu {
-  line-height: 24px;
-  padding: 2px 0 !important;
+  line-height: 28px;
+  padding: 0 !important;
   z-index: 1000;
   float: left;
 
@@ -44,9 +44,14 @@
 
 /* right widget side */
 .td-header-sp-top-widget {
-  //width: 300px;
+  line-height: 28px;
   text-align: right;
-  padding: 2px 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+
+  .td-social-icon-wrap .td-icon-font {
+    vertical-align: middle;
+  }
 
   /* responsive portrait phone */
   @media (max-width: @responsive_p_phone_max) {
@@ -97,6 +102,17 @@
     }
   }
 
+  > li {
+    line-height: 28px;
+  }
+
+  // hover submenu & megamenu
+  > .td-normal-menu:hover {
+    > .sub-menu {
+      display: block !important;
+    }
+  }
+
   .avatar {
     display: inline-block;
     vertical-align: middle;
@@ -114,22 +130,34 @@
 
   .td-icon-logout {
     font-size: 10px;
+    position: relative;
+    top: 1px;
+    margin-right: 2px;
   }
 
   .sub-menu {
     display: none;
     position: absolute;
-    top: 26px;
+    top: 100%;
     left: -10px;
+    line-height: 28px;
     background-color: @td_black;
     z-index: 1000;
 
-      a {
-        display: block;
-        margin: 0 10px;
-        white-space: nowrap;
-        line-height: 28px;
-      }
+    a {
+      display: block;
+      margin: 0 10px;
+      white-space: nowrap;
+      line-height: 28px;
+    }
+  }
+
+  .td_user_logd_in {
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: none !important;
+    }
   }
 
   // current top menu
@@ -150,6 +178,18 @@
   }
 }
 
+.td_sp_login_ico_style {
+  position: absolute;
+  top: 3px;
+  right: -9px;
+}
+
+.td_sp_logout_ico_style {
+  position: relative;
+  top: 3px;
+  left: 17px;
+}
+
 
 /*  ----------------------------------------------------------------------------
     top-menu social widget
@@ -164,7 +204,11 @@
     font-size: 12px;
     width: 30px;
     height: 24px;
-    line-height: 26px;
+    line-height: 24px;
+  }
+
+  .td-icon-instagram {
+    font-size: 15px;
   }
 
   /* responsive portrait phone */

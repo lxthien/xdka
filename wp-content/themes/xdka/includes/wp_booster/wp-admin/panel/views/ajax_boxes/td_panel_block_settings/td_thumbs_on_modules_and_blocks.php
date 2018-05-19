@@ -13,7 +13,7 @@
     <div class="td-box-description td-box-full">
         <span class="td-box-title">More information:</span>
         <p>From here you can enable the thumbnail image that will be cropped for the modules &amp; blocks. If the thumbnail image is not enabled for a specific module that you use, the module will show a default placeholder with the size of the image and instructions about how to enable the thumb for that module</p>
-        <p><strong style="color:red">Please regenerate your thumbnails if you change any of the thumb settings!</strong> - <a href="http://forum.tagdiv.com/existing-content/" target="_blank">read more</a></p>
+        <p><strong style="color:red">Please regenerate your thumbnails if you change any of the thumb settings!</strong> - <?php echo td_api_text::get('panel_existing_content_url') ?> </p>
     </div>
     <div class="td-box-row-margin-bottom"></div>
 </div>
@@ -36,6 +36,19 @@ foreach (td_api_thumb::get_all() as $thumb) {
                 'false_value' => ''
             ));
             ?>
+            <div class="td-help-checkbox-inline">
+                <span>Retina:</span>
+            </div>
+            <?php
+            //enable retina thumb
+            echo td_panel_generator::checkbox(array(
+            'ds' => 'td_option',
+            'option_id' => 'tds_thumb_' . $thumb['name'] . '_retina',
+            'true_value' => 'yes',
+            'false_value' => ''
+            ));
+            ?>
+
             <div class="td-help-checkbox-inline">
                 <?php
                 echo "<span>This thumb size is used for:</span> <ul><li>" . implode("</li><li>", $thumb['used_on']) . "</li></ul>";

@@ -11,8 +11,7 @@ global $loop_sidebar_position, $td_sidebar_position, $post;
 $td_mod_single = new td_module_single($post);
 
 ?>
-<div class="td-main-content-wrap">
-
+<div class="td-main-content-wrap td-container-wrap">
     <div class="td-container td-post-template-13">
         <article id="post-<?php echo $td_mod_single->post->ID;?>" class="<?php echo join(' ', get_post_class());?>" <?php echo $td_mod_single->get_item_scope();?>>
             <div class="td-pb-row">
@@ -20,7 +19,12 @@ $td_mod_single = new td_module_single($post);
                     <div class="td-post-header">
                         <div class="td-crumb-container"><?php echo td_page_generator::get_single_breadcrumbs($td_mod_single->title); ?></div>
 
-                        <?php echo td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'post_style_12')); ?>
+                        <?php
+                        $tds_post_style_12_title = td_util::get_option('tds_post_style_12_title');
+
+                        // ad spot
+                        echo td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'post_style_12', 'spot_title' => $tds_post_style_12_title));
+                        ?>
 
                         <header class="td-post-title">
                             <?php echo $td_mod_single->get_category(); ?>

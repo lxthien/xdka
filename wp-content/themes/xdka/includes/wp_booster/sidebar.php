@@ -15,8 +15,8 @@
 
 //if it's singular read the post/page sidebar settings
 if (is_singular()) {
-    $td_post_theme_settings = get_post_meta($post->ID, 'td_post_theme_settings', true);
-    $td_page = get_post_meta($post->ID, 'td_page', true);
+    $td_post_theme_settings = td_util::get_post_meta_array($post->ID, 'td_post_theme_settings');
+    $td_page = td_util::get_post_meta_array($post->ID, 'td_page');
 }
 
 if (!empty($td_post_theme_settings['td_sidebar'])) {
@@ -39,19 +39,27 @@ if (!empty($td_post_theme_settings['td_sidebar'])) {
     } elseif (td_global::$current_template == 'bbpress') {
         td_util::show_sidebar('bbpress');
     } elseif (is_tax()) {
-        // custom taxonomies
-        $current_term_obj = get_queried_object();
-        $tds_taxonomy_sidebar = td_util::get_taxonomy_option($current_term_obj->taxonomy, 'tds_taxonomy_sidebar');
-        if (!empty($tds_taxonomy_sidebar)) {
-            dynamic_sidebar($tds_taxonomy_sidebar);
+
+        if (is_tax( 'post_format' )){
+            //the archive page for any Post Format term is being displayed.
+            //custom sidebars for archives
+            td_util::show_sidebar('taxonomy_post_format');
         } else {
-            //show default if available
-            if (!dynamic_sidebar(TD_THEME_NAME . ' default')) {
-                ?>
-                <!-- no sidebar -->
-                <?php
+            // custom taxonomies
+            $current_term_obj = get_queried_object();
+            $tds_taxonomy_sidebar = td_util::get_taxonomy_option($current_term_obj->taxonomy, 'tds_taxonomy_sidebar');
+            if (!empty($tds_taxonomy_sidebar)) {
+                dynamic_sidebar($tds_taxonomy_sidebar);
+            } else {
+                //show default if available
+                if (!dynamic_sidebar(TD_THEME_NAME . ' default')) {
+                    ?>
+                    <!-- no sidebar -->
+                    <?php
+                }
             }
         }
+
     } elseif (is_category()) {
         // sidebar from category on category page
         $curCategoryID = get_query_var('cat');
@@ -78,7 +86,8 @@ if (!empty($td_post_theme_settings['td_sidebar'])) {
         //custom sidebars for archives
         td_util::show_sidebar('attachment');
 
-    } elseif (is_single()) {
+    } elseif (is_singular('post')){
+
         // sidebar from category on post page
         $primary_category_id = td_global::get_primary_category_id();
         if (!empty($primary_category_id)) {
@@ -95,6 +104,17 @@ if (!empty($td_post_theme_settings['td_sidebar'])) {
             td_util::show_sidebar('home');
         }
 
+    } elseif (is_single()) {
+
+        // sidebar for custom post type
+        $tds_custom_post_sidebar = td_util::get_ctp_option($post->post_type, 'tds_custom_post_sidebar');
+        if (!empty($tds_custom_post_sidebar)) {
+            // custom sidebar
+            dynamic_sidebar($tds_custom_post_sidebar);
+        } else {
+            // show default
+            dynamic_sidebar(TD_THEME_NAME . ' default');
+        }
 
     } elseif (is_home()) {
         // it's the blog index template (home.php but I think we go with index.php)

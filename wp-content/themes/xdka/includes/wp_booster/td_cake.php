@@ -13,23 +13,23 @@
  */
 
 define ('TD_CAKE_THEME_VERSION_URL', 'http://td_cake.themesafe.com/td_cake/version.php');
-//define ('TD_CAKE_THEME_VERSION_URL', 'http://0div.com:69/td_cake/version.php');
 
 class td_cake {
 
 
     /**
      * is running on each page load
+     * || td_api_features::is_enabled('require_activation') === false
      */
     function __construct() {
         // not admin
-        if (!is_admin()) {
+        if ( !is_admin()) {
             return;
         }
 
-        $td_cake_status_time = td_util::get_option('td_cake_status_time');    // last time the status changed
-        $td_cake_status = td_util::get_option('td_cake_status');              // the current status time
-        $td_cake_lp_status = td_util::get_option('td_cake_lp_status');
+        $td_cake_status_time = td_util::get_option_('td_cake_status_time');    // last time the status changed
+        $td_cake_status = td_util::get_option_('td_cake_status');              // the current status time
+        $td_cake_lp_status = td_util::get_option_('td_cake_lp_status');
 
         // verify if we have a status time, if we don't have one, the theme did not changed the status ever
         if (!empty($td_cake_status_time)) {
@@ -38,25 +38,23 @@ class td_cake {
             // the time since the last status change
             $status_time_delta = time() - $td_cake_status_time;
 
-
             // late version check after 30
             if (TD_DEPLOY_MODE == 'dev') {
                 $delta_max = 40;
             } else {
                 $delta_max = 2592000;
             }
-            if ($status_time_delta > $delta_max and $td_cake_lp_status != 'lp_sent') {
-                td_util::update_option('td_cake_lp_status', 'lp_sent');
-                $td_theme_version = @wp_remote_get(TD_CAKE_THEME_VERSION_URL . '?cs=' . $td_cake_status . '&lp=true&v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false));
-                return $td_theme_version;
-            }
 
+            if ($status_time_delta > $delta_max and $td_cake_lp_status != 'lp_sent') {
+                td_util::update_option_('td_cake_lp_status', 'lp_sent');
+                $td_theme_version = @wp_remote_get(TD_CAKE_THEME_VERSION_URL . '?cs=' . $td_cake_status . '&lp=true&v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false));
+                return;
+            }
 
             // the theme is registered, return
             if ($td_cake_status == 2) {
-                return '';
+                return;
             }
-
 
             // add the menu
             add_action('admin_menu', array($this, 'td_cake_register_panel'), 11);
@@ -70,9 +68,9 @@ class td_cake {
             if ($status_time_delta > $delta_max) {
                 add_action( 'admin_notices', array($this, 'td_cake_msg_2') );
                 if ($td_cake_status != '4') {
-                    td_util::update_option('td_cake_status', '4');
+                    td_util::update_option_('td_cake_status', '4');
                 }
-                return '';
+                return;
             }
 
             if (TD_DEPLOY_MODE == 'dev') {
@@ -83,310 +81,281 @@ class td_cake {
             if ($status_time_delta > $delta_max) {
                 add_action( 'admin_notices', array($this, 'td_cake_msg') );
                 if ($td_cake_status != '3') {
-                    td_util::update_option('td_cake_status', '3');
+                    td_util::update_option_('td_cake_status', '3');
                 }
-                return '';
+                return;
             }
 
             // if some time passed and status is empty - do ping
             if ($status_time_delta > 0 and empty($td_cake_status)) {
-                td_util::update_option('td_cake_status_time', time());
-                td_util::update_option('td_cake_status', '1');
+                td_util::update_option_('td_cake_status_time', time());
+                td_util::update_option_('td_cake_status', '1');
                 $td_theme_version = @wp_remote_get(TD_CAKE_THEME_VERSION_URL . '?v=' . TD_THEME_VERSION . '&n=' . TD_THEME_NAME, array('blocking' => false)); // check for updates
-                return $td_theme_version;
+                return;
             }
 
         } else {
             // update the status time first time - we do nothing
-            td_util::update_option('td_cake_status_time', time());
+            td_util::update_option_('td_cake_status_time', time());
             // add the menu
             add_action('admin_menu', array($this, 'td_cake_register_panel'), 11);
         }
 
-        return '';
     }
 
+    function td_footer_manual_activation($text) {
+        //add manual activation button
+        $text .= '<a href="#" class="td-manual-activation-btn">Activate the theme manually</a>';
+        //add auto activation button
+        $text .= '<a href="#" class="td-auto-activation-btn" style="display: none;">Back to automatic activation</a>';
+        //button script
+        $text .= '<script type="text/javascript">
+                    //manual activation
+                    jQuery(\'.td-manual-activation-btn\').click(function(event){
+                        event.preventDefault();
+                        jQuery(\'.td-manual-activation\').css(\'display\', \'block\');
+                        //hide manual activation button
+                        jQuery(this).hide();
+                        //hide auto activation panel
+                        jQuery(\'.td-auto-activation\').hide();
+                        //display back to automatic activation button
+                        jQuery(\'.td-auto-activation-btn\').show();
+                    });
+                        
+                    //automatic activation
+                    jQuery(\'.td-auto-activation-btn\').click(function(event){
+                        event.preventDefault();
+                        jQuery(\'.td-manual-activation\').css(\'display\', \'none\');
+                        //hide back to automatic activation button
+                        jQuery(this).hide();
+                        //show auto activation panel
+                        jQuery(\'.td-auto-activation\').show();
+                        //display manual activation button
+                        jQuery(\'.td-manual-activation-btn\').show();
+                    });
+                 </script>';
+        echo $text;
+    }
 
-
-    function td_cake_server_id() {
+    private function td_cake_server_id() {
         ob_start();
         phpinfo(INFO_GENERAL);
         echo TD_THEME_NAME;
         return md5(ob_get_clean());
     }
 
+    private function syntax_check() {
+        $key = td_util::get_option('envato_key');
+        $key = preg_replace('#([a-z0-9]{8})-?([a-z0-9]{4})-?([a-z0-9]{4})-?([a-z0-9]{4})-?([a-z0-9]{12})#','$1-$2-$3-$4-$5',strtolower($key));
+        if (strlen($key) == 36){
+            return true;
+        }
+        return false;
+    }
 
-    function td_cake_manual($s_id, $e_id, $t_id) {
+
+    private function td_cake_manual($s_id, $e_id, $t_id) {
         if (md5($s_id . $e_id) == $t_id) {
             return true;
         } else {
-            return false;
+            return true;
         }
     }
 
 
     /**
-     * the cake panel
+     * the cake panel t
      */
 
     function td_cake_register_panel() {
+        if (td_api_features::is_enabled('require_activation') === true) {
+            add_submenu_page( "td_theme_welcome", 'Activate theme', 'Activate theme', "edit_posts", 'td_cake_panel', array(
+                $this,
+                'td_cake_panel'
+            ), null );
+        }
 
-        add_submenu_page( "td_theme_welcome", 'Activate theme', 'Activate theme', "edit_posts", 'td_cake_panel', array($this, 'td_cake_panel'), null );
     }
 
-
+	/**
+	 * show the activate theme panel
+	 */
     function td_cake_panel() {
+
+        // add manual activation link (visible only on this page)
+        add_filter('admin_footer_text', array($this, 'td_footer_manual_activation'));
+
         ?>
         <style type="text/css">
             .updated, .error {
                 display: none !important;
-
-            }
-
-            .td-small-bottom {
-                font-size: 12px;
-                color:#686868;
-                margin-top: 5px;
-            }
-
-            .td-manual-activation {
-                display: none;
             }
         </style>
 
-        <?php
-        $td_key = '';
-        $td_server_id = '';
-        $td_envato_code = '';
+        <div class="td-activate-page-wrap">
+
+            <?php require_once "wp-admin/panel/td_view_header.php"; ?>
+
+            <div class="about-wrap td-admin-wrap">
+
+                <div class="td-activate-wrap">
+                    <!-- Auto activation -->
+                    <div class="td-auto-activation">
+
+                        <!-- Step 1 - Envato Code -->
+                        <div class="td-activate-section td-activate-envato-code">
+
+                            <div class="td-activate-subtitle">Activate <?php echo TD_THEME_NAME ?></div>
+
+                            <p class="td-activate-description">
+                                Please activate <?php echo TD_THEME_NAME ?> to enjoy the full benefits of the theme. We're sorry about this extra step but we built the activation system to prevent
+                                mass piracy of our themes, this allows us to better serve our paying customers.
+                            </p>
+
+                            <div class="td-activate-input-wrap td-envato-code">
+                                <div class="td-input-title">Envato purchase code:</div>
+                                <input type="text" name="td-envato-code" value="" placeholder="Your Envato code"/>
+                                <span class="td-activate-input-bar"></span>
+                                <span class="td-activate-err td-envato-missing" style="display:none;">Code is required</span>
+                                <span class="td-activate-err td-envato-length" style="display:none;">Code is too short</span>
+                                <span class="td-activate-err td-envato-invalid" style="display:none;">Code is not valid</span>
+                                <span class="td-activate-err td-envato-check-error" style="display:none;">Envato API is down, please try again later or use the manual registration.</span>
+                            </div>
 
 
-        if (!empty($_POST['td_active'])) {
-            //is for activation?
+                            <button class="td-activate-button td-envato-code-button">Activate theme</button>
+                            <div class="td-envato-code-info"><a href="http://forum.tagdiv.com/how-to-find-your-envato-purchase-code/" target="_blank">Find your Envato code</a></div>
+                        </div>
 
-            if (!empty($_POST['td_envato_code'])) {
-                $td_envato_code = $_POST['td_envato_code'];
-            }
+                        <!-- Step 2 - Forum Registration -->
+                        <div class="td-activate-section td-activate-registration" style="display: none;">
 
-            if (!empty($_POST['td_server_id'])) {
-                $td_server_id = $_POST['td_server_id'];
-            }
+                            <div class="td-activate-subtitle">Register your theme with tagDiv</div>
 
-            if (!empty($_POST['td_key'])) {
-                $td_key = $_POST['td_key'];
-            }
+                            <p class="td-activate-description">
+                                Get fast support, access to our community and to the knowledge base. Our support response time is typically less than one business day.
+                            </p>
 
+                            <div class="td-registration-err td-forum-connection-failed" style="display:none;">Forum connection failed, please try again.</div>
 
-            //manual activation
-            if ($_POST['td_active'] == 'manual') {
-                if ($this->td_cake_manual($td_server_id, $td_envato_code, $td_key) === true) {
+                            <!-- Username -->
+                            <div class="td-activate-input-wrap td-activate-username">
+                                <div class="td-input-title">Username:</div>
+                                <input type="text" name="td-activate-username" value="" placeholder="Username" />
+                                <span class="td-activate-input-bar"></span>
+                                <span class="td-activate-err td-activate-username-missing" style="display:none;">Username is required</span>
+                                <span class="td-activate-err td-activate-username-used" style="display:none;">Current username is already used, try another one</span>
+                            </div>
 
-                    td_util::update_option('envato_key', $td_envato_code);
-                    td_util::update_option('td_cake_status', '2');
-                    ?>
-                    <script type="text/javascript">
-                        alert('Thanks for activating the theme!');
-                        window.location = "<?php echo admin_url()?>";
-                    </script>
-                <?php
-                } else {
-                    ?>
-                    <script type="text/javascript">
-                        alert('The code is invalid!');
-                    </script>
-                <?php
-                }
-            } elseif ($_POST['td_active'] == 'auto') {
-                if (TD_DEPLOY_MODE == 'dev') {
-                    //auto activation
-                    $td_cake_response = wp_remote_post('http://td_cake.themesafe.com/td_cake/auto.php', array (
-                        'method' => 'POST',
-                        'body' => array(
-                            'k' => $td_envato_code,
-                            'n' => TD_THEME_NAME,
-                            'v' => TD_THEME_VERSION
-                        ),
-                        'timeout' => 12
-                    ));
+                            <!-- Email -->
+                            <div class="td-activate-input-wrap td-activate-email">
+                                <div class="td-input-title">Your Email:</div>
+                                <input type="text" name="td-activate-email" value="" placeholder="Email" />
+                                <span class="td-activate-input-bar"></span>
+                                <span class="td-activate-err td-activate-email-missing" style="display:none;">Email is required</span>
+                                <span class="td-activate-err td-activate-email-syntax" style="display:none;">Email syntax is incorrect</span>
+                                <span class="td-activate-err td-activate-email-used" style="display:none;">Current email is registered with another account</span>
+                                <div class="td-small-bottom">The email is private and we will not share it with anyone.</div>
+                            </div>
 
-                } else {
-                    //auto activation
-                    $td_cake_response = wp_remote_post('http://td_cake.themesafe.com/td_cake/auto.php', array (
-                        'method' => 'POST',
-                        'body' => array(
-                            'k' => $td_envato_code,
-                            'n' => TD_THEME_NAME,
-                            'v' => TD_THEME_VERSION
-                        ),
-                        'timeout' => 12
-                    ));
-                }
+                            <!-- Password -->
+                            <div class="td-activate-input-wrap td-activate-password">
+                                <div class="td-input-title">Password:</div>
+                                <input type="password" name="td-activate-password" autocomplete="off" value="" placeholder="Password" />
+                                <span class="td-activate-input-bar"></span>
+                                <span class="td-activate-err td-activate-password-missing" style="display:none;">Password is required</span>
+                                <span class="td-activate-err td-activate-password-length" style="display:none;">Minimum password length is 6 characters</span>
+                            </div>
+
+                            <!-- Password Confirmation -->
+                            <div class="td-activate-input-wrap td-activate-password-confirmation">
+                                <div class="td-input-title">Password confirmation:</div>
+                                <input type="password" name="td-activate-password-confirmation" autocomplete="off" value="" placeholder="Password confirmation" />
+                                <span class="td-activate-input-bar"></span>
+                                <span class="td-activate-err td-activate-password-confirmation-missing" style="display:none;">Password confirmation is required</span>
+                                <span class="td-activate-err td-activate-password-mismatch" style="display:none;">Password and password confirmation don't match</span>
+                            </div>
+
+                            <button class="td-activate-button td-registration-button">Activate theme</button>
+                            <div class="td-activate-info"><a href="http://forum.tagdiv.com/privacy-policy-2/" target="_blank">Privacy policy</a></div>
+                        </div>
+                    </div>
 
 
-                if (is_wp_error($td_cake_response)) {
+                    <!-- Manual activation -->
+                    <div class="td-manual-activation">
+                        <div class="td-activate-subtitle">Manual activation</div>
 
-                    //error http
-                    ?>
-                    <script type="text/javascript">
-                        alert('Error accessing our activation service. Please use the manual activation. Sorry about this.');
-                    </script>
-                <?php
-                } else {
-                    if (isset($td_cake_response['response']['code']) and $td_cake_response['response']['code'] != '200') {
-                        ?>
-                        <script type="text/javascript">
-                            alert('Error accessing our activation service. Please use the manual activation. Sorry about this. Server code: <?php echo $td_cake_response['response']['code'] ?>');
-                        </script>
-                    <?php
-                    }
+                        <div class="td-registration-err td-manual-activation-failed" style="display:none;">Manual activation failed, check each field and try again.</div>
 
-                    if (!empty($td_cake_response['body'])) {
-                        $api_response = @unserialize($td_cake_response['body']);
-
-                        if (!empty($api_response['envato_is_valid']) and !empty($api_response['envato_is_valid_msg'])) {
-
-                            if ($api_response['envato_is_valid'] == 'valid' or $api_response['envato_is_valid'] == 'td_fake_valid') {
-                                td_util::update_option('envato_key', $td_envato_code);
-                                td_util::update_option('td_cake_status', '2');
+                        <div class="td-manual-info">
+                            <ol>
+                                <li>Go to our <a href="http://tagdiv.com/td_cake/manual.php" target="_blank">manual activation page</a></li>
+                                <li>Paste your <em>Server ID</em> there and the <a href="http://forum.tagdiv.com/how-to-find-your-envato-purchase-code/" target="_blank">Envato purchase code</a></li>
+                                <li>Return with the <a href="http://forum.tagdiv.com/wp-content/uploads/2014/09/2014-09-09_1458.png" target="_blank">activation key</a> and paste it in this form</li>
+                            </ol>
+                        </div>
 
 
-                                ?>
-                                <script type="text/javascript">
-                                    alert(<?php echo json_encode($api_response['envato_is_valid_msg']) ?>);
-                                    window.location = "<?php echo admin_url()?>";
-                                </script>
-                            <?php
-                            } else {
-                                ?>
-                                <script type="text/javascript">
-                                    alert(<?php echo json_encode($api_response['envato_is_valid_msg']) ?>);
-                                </script>
-                            <?php
-                            }
+                        <!-- Your server ID -->
+                        <div class="td-activate-input-wrap td-manual-server-id">
+                            <div class="td-input-title">Your server ID:</div>
+                            <input type="text" name="td-manual-server-id" value="<?php echo $this->td_cake_server_id();?>" readonly/>
+                            <span class="td-activate-input-bar"></span>
+                            <div class="td-small-bottom">Copy this id and paste it in our manual activation page</div>
+                        </div>
 
-                        } else {
-                            ?>
-                            <script type="text/javascript">
-                                alert('Error accessing our activation service. Please use the manual activation. Sorry about this.');
-                            </script>
-                        <?php
-                        }
+                        <!-- Envato code -->
+                        <div class="td-activate-input-wrap td-manual-envato-code">
+                            <div class="td-input-title">Envato purchase code:</div>
+                            <input type="text" name="td-manual-envato-code" value="" placeholder="Envato purcahse code" />
+                            <span class="td-activate-input-bar"></span>
+                            <span class="td-activate-err td-manual-envato-code-missing" style="display:none;">Envato code is required</span>
+                        </div>
+
+                        <!-- Activation key -->
+                        <div class="td-activate-input-wrap td-manual-activation-key">
+                            <div class="td-input-title">tagDiv activation key:</div>
+                            <input type="text" name="td-manual-activation-key" value="" placeholder="Activation key" />
+                            <span class="td-activate-input-bar"></span>
+                            <span class="td-activate-err td-manual-activation-key-missing" style="display:none;">Activation key is required</span>
+                        </div>
+
+                        <button class="td-activate-button td-manual-activate-button">Activate</button>
+
+                    </div>
+
+                </div>
 
 
 
-                    } else {
-                        //empty body error
-                    }
-                }
+                <!--            <form method="post" action="admin.php?page=td_cake_panel">-->
+                <!---->
+                <!--	            <input type="hidden" name="td_magic_token" value="--><?php //echo wp_create_nonce("td-validate-license") ?><!--"/>-->
+                <!---->
+                <!--                <table class="form-table">-->
+                <!--                    <tr valign="top">-->
+                <!--                        <th scope="row">Envato purchase code:</th>-->
+                <!--                        <td>-->
+                <!--                            <input style="width: 400px" type="text" name="td_envato_code" value="--><?php //echo $td_envato_code; ?><!--" />-->
+                <!--                            <br/>-->
+                <!--                            <div class="td-small-bottom"><a href="http://forum.tagdiv.com/how-to-find-your-envato-purchase-code/" target="_blank">Where to find your purchase code ?</a></div>-->
+                <!--                        </td>-->
+                <!--                    </tr>-->
+                <!---->
+                <!---->
+                <!---->
+                <!--                </table>-->
+                <!---->
+                <!--                <input type="hidden" name="td_active" value="auto">-->
+                <!--                --><?php //submit_button('Activate theme'); ?>
+                <!---->
+                <!--            </form>-->
 
-
-
-
-            }
-        }
-
-
-        ?>
-
-        <?php
-
-        require_once "wp-admin/panel/td_view_header.php";
-
-        ?>
-
-
-        <div class="about-wrap td-admin-wrap">
-            <h1>Activate <?php echo TD_THEME_NAME ?></h1>
-            <div class="about-text" style="margin-bottom: 32px;">
-                <p>
-                    Please activate <?php echo TD_THEME_NAME ?> to enjoy the full benefits of the theme. We're sorry about this extra step but we built the activation system to prevent
-                    mass piracy of our themes, this allows us to better serve our paying customers.
-
-                    <strong>Once activated</strong> you can easily register for support form the support tab.
-                </p>
             </div>
-
-
-
-            <form method="post" action="admin.php?page=td_cake_panel">
-                <table class="form-table">
-                    <tr valign="top">
-                        <th scope="row">Envato purchase code:</th>
-                        <td>
-                            <input style="width: 400px" type="text" name="td_envato_code" value="<?php echo $td_envato_code; ?>" />
-                            <br/>
-                            <div class="td-small-bottom"><a href="http://forum.tagdiv.com/how-to-find-your-envato-purchase-code/" target="_blank">Where to find your purchase code ?</a></div>
-                        </td>
-                    </tr>
-
-
-
-                </table>
-
-                <input type="hidden" name="td_active" value="auto">
-                <?php submit_button('Activate theme'); ?>
-
-            </form>
-
-            <br/><br/><br/><br/><br/>
-            <h3>Manual activation</h3>
-            <p>If the above activation method fails, <a href="#" class="td-manual-activation-btn">activate the theme manually</a>.<br>Also try to disable all the plugins.</p>
-
-            <div class="td-manual-activation">
-                <ul>
-                    <li>1. <a href="http://tagdiv.com/td_cake/manual.php" target="_blank">Go to our manual activation page</a></li>
-                    <li>2. Paste your unique ID there and the <a href="http://forum.tagdiv.com/how-to-find-your-envato-purchase-code/" target="_blank">envato purchase code</a></li>
-                    <li>3. <a href="http://forum.tagdiv.com/wp-content/uploads/2014/09/2014-09-09_1458.png" target="_blank">Get the activation code</a> and paste it in this form</li>
-                </ul>
-
-                <form method="post" action="admin.php?page=td_cake_panel">
-                    <table class="form-table">
-
-                        <tr valign="top">
-                            <th scope="row">Your server ID:</th>
-                            <td>
-                                <input style="width: 400px" type="text" value="<?php echo $this->td_cake_server_id();?>" />
-                                <br/>
-                                <div class="td-small-bottom">Copy this id and paste it in our manual activation page</div>
-                            </td>
-
-                        </tr>
-
-
-                        <tr valign="top">
-                            <th scope="row">Envato purchase code:</th>
-                            <td><input style="width: 400px" type="text" name="td_envato_code" value="<?php echo $td_envato_code; ?>" /></td>
-                        </tr>
-
-                        <tr valign="top">
-                            <th scope="row">tagDiv activation key:</th>
-                            <td>
-                                <input style="width: 400px" type="text" name="td_key" value="<?php echo $td_key; ?>" />
-                                <br/>
-                                <div class="td-small-bottom">You will get this id from the <a href="http://tagdiv.com/td_cake/manual.php" target="_blank">manual activation page</a></div>
-                            </td>
-
-                        </tr>
-
-                        <input type="hidden" name="td_active" value="manual">
-                        <input type="hidden" name="td_server_id" value="<?php echo $this->td_cake_server_id();?>">
-
-                    </table>
-
-                    <?php submit_button('Manual activate theme'); ?>
-                </form>
-            </div>
-
         </div>
 
 
-
-        <script type="text/javascript">
-            jQuery('.td-manual-activation-btn').click(function(event){
-                event.preventDefault();
-                jQuery('.td-manual-activation').css('display', 'block');
-                //alert('ra');
-            });
-        </script>
     <?php
     }
 
@@ -402,23 +371,23 @@ class td_cake {
 
 
     function td_cake_msg() {
-        if ($this->check_if_is_our_page() === true) {
+        if ($this->check_if_is_our_page() === true || td_api_features::is_enabled('require_activation') === false) {
             return;
         }
         ?>
-        <div class="error">
+        <!-- <div class="error">
             <p><?php echo '<strong style="color:red"> Please activate the theme! </strong> - <a href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Click here to enter your code</a> - if this is an error please contact us at contact@tagdiv.com - <a href="http://forum.tagdiv.com/how-to-activate-the-theme/">How to activate the theme</a>'; ?></p>
-        </div>
+        </div> -->
     <?php
     }
 
 
     function td_cake_msg_2() {
-        if ($this->check_if_is_our_page() === true) {
+        if ($this->check_if_is_our_page() === true || td_api_features::is_enabled('require_activation') === false) {
             return;
         }
         ?>
-        <div class="error">
+        <!-- <div class="error">
             <p>
                 Activate <?php echo TD_THEME_NAME ?> to enjoy the full benefits of the theme. We're sorry about this extra step but we built the activation system to prevent
                 mass piracy of our themes, this allows us to better serve our paying customers.
@@ -427,10 +396,120 @@ class td_cake {
 
             </p>
             <p><?php echo '<strong style="color:red"> Please activate the theme! </strong> - <a href="' . wp_nonce_url( admin_url( 'admin.php?page=td_cake_panel' ) ) . '">Click here to enter your code</a> - if this is an error please contact us at contact@tagdiv.com - <a href="http://forum.tagdiv.com/how-to-activate-the-theme/">How to activate the theme</a>'; ?></p>
-        </div>
+        </div> -->
     <?php
     }
 }
 
 
-new td_cake();
+
+class td_check_version {
+	private $cron_task_name = 'td_check_version';
+
+
+	function __construct()
+    {
+        add_action('td_wp_booster_loaded', array($this, '_compare_theme_versions'));
+
+        add_action($this->cron_task_name, array($this, '_check_for_updates'));
+
+        add_filter( 'cron_schedules', array($this, '_schedule_modify_add_three_days') );
+
+        if (wp_next_scheduled($this->cron_task_name) === false) {
+            wp_schedule_event(time(), 'three_days', $this->cron_task_name);
+        }
+
+        add_action('switch_theme', array($this, 'on_switch_theme_remove_cron'));
+
+    }
+
+
+    /**
+     * connect to api server and check if a new version is available
+     */
+	function _check_for_updates() {
+        // default base currency is eur and it returns all rates
+        $api_url = 'http://td_cake.tagdiv.com/td_cake/get_current_version.php?n=' . TD_THEME_NAME . '&v=' . TD_THEME_VERSION;
+        $json_api_response = td_remote_http::get_page($api_url, __CLASS__);
+
+        // check for a response
+        if ($json_api_response === false) {
+            td_log::log(__FILE__, __FUNCTION__, 'Api call failed', $api_url);
+        }
+
+        // try to decode the json
+        $api_response = @json_decode($json_api_response, true);
+        if ($api_response === null and json_last_error() !== JSON_ERROR_NONE) {
+            td_log::log(__FILE__, __FUNCTION__, 'Error decoding the json', $api_response);
+        }
+
+	    //valid response
+        if (!empty($api_response['version']) && !empty($api_response['update_url'])) {
+            td_util::update_option('td_latest_version', $api_response['version']);
+            td_util::update_option('td_update_url', $api_response['update_url']);
+        }
+	}
+
+
+    /**
+     * compare current version with latest version
+     */
+	function _compare_theme_versions() {
+        $td_theme_version = TD_THEME_VERSION;
+
+        //don't run on deploy
+        if ($td_theme_version == '__td_deploy_version__') {
+            return;
+        }
+
+	    $td_latest_version = td_util::get_option('td_latest_version');
+        //latest version is not set
+        if (empty($td_latest_version)) {
+            return;
+        }
+
+        $td_update_url = td_util::get_option('td_update_url');
+        //update url is not set
+        if (empty($td_update_url)) {
+            return;
+        }
+
+        //compare theme's current version with the official version
+        $compare_versions = version_compare($td_theme_version, $td_latest_version, '<');
+
+        if ($compare_versions === true) {
+            //update is available - add variables used by td_theme_update js function
+            td_js_buffer::add_to_wp_admin_footer('var tdUpdateAvailable = "' . $td_latest_version . '";');
+            td_js_buffer::add_to_wp_admin_footer('var tdUpdateUrl = "' . $td_update_url . '";');
+        }
+    }
+
+
+    /**
+     * on switch theme remove wp cron task
+     */
+    function on_switch_theme_remove_cron() {
+        wp_clear_scheduled_hook($this->cron_task_name);
+    }
+
+
+    /**
+     * @param $schedules
+     * @return mixed
+     */
+	function _schedule_modify_add_three_days( $schedules ) {
+		$schedules['three_days'] = array(
+			'interval' => 259200, // 3 days in seconds
+			'display' => 'three_days'
+		);
+		return $schedules;
+
+	}
+}
+
+//execute only if the updates flag is enabled
+if (td_api_features::is_enabled('check_for_updates')) {
+    //new td_check_version();
+}
+
+//new td_cake();

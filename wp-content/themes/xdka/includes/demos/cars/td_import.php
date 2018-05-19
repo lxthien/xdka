@@ -15,19 +15,19 @@ $td_demo_footer_menu = td_demo_menus::create_menu('td-demo-footer-menu', 'footer
 td_demo_menus::add_link(array(
     'title' => 'About',
     'add_to_menu_id' => $td_demo_footer_menu,
-    'url' => 'http://tagdiv.com/about-us',
+    'url' => '#',
     'parent_id' => ''
 ));
 td_demo_menus::add_link(array(
     'title' => 'Blog',
     'add_to_menu_id' => $td_demo_footer_menu,
     'url' => '#',
-    'parent_id' => 'http://tagdiv.com/blog'
+    'parent_id' => '#'
 ));
 td_demo_menus::add_link(array(
     'title' => 'Contact',
     'add_to_menu_id' => $td_demo_footer_menu,
-    'url' => 'http://tagdiv.com',
+    'url' => '#',
     'parent_id' => ''
 ));
 
@@ -36,6 +36,12 @@ td_demo_menus::add_link(array(
     background - leave empty if you want to make sure that there is NO background on the demo - td_demo_misc::update_background('');
  */
 td_demo_misc::update_background('');
+
+// login background
+td_demo_misc::update_background_login('td_pic_9');
+
+// mobile background
+td_demo_misc::update_background_mobile('td_pic_6');
 
 
 
@@ -59,7 +65,7 @@ td_demo_misc::update_footer_logo(array(
 /*  ----------------------------------------------------------------------------
     footer text
  */
-td_demo_misc::update_footer_text('Newspaper 6 is your news, entertainment, music fashion website. We provide you with the latest breaking news and videos straight from the entertainment industry.');
+td_demo_misc::update_footer_text('Newspaper is your news, entertainment, music fashion website. We provide you with the latest breaking news and videos straight from the entertainment industry.');
 
 
 
@@ -80,6 +86,7 @@ td_demo_misc::add_social_buttons(array(
  */
 td_demo_misc::clear_all_ads();
 td_demo_misc::add_ad_image('custom_ad_1', 'td_cars_post_ad');
+td_demo_misc::add_ad_image('custom_ad_2', 'td_pic_homepage_big_ad');
 td_demo_misc::add_ad_image('sidebar', 'td_cars_sidebar_ad');
 
 
@@ -88,6 +95,12 @@ td_demo_misc::add_ad_image('sidebar', 'td_cars_sidebar_ad');
  */
 //default sidebar
 td_demo_widgets::remove_widgets_from_sidebar('default');
+
+//remove footer widgets > remove existing widgets from footer widgets areas
+td_demo_widgets::remove_widgets_from_sidebar('footer-1');
+td_demo_widgets::remove_widgets_from_sidebar('footer-2');
+td_demo_widgets::remove_widgets_from_sidebar('footer-3');
+
 td_demo_widgets::add_widget_to_sidebar('default', 'td_block_ad_box_widget',
     array (
         'spot_title' => '- Advertisement -',
@@ -263,7 +276,7 @@ $demo_cat_12_id =td_demo_category::add_category(array(
 $td_homepage_id = td_demo_content::add_page(array(
     'title' => 'Home',
     'file' => td_global::$get_template_directory . '/includes/demos/cars/pages/homepage.txt',
-    'template' => 'page.php',   // the page template full file name with .php
+    'template' => 'default',   // the page template full file name with .php
     'td_layout' => '',
     'homepage' => true
 ));

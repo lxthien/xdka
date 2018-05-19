@@ -57,6 +57,7 @@ class td_api_base {
             if (isset($component_value[self::TYPE])
                 and $component_value[self::TYPE] == $class_name) {
 
+            	// to get the actual final file :) you need to use get_key 'file'. This is because a child theme can overwrite the file
 	            if (isset($component_value['file'])) {
 		            unset($component_value['file']);
 	            }
@@ -162,6 +163,16 @@ class td_api_base {
 	    return self::$components_list[$id][$key];
     }
 
+
+	/**
+	 * @internal Use only for display-ing the file path of a component by id. It's used all over the panel to show a nice
+	 * path for a component
+	 * @param $id
+	 * @return mixed
+	 */
+    static function _display_file_path($id) {
+       return 'file path: ' . str_replace(td_global::$get_template_directory, '', self::get_key($id, 'file'));
+    }
 
 
     /**
@@ -346,9 +357,9 @@ class td_api_base {
 		}
 
 		if (($the_component != null)
-		    and (stripos($the_component['file'], TEMPLATEPATH) == 0)
 		    and !empty($the_component['file'])
-            and !isset($the_component['located_in_child'])) {
+            and (stripos($the_component['file'], TEMPLATEPATH) == 0)
+		    and !isset($the_component['located_in_child'])) {
 
 			$child_path = STYLESHEETPATH . str_replace(TEMPLATEPATH, '', $the_component['file']);
 
@@ -466,6 +477,32 @@ class td_api_block_template extends td_api_base{
     static function get_all() {
         return parent::get_all_components_metadata(__CLASS__);
     }
+
+
+    /**
+     * get all the header styles as a array for the panel ui controll. It also adds the default value
+     *
+     * @internal
+     * @return array
+     */
+    static function _helper_generate_block_templates() {
+        $buffy_array = array();
+
+
+        //add each value
+        foreach (self::get_all() as $id => $config) {
+            $buffy_array[] = array(
+                'text' => $config['text'],
+                'val' => $id,
+                'title' => '',
+                'img' => $config['img'],
+            );
+        }
+
+        // the first template is the default one, ex: it has no value in the database
+        $buffy_array[0]['val'] = '';
+        return $buffy_array;
+    }
 }
 
 
@@ -493,6 +530,13 @@ class td_api_category_template extends td_api_base {
      * @throws ErrorException new exception, fatal error if the $id already exists
      */
     static function add($id, $params_array) {
+
+	    // put a default image if we don't have any image, useful when developing a new module
+	    if (empty($params_array['img'])) {
+		    $params_array['img'] = td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/images/panel/panel-placeholders/no_module_image.png';
+	    }
+
+
         parent::add_component(__CLASS__, $id, $params_array);
     }
 
@@ -502,9 +546,15 @@ class td_api_category_template extends td_api_base {
 	}
 
 
-    static function get_all() {
-        return parent::get_all_components_metadata(__CLASS__);
-    }
+    static function get_all($group = '') {
+		$components = parent::get_all_components_metadata(__CLASS__);
+		foreach ($components as $component_key => $component_value) {
+			if (array_key_exists('group', $component_value) && $component_value['group'] !== $group) {
+				unset($components[$component_key]);
+			}
+		}
+		return $components;
+	}
 
 
 
@@ -513,14 +563,7 @@ class td_api_category_template extends td_api_base {
 	    $tdc_option_key = 'tdc_category_template';
 	    $tds_option_key = 'tds_category_template';
 
-	    // For the mobile theme, we are looking for other keys
-	    // There will be a general switch here to check for mobile, woo, etc.
-	    if (td_is_mobile_theme() === true) {
-		    $tdc_option_key .= td_global::TD_MOB_KEY_PAD;
-		    $tds_option_key .= td_global::TD_MOB_KEY_PAD;
-	    }
-
-        $template_id = td_util::get_category_option(td_global::$current_category_obj->cat_ID, $tdc_option_key);  // read the category setting
+	    $template_id = td_util::get_category_option(td_global::$current_category_obj->cat_ID, $tdc_option_key);  // read the category setting
 
         if (empty($template_id)) { // if no category setting, read the global template setting
             $template_id = td_util::get_option($tds_option_key);
@@ -568,7 +611,7 @@ class td_api_category_template extends td_api_base {
                 //add default style
                 $buffy_array[] = array(
                     'text' => 'Default',
-                    'title' => '',
+                    'title' => 'This category will use the site-wide category setting.',
                     'val' => '',
                     'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/module-default.png'
                 );
@@ -577,7 +620,7 @@ class td_api_category_template extends td_api_base {
                 foreach (self::get_all() as $id => $config) {
                     $buffy_array[] = array(
                         'text' => $config['text'],
-                        'title' => '',
+                        'title' => self::_display_file_path($id),
                         'val' => $id,
                         'img' => $config['img']
                     );
@@ -590,7 +633,7 @@ class td_api_category_template extends td_api_base {
                 foreach (self::get_all() as $id => $config) {
                     $buffy_array[] = array(
                         'text' => $config['text'],
-                        'title' => '',
+                        'title' => self::_display_file_path($id),
                         'val' => $id,
                         'img' => $config['img']
                     );
@@ -635,6 +678,12 @@ class td_api_category_top_posts_style extends td_api_base {
      * @throws ErrorException new exception, fatal error if the $id already exists
      */
     static function add($id, $params_array) {
+
+	    // put a default image if we don't have any image, useful when developing a new module
+	    if (empty($params_array['img'])) {
+		    $params_array['img'] = td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/images/panel/panel-placeholders/no_module_image.png';
+	    }
+
         parent::add_component(__CLASS__, $id, $params_array);
     }
 
@@ -644,9 +693,15 @@ class td_api_category_top_posts_style extends td_api_base {
 	}
 
 
-    static function get_all() {
-        return parent::get_all_components_metadata(__CLASS__);
-    }
+	static function get_all($group = '') {
+		$components = parent::get_all_components_metadata(__CLASS__);
+		foreach ($components as $component_key => $component_value) {
+			if (array_key_exists('group', $component_value) && $component_value['group'] !== $group) {
+				unset($components[$component_key]);
+			}
+		}
+		return $components;
+	}
 
 
 
@@ -655,14 +710,7 @@ class td_api_category_top_posts_style extends td_api_base {
 	    $tdc_option_key = 'tdc_category_top_posts_style';
 	    $tds_option_key = 'tds_category_top_posts_style';
 
-	    // For the mobile theme, we are looking for other keys
-	    // There will be a general switch here to check for mobile, woo, etc.
-	    if (td_is_mobile_theme() === true) {
-		    $tdc_option_key .= td_global::TD_MOB_KEY_PAD;
-		    $tds_option_key .= td_global::TD_MOB_KEY_PAD;
-	    }
-
-        $template_id = td_util::get_category_option(td_global::$current_category_obj->cat_ID, $tdc_option_key); // first check the category setting
+	    $template_id = td_util::get_category_option(td_global::$current_category_obj->cat_ID, $tdc_option_key); // first check the category setting
 
         if (empty($template_id)) { // now check the global setting - we have "default" selected on the category, the theme now looks for the global setting
             $template_id = td_util::get_option($tds_option_key);
@@ -711,7 +759,7 @@ class td_api_category_top_posts_style extends td_api_base {
                 //add default style
                 $buffy_array[] = array(
                     'text' => 'Default',
-                    'title' => '',
+                    'title' => 'This category will use the site wide category top post style setting.',
                     'val' => '',
                     'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/module-default.png'
                 );
@@ -720,7 +768,7 @@ class td_api_category_top_posts_style extends td_api_base {
                 foreach (self::get_all() as $id => $config) {
                     $buffy_array[] = array(
                         'text' => $config['text'],
-                        'title' => '',
+                        'title' => self::_display_file_path($id),
                         'val' => $id,
                         'img' => $config['img']
                     );
@@ -733,7 +781,7 @@ class td_api_category_top_posts_style extends td_api_base {
                 foreach (self::get_all() as $id => $config) {
                     $buffy_array[] = array(
                         'text' => $config['text'],
-                        'title' => '',
+                        'title' => self::_display_file_path($id),
                         'val' => $id,
                         'img' => $config['img']
                     );
@@ -761,6 +809,12 @@ class td_api_category_top_posts_style extends td_api_base {
 
 class td_api_footer_template extends td_api_base {
     static function add($template_id, $params_array = '') {
+
+	    // put a default image if we don't have any image, useful when developing a new module
+	    if (empty($params_array['img'])) {
+		    $params_array['img'] = td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/images/panel/panel-placeholders/no_footer_template.png';
+	    }
+
         parent::add_component(__CLASS__, $template_id, $params_array);
     }
 
@@ -798,7 +852,7 @@ class td_api_footer_template extends td_api_base {
         foreach (self::get_all() as $id => $config) {
             $buffy_array[] = array(
                 'text' => $config['text'],
-                'title' => '',
+                'title' => self::_display_file_path($id),
                 'val' => $id,
                 'img' => $config['img']
             );
@@ -824,6 +878,61 @@ class td_api_footer_template extends td_api_base {
 
 }
 /**
+ * Created by PhpStorm.
+ * User: tagdiv
+ * Date: 26.09.2016
+ * Time: 16:45
+ */
+
+class td_api_ad extends td_api_base {
+
+	static function add($ad_id, $params_array = '') {
+		parent::add_component(__CLASS__, $ad_id, $params_array);
+	}
+
+
+	static function update($ad_id, $params_array = '') {
+		parent::update_component(__CLASS__, $ad_id, $params_array);
+	}
+
+
+	static function get_all() {
+		return parent::get_all_components_metadata(__CLASS__);
+	}
+
+	static function helper_display_ads() {
+
+		foreach (td_api_ad::get_all() as $ad_id => $ad_array) {
+			$ad_type = self::get_key($ad_id, 'ad_type');
+			$ad_text = self::get_key($ad_id, 'text');
+
+			switch ($ad_type) {
+
+//					case 'inline':
+//
+//						td_global::$current_ad_id = $ad_id;
+//
+//						echo td_panel_generator::box_start($ad_text, false);
+//						load_template(dirname( __FILE__ ) . '/wp-admin/panel/views/ajax_boxes/td_panel_ads/td_get_ad_spot_by_id.php', false);
+//						echo td_panel_generator::box_end();
+//
+//						break;
+
+				case 'ajax':
+
+					echo td_panel_generator::ajax_box($ad_text, array(
+							'td_ajax_calling_file' => 'td_panel_ads',
+							'td_ajax_box_id' => 'td_get_ad_spot_by_id',
+							'ad_spot_id' => $ad_id
+						)
+					);
+
+				break;
+			}
+		}
+	}
+}
+/**
  * Created by ra on 2/13/2015.
  */
 
@@ -842,6 +951,12 @@ class td_api_header_style extends td_api_base {
      * @throws ErrorException new exception, fatal error if the $id already exists
      */
     static function add($thumb_id, $params_array = '') {
+
+        // put a default image if we don't have any image, useful when developing a new module
+        if (empty($params_array['img'])) {
+            $params_array['img'] = td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/images/panel/panel-placeholders/no_header_template.png';
+        }
+
         parent::add_component(__CLASS__, $thumb_id, $params_array);
     }
 
@@ -869,6 +984,8 @@ class td_api_header_style extends td_api_base {
             $buffy_array[] = array(
                 'text' => $config['text'],
                 'val' => $id,
+                'title' => '',
+                'img' => $config['img'],
             );
         }
 
@@ -950,6 +1067,12 @@ class td_api_module extends td_api_base {
      * @throws ErrorException new exception, fatal error if the $id already exists
      */
     static function add($module_id, $params_array = '') {
+
+    	// put a default image if we don't have any image, useful when developing a new module
+    	if (empty($params_array['img'])) {
+		    $params_array['img'] = td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/images/panel/panel-placeholders/no_module_image.png';
+	    }
+
         parent::add_component(__CLASS__, $module_id, $params_array);
     }
 
@@ -1014,16 +1137,28 @@ class td_api_module extends td_api_base {
     }
 
 
+
+
+
+
 	/**
-	 * converts module classes to module id's for loop settings. td_module_2 -> 2 (we store the 2 in the database)
+	 * FOR LEGACY MODULES that have names like td_module_x (where x is a number)
+	 *  - converts module classes to module id's for loop settings. td_module_2 -> 2 (we store the 2 in the database)
 	 *
-	 * WARNING (2 now 2015): we tried to refactor this multiple times. It is not worth it because all the theme including the panel
-	 * have to work with the new and old settings - resulting in added complexity without any real benefits
 	 * @param $module_class
-	 * @return mixed id of the module td_module_2 returns 2
+	 * @return integer id of the module td_module_2 returns 2
 	 */
 	static function _helper_get_module_loop_id ($module_class){
-		return filter_var($module_class, FILTER_SANITIZE_NUMBER_INT);
+
+		// DEAL WITH LEGACY MODULE NAMES
+		// if we get a string, try to trim td_module_ and see if we are left with a number
+		$trim_result = str_replace('td_module_', '', $module_class);
+		if ( is_numeric($trim_result) ) {
+			return filter_var($module_class, FILTER_SANITIZE_NUMBER_INT);
+		}
+
+
+		return $module_class;
 	}
 
 
@@ -1039,17 +1174,23 @@ class td_api_module extends td_api_base {
 
 
 	/**
-	 * Gets the class from a loop id that is stored in the database. ex: 2 -> td_module_2
+	 * FOR LEGACY MODULES that have names like td_module_x (where x is a number)
+	 *  - Gets the class from a loop id that is stored in the database. ex: 2 -> td_module_2
 	 *
- 	 * WARNING (2 now 2015): we tried to refactor this multiple times. It is not worth it because all the theme including the panel
-	 * have to work with the new and old settings - resulting in added complexity without any real benefits
-	 * @param $module_id
+ 	 * @param $module_id
 	 * @return string
 	 */
 	static function _helper_get_module_class_from_loop_id ($module_id) {
-		return 'td_module_'  . $module_id;
+		// DEAL WITH LEGACY MODULE NAMES where we only have the id in the database, we can't have a module that is
+		// all numbers because php dosn't allow classes like that
+		if (is_numeric($module_id)) {
+			return 'td_module_'  . $module_id;
+		}
+		return $module_id;
 	}
 }
+
+
 
 /**
  * Created by ra on 2/13/2015.
@@ -1074,6 +1215,13 @@ class td_api_single_template extends td_api_base {
      * @throws ErrorException new exception, fatal error if the $id already exists
      */
     static function add($single_template_id, $params_array = '') {
+
+	    // put a default image if we don't have any image, useful when developing a new item
+	    if (empty($params_array['img'])) {
+		    $params_array['img'] = td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/images/panel/panel-placeholders/no_single_template.png';
+	    }
+
+
         parent::add_component(__CLASS__, $single_template_id, $params_array);
     }
 
@@ -1120,11 +1268,11 @@ class td_api_single_template extends td_api_base {
     static function _helper_td_global_list_to_panel_values() {
         $buffy_array = array();
 
-        foreach (self::get_all() as $template_value => $template_config) {
-	        if ($template_value == 'single_template') {
+        foreach (self::get_all() as $id => $template_config) {
+	        if ($id == 'single_template') {
 		        $buffy_array[] = array(
 			        'text' => '',
-			        'title' => '',
+			        'title' => self::_display_file_path($id),
 			        'val' => '',
 			        'img' => $template_config['img']
 		        );
@@ -1132,8 +1280,8 @@ class td_api_single_template extends td_api_base {
 	        }
             $buffy_array[] = array(
                 'text' => '',
-                'title' => '',
-                'val' => $template_value,
+                'title' => self::_display_file_path($id),
+                'val' => $id,
                 'img' => $template_config['img']
             );
         }
@@ -1155,11 +1303,11 @@ class td_api_single_template extends td_api_base {
 	static function _helper_td_global_list_to_metaboxes() {
 		$buffy_array = array();
 
-		foreach (self::get_all() as $template_value => $template_config) {
+		foreach (self::get_all() as $id => $template_config) {
 			$buffy_array[] = array(
 				'text' => '',
-				'title' => '',
-				'val' => $template_value,
+				'title' => self::_display_file_path($id),
+				'val' => $id,
 				'img' => $template_config['img']
 			);
 		}
@@ -1169,7 +1317,7 @@ class td_api_single_template extends td_api_base {
             $buffy_array,
             array(
                 'text' => '',
-                'title' => '',
+                'title' => 'This will load the post template that is set in Theme panel - Post settings - Default post template (site wide)',
                 'val' => '',
                 'img' => td_global::$get_template_directory_uri . '/images/panel/single_templates/single_template_default.png'
             )
@@ -1269,16 +1417,16 @@ class td_api_smart_list extends td_api_base {
         // add the default smart list
         $buffy_array[] =  array(
             'text' => '',
-            'title' => '',
+            'title' => 'This article will not use the smart list system.',
             'val' => '',
             'img' => td_global::$get_template_directory_uri . '/images/panel/smart_lists/td_smart_list_default.png'
         );
 
-        foreach (self::get_all() as $template_value => $template_config) {
+        foreach (self::get_all() as $id => $template_config) {
             $buffy_array[] = array(
                 'text' => '',
-                'title' => '',
-                'val' => $template_value,
+                'title' => self::_display_file_path($id),
+                'val' => $id,
                 'img' => $template_config['img']
             );
         }
@@ -1318,6 +1466,13 @@ class td_api_thumb extends td_api_base {
     }
 
 	static function update($thumb_id, $params_array = '') {
+
+		$thumbs = self::get_all();
+
+		// When thumbs are used in multiple modules registered by the theme and others plugins, all these modules' ids must be shown all together
+		if (!empty( $params_array ) && array_key_exists($thumb_id, $thumbs) && array_key_exists('used_on', $params_array)) {
+			$params_array['used_on'] = array_merge($thumbs[$thumb_id]['used_on'], $params_array['used_on']);
+		}
 		parent::update_component(__CLASS__, $thumb_id, $params_array);
 	}
 
@@ -1335,6 +1490,13 @@ class td_api_thumb extends td_api_base {
 
 class td_api_top_bar_template extends td_api_base {
     static function add($template_id, $params_array = '') {
+
+	    // put a default image if we don't have any image, useful when developing a new module
+	    if (empty($params_array['img'])) {
+		    $params_array['img'] = td_global::$get_template_directory_uri . '/includes/wp_booster/wp-admin/images/panel/panel-placeholders/no_top_bar_template.png';
+	    }
+
+
         parent::add_component(__CLASS__, $template_id, $params_array);
     }
 
@@ -1468,23 +1630,163 @@ class td_api_tinymce_formats extends td_api_base {
 
 
 
+/**
+ * Created by ra.
+ * Date: 8/18/2016
+ */
 
+
+class td_api_text {
+	private static $text_keys = array (
+
+		// the text for wp-admin -> new post -> featured video box. Usually is the text that tells what post templates support video
+		'text_featured_video' => '',
+
+		// admin panel - header
+		'text_header_logo' => '',
+		'text_header_logo_description' => '',
+		'text_header_logo_mobile' => '',
+		'text_header_logo_mobile_image' => '',
+		'text_header_logo_mobile_image_retina' => '',
+
+		// what widgets do not work on the smart sidebar
+		'text_smart_sidebar_widget_support' => '<p>From here you can enable and disable the smart sidebar on all the templates. The smart sidebar is an affix (sticky) sidebar that has auto resize and it scrolls with the content. The smart sidebar reverts back to a normal sidebar on iOS (iPad) and on mobile devices. The following widgets are not supported in the smart sidebar:</p>',
+
+
+		// fast start notification on welcome page
+		// *overwritten in 012 for tagDiv composer
+		'welcome_fast_start' => 'Install Visual Composer plugin and also install the social counter plugin if you want to add the counters on your sidebar - from our <a href="admin.php?page=td_theme_plugins">plugins panel</a>',
+
+		// welcome and support panels
+		'welcome_support_forum' => '',
+		'welcome_docs' => '',
+		'welcome_video_tutorials' => '',
+
+		// supported plugins list
+		'supported_plugins_list' => '
+				<div class="td-supported-plugin">WP Super Cache <span> - caching plugin</span></div>
+				<div class="td-supported-plugin">Contact form 7 <span>- used to make contact forms</span></div>
+				<div class="td-supported-plugin">bbPress <span>- forum plugin</span></div>
+				<div class="td-supported-plugin">BuddyPress<span>- social network plugin</span></div>
+				<div class="td-supported-plugin">Font Awesome 4 Menus<span>- icon pack, supported in the theme menus</span></div>
+				<div class="td-supported-plugin">Jetpack  <span>- plugin with lots of features *it may slow down your site</span></div>
+				<div class="td-supported-plugin">WooCommerce <span>- eCommerce solution</span></div>
+				<div class="td-supported-plugin">WordPress (Yoast) SEO <span> - SEO plugin</span></div>
+				<div class="td-supported-plugin">Wp User Avatar <span> - Change users avatars</span></div>',
+
+		// existing content documentation url
+		// *overwritten in 012
+		'panel_existing_content_url' => '<a href="http://forum.tagdiv.com/existing-content/" target="_blank">read more</a>',
+
+		// excerpt settings panel theme modules and blocks docs link *overwritten in 012
+		'panel_excerpt_modules_blocks_docs_url' => '<a href="http://forum.tagdiv.com/theme-blocks-modules/" target="_blank">here</a>'
+
+	);
+
+
+	static function set($text_key, $text) {
+		if (!isset(self::$text_keys[$text_key])) {
+			td_util::error(__FILE__, 'td_api_text::set This text key: ' . $text_key . ' is not defined in td_api_text.php');
+		}
+		self::$text_keys[$text_key] = $text;
+	}
+
+
+	static function get($text_key) {
+		if (!isset(self::$text_keys[$text_key])) {
+			td_util::error(__FILE__, 'td_api_text::set This text key: ' . $text_key . ' is not defined in td_api_text.php');
+		}
+
+		return self::$text_keys[$text_key];
+	}
+}
+/**
+ * Created by ra.
+ * Date: 8/18/2016
+ */
+
+class td_api_features {
+	private static $features = array (
+		'require_activation' => true,
+		'require_vc' => true,
+		'require_td_composer' => true,
+		'page_mega_menu' => true,
+		'video_playlists' => true,
+		'tagdiv_slide_gallery' => true,
+		'text_logo' => true,
+		'check_for_updates' => false
+	);
+
+
+	/**
+	 * @param $feature string feature name
+	 * @param $new_state boolean new feature state
+	 */
+	static function set ($feature, $new_state) {
+		if (!isset(self::$features[$feature])) {
+			td_util::error(__FILE__, 'td_api_features::set This feature: ' . $feature . ' is not defined in td_api_features.php');
+		}
+
+		if (!is_bool($new_state)) {
+			td_util::error(__FILE__, 'td_api_features::set This feature: ' . $feature . ' was not set to a boolean value');
+		}
+
+		self::$features[$feature] = $new_state;
+	}
+
+	static function is_enabled ($feature) {
+		if (!isset(self::$features[$feature])) {
+			td_util::error(__FILE__, 'td_api_features::is_enabled This feature: ' . $feature . ' is not defined');
+		}
+
+		return self::$features[$feature];
+	}
+
+
+}
+
+/**
+ * Class td_api_autoload - here we keep files for auto loading @see td_autoload_classes
+ */
 class td_api_autoload extends td_api_base {
+
     static function add($class_id, $file) {
         $params_array['file'] = $file;
         parent::add_component(__CLASS__, $class_id, $params_array);
     }
 
-
-
     static function get_all() {
         return parent::get_all_components_metadata(__CLASS__);
     }
 
+}
+/**
+ * Created by PhpStorm.
+ * User: andromeda
+ * Date: 3/27/2017
+ * Time: 5:07 PM
+ */
+
+class td_api_css_generator {
+
+    private static $css_buffer = '';
+    private static $used = false;
 
 
+    static function add($css_id, $css = '') {
+        if (self::$used === true) {
+            td_util::error(__FILE__, 'td_api_css_generator::add - the get_all method was already called');
+            die;
+        }
+        self::$css_buffer .= "\n" . $css . "\n";
+
+    }
 
 
+    static function get_all() {
+        self::$used = true;
+        return self::$css_buffer;
+    }
 
 
 }

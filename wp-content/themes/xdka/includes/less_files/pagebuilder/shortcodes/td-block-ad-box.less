@@ -124,6 +124,24 @@
     display: table;
     min-height: 0 !important;
   }
+
+  .td-adspot-title {
+    margin-bottom: -21px;
+    position: relative;
+    top: 3px;
+
+    /* responsive portrait tablet */
+    @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+      margin-bottom: -14px;
+      top: 0;
+    }
+
+    @media (max-width: @responsive_p_phone_max) {
+      top: 0;
+      margin-bottom: -10px;
+    }
+  }
+
 }
 
 .td-header-sp-recs {
@@ -225,6 +243,14 @@
     margin-bottom: 48px;
 }
 
+.td-a-rec-id-sidebar .td-block-title-wrap {
+  margin-bottom: 26px;
+
+  & + .td-adspot-title {
+    margin-top: -9px;
+  }
+}
+
 
 // -----------------------------------------------
 
@@ -254,6 +280,13 @@
 
   img {
     margin-bottom: 0;
+  }
+}
+
+.td-a-rec-id-post_style_12,
+.td-a-rec-id-post_style_13 {
+  .td-adspot-title {
+    margin-bottom: -9px;
   }
 }
 
@@ -320,6 +353,14 @@
 .td-a-rec-id-content_inlineleft {
   float: left;
 
+  .td-adspot-title {
+    margin-right: 21px;
+
+    @media (max-width: @responsive_p_phone_max) {
+      margin: 0;
+    }
+  }
+
   > div,
   .adsbygoogle {
     margin-bottom: 15px;
@@ -346,6 +387,15 @@
 .td-g-rec-id-content_inlineright,
 .td-a-rec-id-content_inlineright {
   float: right;
+
+  .td-adspot-title {
+    margin-left: 21px;
+    margin-bottom: -6px;
+
+    @media (max-width: @responsive_p_phone_max) {
+      margin: 0;
+    }
+  }
 
   > div,
   .adsbygoogle {
@@ -376,18 +426,7 @@
   display: table;
   position: relative;
   text-align: center;
-  margin-right: auto;
-  margin-left: auto;
-
-  > div,
-  .adsbygoogle {
-    margin: -32px auto 32px auto;
-
-    /* responsive portrait phone */
-    @media (max-width: @responsive_p_phone_max) {
-        margin: -10px auto 42px;
-    }
-  }
+  margin: -12px auto 40px auto;
 
   > div img {
     /* responsive portrait phone */
@@ -395,6 +434,11 @@
         width: 100%;
     }
   }
+
+  .td-adspot-title {
+    margin-top: -21px;
+  }
+
 }
 
 // custom ads
@@ -426,6 +470,14 @@
 
   > div {
     margin-bottom: 44px;
+  }
+
+  .td-block-title-wrap {
+    margin-bottom: 26px;
+
+    & + .td-adspot-title {
+      margin-top: -9px;
+    }
   }
 }
 
@@ -499,5 +551,20 @@
 
   img {
     width: 100%;
+  }
+
+  .td-adspot-title {
+    text-align: left;
+  }
+}
+
+// demo Ad
+.td-all-devices {
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+
+  img {
+    display: block;
   }
 }

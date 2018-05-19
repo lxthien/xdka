@@ -1,7 +1,5 @@
 // widget container
 .td_block_weather {
-  padding-bottom: 48px;
-
   .block-title {
     margin-bottom: 22px;
   }
@@ -80,6 +78,13 @@
   padding: 32px 16px;
   font-weight: 300;
   width: 145px;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 
   /* responsive portrait tablet + phone */
   @media (max-width: @responsive_p_tablet_max) {
@@ -288,7 +293,7 @@
 
   /* responsive portrait tablet */
   @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
-    .transform(scale(0.8));
+    .transform(scale(0.72));
     margin-left: -20px;
   }
 
@@ -361,6 +366,48 @@
   background: url('@{td_css_path}images/sprite/weather/mist.png') no-repeat;
 }
 
+/*
+    weather location
+*/
+
+.td-weather-set-location {
+  display: none;
+
+  position: absolute;
+  top: 0;
+
+  .td-location-set-input {
+    height: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: @font3;
+    border: 0;
+    padding: 0 10px;
+
+    &:focus {
+      ~ label {
+        top: -20px;
+        font-size: 11px;
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+.td-show-location {
+  display: block !important;
+
+  label {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    font-size: 13px;
+    opacity: 0.6;
+    pointer-events: none;
+    .transition(all 0.2s ease);
+  }
+}
 
 
 /*
@@ -580,7 +627,8 @@
       font-size: 8px;
       opacity: 1;
       left: 1px;
-      top: 4px;
+      top: -6px;
+      vertical-align: inherit;
     }
   }
 
@@ -596,3 +644,4 @@
     }
   }
 }
+

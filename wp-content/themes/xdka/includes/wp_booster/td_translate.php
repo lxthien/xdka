@@ -53,10 +53,10 @@ $td_translation_map = array(
     'SHARE' => __('SHARE', TD_THEME_NAME),
     'Continue' => __('Continue', TD_THEME_NAME),
     'Read more' => __('Read more', TD_THEME_NAME),
+    'views' => __('views', TD_THEME_NAME),
+
 
     //comments
-
-
     'Name:' => __('Name:', TD_THEME_NAME),
     'Email:' => __('Email:', TD_THEME_NAME),
     'Website:' => __('Website:', TD_THEME_NAME),
@@ -69,6 +69,14 @@ $td_translation_map = array(
     'NO COMMENTS' => __('NO COMMENTS', TD_THEME_NAME),
     '1 COMMENT' => __('1 COMMENT', TD_THEME_NAME),
     'COMMENTS' => __('COMMENTS', TD_THEME_NAME),
+    'Your comment is awaiting moderation' => __('Your comment is awaiting moderation', TD_THEME_NAME),
+    'Please enter your name here' => __('Please enter your name here', TD_THEME_NAME),
+    'Please enter your email address here' => __('Please enter your email address here', TD_THEME_NAME),
+    'You have entered an incorrect email address!' => __('You have entered an incorrect email address!', TD_THEME_NAME),
+    'Please enter your comment!' => __('Please enter your comment!', TD_THEME_NAME),
+    'Logged in as'                        => __('Logged in as', TD_THEME_NAME),
+    'Log out?'                            => __('Log out?', TD_THEME_NAME),
+    'Logged in as %s. Edit your profile.' => __('Logged in as %s. Edit your profile.', TD_THEME_NAME),
 
 
     //review
@@ -111,6 +119,9 @@ $td_translation_map = array(
     //footer widget
     'Contact us' => __('Contact us', TD_THEME_NAME),
 
+    //footer instagram
+    'Follow us on Instagram' => __('Follow us on Instagram', TD_THEME_NAME),
+
     //pagination
     'Page %CURRENT_PAGE% of %TOTAL_PAGES%' => __('Page %CURRENT_PAGE% of %TOTAL_PAGES%', TD_THEME_NAME),
     'Next' => __('Next', TD_THEME_NAME),
@@ -128,12 +139,16 @@ $td_translation_map = array(
     'Sign up' => __('Sign up', TD_THEME_NAME),
     'Join' => __('Join', TD_THEME_NAME),
     'Log In'  => __('Log In', TD_THEME_NAME),
+    'Login'  => __('Login', TD_THEME_NAME),
     'REGISTER'  => __('REGISTER', TD_THEME_NAME),
     'Welcome!' => __('Welcome!', TD_THEME_NAME),
     'Log into your account' => __('Log into your account', TD_THEME_NAME),
     'Password recovery' => __('Password recovery', TD_THEME_NAME),
     'Send My Pass'  => __('Send My Pass', TD_THEME_NAME),
+    'Send My Password'  => __('Send My Password', TD_THEME_NAME),
     'Forgot your password?'  => __('Forgot your password?', TD_THEME_NAME),
+    'Forgot your password? Get help'  => __('Forgot your password? Get help', TD_THEME_NAME),
+    'Create an account'  => __('Create an account', TD_THEME_NAME),
     'Please wait...'  => __('Please wait...', TD_THEME_NAME),
     'User or password incorrect!'  => __('User or password incorrect!', TD_THEME_NAME),
     'Email or username incorrect!'  => __('Email or username incorrect!', TD_THEME_NAME),
@@ -143,6 +158,7 @@ $td_translation_map = array(
     'Email address not found!'  => __('Email address not found!', TD_THEME_NAME),
     'Your password is reset, check your email.'  => __('Your password is reset, check your email.', TD_THEME_NAME),
     'Welcome! Log into your account' => __('Welcome! Log into your account', TD_THEME_NAME),
+    'Welcome! Register for an account' => __('Welcome! Register for an account', TD_THEME_NAME),
     'Register for an account' => __('Register for an account', TD_THEME_NAME),
     'Recover your password' => __('Recover your password', TD_THEME_NAME),
     'your username' => __('your username', TD_THEME_NAME),
@@ -178,6 +194,7 @@ $td_translation_map = array(
     'POPULAR POSTS' => __('POPULAR POSTS', TD_THEME_NAME),
     'EDITOR PICKS' => __('EDITOR PICKS', TD_THEME_NAME),
     'ABOUT US' => __('ABOUT US', TD_THEME_NAME),
+    'About me' => __('About me', TD_THEME_NAME),
     'FOLLOW US' => __('FOLLOW US', TD_THEME_NAME),
     'EVEN MORE NEWS' => __('EVEN MORE NEWS', TD_THEME_NAME),
 
@@ -201,12 +218,73 @@ $td_translation_map = array(
     'Register' => __('Register', TD_THEME_NAME),
 
     'of' => __('of', TD_THEME_NAME),
+
+    //exchange currencies
+    'Euro Member Countries' => __('Euro Member Countries', TD_THEME_NAME),
+    'Australian Dollar' => __('Australian Dollar', TD_THEME_NAME),
+    'Bulgarian Lev' => __('Bulgarian Lev', TD_THEME_NAME),
+    'Brazilian Real' => __('Brazilian Real', TD_THEME_NAME),
+    'Canadian Dollar' => __('Canadian Dollar', TD_THEME_NAME),
+    'Swiss Franc' => __('Swiss Franc', TD_THEME_NAME),
+    'Chinese Yuan Renminbi' => __('Chinese Yuan Renminbi', TD_THEME_NAME),
+    'Czech Republic Koruna' => __('Czech Republic Koruna', TD_THEME_NAME),
+    'Danish Krone' => __('Danish Krone', TD_THEME_NAME),
+    'British Pound' => __('British Pound', TD_THEME_NAME),
+    'Hong Kong Dollar' => __('Hong Kong Dollar', TD_THEME_NAME),
+    'Croatian Kuna' => __('Croatian Kuna', TD_THEME_NAME),
+    'Hungarian Forint' => __('Hungarian Forint', TD_THEME_NAME),
+    'Indonesian Rupiah' => __('Indonesian Rupiah', TD_THEME_NAME),
+    'Israeli Shekel' => __('Israeli Shekel', TD_THEME_NAME),
+    'Indian Rupee' => __('Indian Rupee', TD_THEME_NAME),
+    'Japanese Yen' => __('Japanese Yen', TD_THEME_NAME),
+    'Korean (South) Won' => __('Korean (South) Won', TD_THEME_NAME),
+    'Mexican Peso' => __('Mexican Peso', TD_THEME_NAME),
+    'Malaysian Ringgit' => __('Malaysian Ringgit', TD_THEME_NAME),
+    'Norwegian Krone' => __('Norwegian Krone', TD_THEME_NAME),
+    'New Zealand Dollar' => __('New Zealand Dollar', TD_THEME_NAME),
+    'Philippine Peso' => __('Philippine Peso', TD_THEME_NAME),
+    'Polish Zloty' => __('Polish Zloty', TD_THEME_NAME),
+    'Romanian (New) Leu' => __('Romanian (New) Leu', TD_THEME_NAME),
+    'Russian Ruble' => __('Russian Ruble', TD_THEME_NAME),
+    'Swedish Krona' => __('Swedish Krona', TD_THEME_NAME),
+    'Singapore Dollar' => __('Singapore Dollar', TD_THEME_NAME),
+    'Thai Baht' => __('Thai Baht', TD_THEME_NAME),
+    'Turkish Lira' => __('Turkish Lira', TD_THEME_NAME),
+    'United States Dollar' => __('United States Dollar', TD_THEME_NAME),
+    'South African Rand' => __('South African Rand', TD_THEME_NAME),
+
 );
 
 
+// The 'SitePress' class is defined by WPML plugin. It's better using it instead of is_active_plugin( $plugin_file_path ) because the $plugin_file_path can vary (maybe the user changes the name of the plugin folder)
+if (class_exists('SitePress')) {
 
-//read the user translations
-$td_translation_map_user = td_util::get_option('td_translation_map_user');
+	//read the user translations
+	$td_translation_map_user = array();
+
+	function td_on_translate_admin_notices() {
+		?>
+		<div class="notice notice-success is-dismissible">
+			<p><?php _e('WPML Plugin is active! When the plugin is active, the *.po - *.mo files are used instead of Theme Panel Translation.', TD_THEME_NAME); ?></p>
+		</div>
+	<?php
+	}
+
+	add_action('admin_notices', 'td_on_translate_admin_notices');
+
+	function td_on_add_wpml_class($classes) {
+		$classes[] = 'td-wpml';
+		return $classes;
+	}
+
+	add_filter('body_class','td_on_add_wpml_class');
+
+} else {
+	//read the user translations
+	$td_translation_map_user = td_options::get_array('td_translation_map_user');
+}
+
+
 
 
 //the custom translation function

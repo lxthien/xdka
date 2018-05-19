@@ -19,12 +19,21 @@ class td_block_slide extends td_block {
 
 
         if ($this->td_query->have_posts() and $this->td_query->found_posts > 1 ) {
-            //get the js for this block
-            $buffy .= $this->get_block_js();
 
-            $buffy .= '<div class="' . $this->get_block_classes() . '">';
-                $buffy .= $this->get_block_title();
-                $buffy .= $this->get_pull_down_filter();
+            $buffy .= '<div class="' . $this->get_block_classes() . '" ' . $this->get_block_html_atts() . '>';
+
+		        //get the block js
+		        $buffy .= $this->get_block_css();
+
+		        //get the js for this block
+		        $buffy .= $this->get_block_js();
+
+                // block title wrap
+                $buffy .= '<div class="td-block-title-wrap">';
+                    $buffy .= $this->get_block_title(); //get the block title
+                    $buffy .= $this->get_pull_down_filter(); //get the sub category filter for this block
+                $buffy .= '</div>';
+
                 $buffy .= '<div id=' . $this->block_uid . ' class="td_block_inner">';
                     $buffy .= $this->inner($this->td_query->posts, '' , $autoplay);
                 $buffy .= '</div>';
@@ -44,9 +53,8 @@ class td_block_slide extends td_block {
     function inner($posts, $td_column_number = '', $autoplay = '', $is_ajax = false) {
         $buffy = '';
 
-        $td_block_layout = new td_block_layout();
         if (empty($td_column_number)) {
-            $td_column_number = td_util::vc_get_column_number(); // get the column width of the block from the page builder API
+            $td_column_number = td_global::vc_get_column_number(); // get the column width of the block from the page builder API
         }
 
         $td_post_count = 0; // the number of posts rendered
@@ -62,15 +70,24 @@ class td_block_slide extends td_block {
                         $td_module_slide = new td_module_slide($post);
                         $buffy .= $td_module_slide->render($td_column_number, $td_post_count, $td_unique_id_slide);
                         $td_post_count++;
+
+	                    // Show only the first frame in tagDiv composer
+	                    if (td_util::tdc_is_live_editor_iframe() or td_util::tdc_is_live_editor_ajax()) {
+		                    break;
+	                    }
                     }
                 }
-                $buffy .= $td_block_layout->close_all_tags();
             $buffy .= '</div>'; //close slider
 
             $buffy .= '<i class = "td-icon-left prevButton"></i>';
             $buffy .= '<i class = "td-icon-right nextButton"></i>';
 
         $buffy .= '</div>'; //close ios
+
+	    // Suppress any iosSlider in tagDiv composer
+	    if (td_util::tdc_is_live_editor_iframe() or td_util::tdc_is_live_editor_ajax()) {
+		    return $buffy;
+	    }
 
         if (!empty($autoplay)) {
             $autoplay_string =  '

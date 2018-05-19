@@ -44,13 +44,18 @@ abstract class td_category_top_posts_style {
             $td_grid_style = 'td-grid-style-1';
         }
 
+        $filter_by = '';
+        if (isset($_GET['filter_by'])) {
+            $filter_by = $_GET['filter_by'];
+        }
 
         //parameters to filter to for big grid
         $atts_for_big_grid = array(
             'limit' => $limit,
             'category_id' => td_global::$current_category_obj->cat_ID,
-            'sort' => get_query_var('filter_by'),
-            'td_grid_style' => $td_grid_style
+            'sort' => $filter_by,
+            'td_grid_style' => $td_grid_style,
+            'td_column_number' => 3 // we use only big grids - force 3 column
         );
 
 

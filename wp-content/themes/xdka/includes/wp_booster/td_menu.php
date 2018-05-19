@@ -6,6 +6,9 @@
 // the menu
 
 class td_menu {
+
+	private static $instance;
+
     var $is_header_menu_mobile = true;
 
 
@@ -21,18 +24,30 @@ class td_menu {
     }
 
 
+	static function get_instance() {
+		if ( !isset( self::$instance ) ) {
+			self::$instance = new td_menu();
+		}
+
+		return self::$instance;
+	}
+
+
 
     function hook_wp_edit_nav_menu_walker () {
-        include_once('td_menu_back.php');
+        //include_once('td_menu_back.php');
         return 'td_nav_menu_edit_walker';
     }
 
     function hook_wp_update_nav_menu_item ($menu_id, $menu_item_db_id, $args) {
 
-        //echo $menu_item_db_id;
+        //mega menu category
         if (isset($_POST['td_mega_menu_cat'][$menu_item_db_id])) {
             //print_r($_POST);
             update_post_meta($menu_item_db_id, 'td_mega_menu_cat', $_POST['td_mega_menu_cat'][$menu_item_db_id]);
+        }
+        //mega menu page
+        if (isset($_POST['td_mega_menu_page_id'][$menu_item_db_id])) {
             update_post_meta($menu_item_db_id, 'td_mega_menu_page_id', $_POST['td_mega_menu_page_id'][$menu_item_db_id]);
         }
 
@@ -48,7 +63,12 @@ class td_menu {
      * @return array
      */
     function hook_wp_nav_menu_objects($items, $args = '') {
-        $items_buffy = array();
+
+	    // Internal array to keep the references of the items (ID item is the key -> item itself)
+	    // This helps to not look for an item into the $items list
+	    $_items_ref = array();
+
+	    $items_buffy = array();
 
         $td_is_firstMenu = true;
 
@@ -58,7 +78,8 @@ class td_menu {
         //print_r($items);
 
         foreach ($items as &$item) {
-            $item->is_mega_menu = false;
+
+	        $_items_ref[$item->ID] = $item;
 
             /**
              * $item
@@ -114,7 +135,19 @@ class td_menu {
                         'number' => $td_show_child_cat  //
                     ));
                     if (!empty($td_subcategories)) {
-                        $item->classes[] = 'menu-item-has-children'; // add the extra class for the dropdown to work
+	                    $item->classes[] = 'menu-item-has-children'; // add the extra class for the dropdown to work
+
+	                    /**
+	                     * - Because 'current_item_parent' (true/false) item property is not set by wp,
+	                     * we use an additional flag 'td_is_parent' to mark the parent elements of the tree menu
+	                     * - For the moment, the 'td_is_parent' flag is used just by the 'td_walker_mobile_menu'
+	                     * walker of the mobile theme version @see td_walker_mobile_menu
+	                     */
+
+	                    if (array_key_exists($item->ID, $_items_ref)) {
+		                    $_items_ref[$item->ID]->td_is_parent = true;
+	                    }
+
                         foreach ($td_subcategories as $td_category) {
                             $new_item = $this->generate_wp_post();
                             $new_item->is_mega_menu = false; //this is sent to the menu walkers
@@ -133,7 +166,7 @@ class td_menu {
 
 
 
-            elseif ($td_mega_menu_page_id != '') {
+            elseif ($td_mega_menu_page_id != '' && td_api_features::is_enabled('page_mega_menu') === true) {
                 // a item with a page - pege mega menu
 
                 // the parent item (the one that appears in the main menu)
@@ -217,11 +250,24 @@ class td_menu {
                 $items_buffy[] = $item;
             }
 
+	        /**
+	         * - Because 'current_item_parent' (true/false) item property is not set by wp,
+	         * we use an additional flag 'td_is_parent' to mark the parent elements of the tree menu
+	         * - For the moment, the 'td_is_parent' flag is used just by the 'td_walker_mobile_menu'
+	         * walker of the mobile theme version @see td_walker_mobile_menu
+	         */
+
+	        if (isset($item->menu_item_parent) && 0 !== intval($item->menu_item_parent) && array_key_exists(intval($item->menu_item_parent), $_items_ref)) {
+		        $_items_ref[intval($item->menu_item_parent)]->td_is_parent = true;
 
 
-
-
-
+	        // WPML FIX!
+	        // When WPML language switcher is set in menu, on mobile it didn't render right (the first level element did not allow to open its submenu)
+	        } else if (strpos( $item->ID, 'wpml') === 0 && in_array('menu-item-has-children', $item->classes )) {
+                if (array_key_exists($item->ID, $_items_ref)) {
+                    $_items_ref[$item->ID]->td_is_parent = true;
+                }
+            }
 
 
         } //end foreach
@@ -277,7 +323,8 @@ class td_menu {
 
 }
 
-new td_menu();
+// Here's created the instance of 'td_menu' class
+td_menu::get_instance();
 
 
 
@@ -385,6 +432,111 @@ class td_tagdiv_walker_nav_menu extends Walker_Nav_Menu {
     }
 }
 
+
+class td_walker_mobile_menu extends Walker_Nav_Menu {
+
+	public function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
+		$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
+
+		$classes = empty( $item->classes ) ? array() : (array) $item->classes;
+		$classes[] = 'menu-item-' . $item->ID;
+
+		/**
+		 * Filter the CSS class(es) applied to a menu item's list item element.
+		 *
+		 * @since 3.0.0
+		 * @since 4.1.0 The `$depth` parameter was added.
+		 *
+		 * @param array  $classes The CSS classes that are applied to the menu item's `<li>` element.
+		 * @param object $item    The current menu item.
+		 * @param array  $args    An array of {@see wp_nav_menu()} arguments.
+		 * @param int    $depth   Depth of menu item. Used for padding.
+		 */
+		$class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth ) );
+		$class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
+
+		/**
+		 * Filter the ID applied to a menu item's list item element.
+		 *
+		 * @since 3.0.1
+		 * @since 4.1.0 The `$depth` parameter was added.
+		 *
+		 * @param string $menu_id The ID that is applied to the menu item's `<li>` element.
+		 * @param object $item    The current menu item.
+		 * @param array  $args    An array of {@see wp_nav_menu()} arguments.
+		 * @param int    $depth   Depth of menu item. Used for padding.
+		 */
+		$id = apply_filters( 'nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args, $depth );
+		$id = $id ? ' id="' . esc_attr( $id ) . '"' : '';
+
+		$output .= $indent . '<li' . $id . $class_names .'>';
+
+		$atts = array();
+		$atts['title']  = ! empty( $item->attr_title ) ? $item->attr_title : '';
+		$atts['target'] = ! empty( $item->target )     ? $item->target     : '';
+		$atts['rel']    = ! empty( $item->xfn )        ? $item->xfn        : '';
+		$atts['href']   = ! empty( $item->url )        ? $item->url        : '';
+
+		/**
+		 * Filter the HTML attributes applied to a menu item's anchor element.
+		 *
+		 * @since 3.6.0
+		 * @since 4.1.0 The `$depth` parameter was added.
+		 *
+		 * @param array $atts {
+		 *     The HTML attributes applied to the menu item's `<a>` element, empty strings are ignored.
+		 *
+		 *     @type string $title  Title attribute.
+		 *     @type string $target Target attribute.
+		 *     @type string $rel    The rel attribute.
+		 *     @type string $href   The href attribute.
+		 * }
+		 * @param object $item  The current menu item.
+		 * @param array  $args  An array of {@see wp_nav_menu()} arguments.
+		 * @param int    $depth Depth of menu item. Used for padding.
+		 */
+		$atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args, $depth );
+
+		$attributes = '';
+		foreach ( $atts as $attr => $value ) {
+			if ( ! empty( $value ) ) {
+				$value = ( 'href' === $attr ) ? esc_url( $value ) : esc_attr( $value );
+				$attributes .= ' ' . $attr . '="' . $value . '"';
+			}
+		}
+
+		$item_output = $args->before;
+		$item_output .= '<a'. $attributes .'>';
+		/** This filter is documented in wp-includes/post-template.php */
+		$item_output .= $args->link_before . apply_filters( 'the_title', $item->title, $item->ID );
+
+
+		// TAGDIV: The $link_after of args is added for parent items
+		if (isset($item->td_is_parent) && true === $item->td_is_parent) {
+			$item_output .= $args->link_after;
+		}
+
+
+		$item_output .= '</a>';
+		$item_output .= $args->after;
+
+		/**
+		 * Filter a menu item's starting output.
+		 *
+		 * The menu item's starting output only includes `$args->before`, the opening `<a>`,
+		 * the menu item's title, the closing `</a>`, and `$args->after`. Currently, there is
+		 * no filter for modifying the opening and closing `<li>` for a menu item.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $item_output The menu item's starting HTML output.
+		 * @param object $item        Menu item data object.
+		 * @param int    $depth       Depth of menu item. Used for padding.
+		 * @param array  $args        An array of {@see wp_nav_menu()} arguments.
+		 */
+		$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+	}
+}
 
 
 

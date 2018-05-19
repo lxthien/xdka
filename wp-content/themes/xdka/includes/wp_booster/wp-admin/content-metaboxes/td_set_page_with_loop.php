@@ -1,7 +1,7 @@
 <div class="td-page-options-tab-wrap">
     <div class="td-page-options-tab td-page-options-tab-active" data-panel-class="td-page-option-general"><a href="#">General</a></div>
-    <div class="td-page-options-tab" data-panel-class="td-page-option-post-list"><a href="#">Posts loop settings</a></div>
-    <div class="td-page-options-tab" data-panel-class="td-page-option-unique-articles"><a href="#">Unique articles</a></div>
+    <div class="td-page-options-tab" data-panel-class="td-page-option-post-list"><a href="#">Posts Loop Settings</a></div>
+    <div class="td-page-options-tab" data-panel-class="td-page-option-unique-articles"><a href="#">Unique Articles</a></div>
 </div>
 
 
@@ -37,9 +37,9 @@
                 'item_id' => '',
                 'option_id' => 'td_sidebar_position',
                 'values' => array(
-                    array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-left.png'),
-                    array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-full.png'),
-                    array('text' => '', 'title' => '', 'val' => 'sidebar_right', 'img' => get_template_directory_uri() . '/includes/wp_booster/wp-admin/images/panel/sidebar-right.png')
+                    array('text' => '', 'title' => '', 'val' => 'sidebar_left', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-left.png'),
+                    array('text' => '', 'title' => '', 'val' => 'no_sidebar', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-full.png'),
+                    array('text' => '', 'title' => '', 'val' => 'sidebar_right', 'img' => get_template_directory_uri() . '/images/panel/sidebar/sidebar-right.png')
                 ),
                 'selected_value' => $mb->get_the_value('td_sidebar_position')
             ));
@@ -75,7 +75,7 @@
 
         <div class="td-meta-box-row">
             <span class="td-page-o-custom-label">Template layout:</span>
-            <img class="td-doc-image-wp td-doc-image-homepage-loop" style="max-width: 100%" src="<?php echo get_template_directory_uri() ?>/includes/wp_booster/wp-admin/images/info-homepage-loop.jpg" />
+            <img class="td-doc-image-wp td-doc-image-homepage-loop" style="max-width: 100%" src="<?php echo get_template_directory_uri() ?>/images/pagebuilder/info-homepage-loop.png" />
         </div>
     </div>
 

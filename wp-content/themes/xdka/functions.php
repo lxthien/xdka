@@ -1,8 +1,8 @@
 <?php
 /*
     Our portfolio:  http://themeforest.net/user/tagDiv/portfolio
-    Thanks for using our theme !
-    tagDiv - 2015
+    Thanks for using our theme!
+    tagDiv - 2017
 */
 
 
@@ -17,6 +17,7 @@ require_once('td_deploy_mode.php');
 require_once('includes/td_config.php');
 add_action('td_global_after', array('td_config', 'on_td_global_after_config'), 9); //we run on 9 priority to allow plugins to updage_key our apis while using the default priority of 10
 
+
 // load the wp booster
 require_once('includes/wp_booster/td_wp_booster_functions.php');
 
@@ -26,7 +27,13 @@ require_once('includes/shortcodes/td_misc_shortcodes.php');
 require_once('includes/widgets/td_page_builder_widgets.php'); // widgets
 
 
-
+/*
+ * mobile theme css generator
+ * in wp-admin the main theme is loaded and the mobile theme functions are not included
+ * required in td_panel_data_source
+ * @todo - look for a more elegant solution(ex. generate the css on request)
+ */
+require_once('mobile/includes/td_css_generator_mob.php');
 
 
 /* ----------------------------------------------------------------------------
@@ -114,38 +121,42 @@ function test_td () {
  */
 if (TD_DEBUG_LIVE_THEME_STYLE) {
     add_action('wp_footer', 'td_theme_style_footer');
-    function td_theme_style_footer() {
-        ?>
-        <div id="td-theme-settings" class="td-theme-settings-small">
-            <div class="td-skin-header">One click demos</div>
-            <div class="td-skin-content">
-                <div class="td-set-theme-style"><a href="http://demo.tagdiv.com/newspaper/" class="td-set-theme-style-link">DEFAULT</a></div>
-                <div class="td-set-theme-style"><a href="http://demo.tagdiv.com/newspaper_fashion/" class="td-set-theme-style-link">FASHION</a></div>
-                <div class="td-set-theme-style"><a href="http://demo.tagdiv.com/newspaper_tech/" class="td-set-theme-style-link" data-value="">TECH</a></div>
-                <div class="td-set-theme-style"><a href="http://demo.tagdiv.com/newspaper_video/" class="td-set-theme-style-link">VIDEO</a></div>
-                <div class="td-set-theme-style"><a href="http://demo.tagdiv.com/newspaper_sport/" class="td-set-theme-style-link">SPORT</a></div>
-                <div class="td-set-theme-style"><a href="http://demo.tagdiv.com/newspaper_classic_blog/" class="td-set-theme-style-link">CLASSIC BLOG</a></div>
-	            <div class="td-set-theme-style"><a href="http://demo.tagdiv.com/newspaper_travel/" class="td-set-theme-style-link">TRAVEL<span>New</span></a></div>
-	            <div class="td-set-theme-style"><a href="http://demo.tagdiv.com/newspaper_health/" class="td-set-theme-style-link">HEALTH<span>New</span></a></div>
-	            <div class="td-set-theme-style"><a href="http://demo.tagdiv.com/newspaper_cars/" class="td-set-theme-style-link">CARS<span>New</span></a></div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="td-set-hide-show"><a href="#" id="td-theme-set-hide">HIDE</a></div>
-        </div>
-    <?php
-    }
+		// new live theme demos
+	    function td_theme_style_footer() {
+			    ?>
+			    <div id="td-theme-settings" class="td-live-theme-demos td-theme-settings-small">
+				    <div class="td-skin-body">
+					    <div class="td-skin-wrap">
+						    <div class="td-skin-container td-skin-buy"><a target="_blank" href="http://themeforest.net/item/newspaper/5489609?ref=tagdiv">BUY NEWSPAPER NOW!</a></div>
+						    <div class="td-skin-container td-skin-header">GET AN AWESOME START!</div>
+						    <div class="td-skin-container td-skin-desc">With easy <span>ONE CLICK INSTALL</span> and fully customizable options, our demos are the best start you'll ever get!!</div>
+						    <div class="td-skin-container td-skin-content">
+							    <div class="td-demos-list">
+								    <?php
+								    $td_demo_names = array();
+
+								    foreach (td_global::$demo_list as $demo_id => $stack_params) {
+									    $td_demo_names[$stack_params['text']] = $demo_id;
+									    ?>
+									    <div class="td-set-theme-style"><a href="<?php echo td_global::$demo_list[$demo_id]['demo_url'] ?>" class="td-set-theme-style-link td-popup td-popup-<?php echo $td_demo_names[$stack_params['text']] ?>" data-img-url="<?php echo td_global::$get_template_directory_uri ?>/demos_popup/large/<?php echo $demo_id; ?>.jpg"><span></span></a></div>
+								    <?php } ?>
+									<div class="td-set-theme-style-empty"><a href="#" class="td-popup td-popup-empty1"></a></div>
+									<div class="td-set-theme-style-empty"><a href="#" class="td-popup td-popup-empty2"></a></div>
+								    <div class="clearfix"></div>
+							    </div>
+						    </div>
+						    <div class="td-skin-scroll"><i class="td-icon-read-down"></i></div>
+					    </div>
+				    </div>
+				    <div class="clearfix"></div>
+				    <div class="td-set-hide-show"><a href="#" id="td-theme-set-hide"></a></div>
+				    <div class="td-screen-demo" data-width-preview="380"></div>
+			    </div>
+			    <?php
+	    }
+
 }
 
-//td_util::update_option('tdx_remote_http', '');
-//die;
-//if (!is_admin()) {
-//	$result = tdx_remote_http::get_page('http://reddit.com');
-//	echo $result;
-//	die;
-//}
+//td_demo_state::update_state("art_creek", 'full');
 
-
-//print_r(td_remote_video::youtube_api_get_videos_info(array('JgI8DyDCESw', 'f5qepzrQm9U', 'UGdRyPN3IRk')));
-//
-//print_r(td_remote_video::vimeo_api_get_videos_info(array('141710401', '135900733', '135911266')));
-//die;
+//print_r(td_global::$all_theme_panels_list);

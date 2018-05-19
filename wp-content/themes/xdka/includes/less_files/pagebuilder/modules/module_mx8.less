@@ -79,13 +79,13 @@
     top: 2px;
 
     a {
-      background-color: transparent;
+      background-color: transparent !important;
       padding: 0;
       font-size: 11px;
       font-weight: 400;
 
       &:before {
-        font-family: 'newspaper';
+        font-family: @font4;
         speak: none;
         font-style: normal;
         font-weight: normal;
@@ -115,8 +115,24 @@
   /* responsive portrait tablet */
   @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
     .td-author-date {
-      display: block;
-      margin-top: 5px;
+      display: none;
+    }
+    .td-module-meta-info {
+      bottom: 10px;
+    }
+    .td_module_wrap .entry-title {
+      margin: 0;
+    }
+    .td-video-play-ico > img {
+      width: 30px;
+      height: 30px;
+      top: 10px;
+      right: 10px;
+      bottom: auto;
+      left: auto;
+    }
+    .entry-title {
+      margin: 0;
     }
   }
 }

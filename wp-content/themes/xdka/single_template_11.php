@@ -11,7 +11,7 @@ global $loop_sidebar_position, $td_sidebar_position, $post;
 $td_mod_single = new td_module_single($post);
 
 ?>
-<article id="post-<?php echo $td_mod_single->post->ID;?>" class="<?php echo join(' ', get_post_class('td-post-template-11'));?>" <?php echo $td_mod_single->get_item_scope();?>>
+<article id="post-<?php echo $td_mod_single->post->ID;?>" class="<?php echo join(' ', get_post_class('td-post-template-11'));?> td-container-wrap" <?php echo $td_mod_single->get_item_scope();?>>
     <div class="td-video-template-bg">
         <div class="td-container">
             <div class="td-pb-row">
@@ -40,8 +40,11 @@ $td_mod_single = new td_module_single($post);
 
 
                     <?php
+
+                    $tds_post_style_11_title = td_util::get_option('tds_post_style_11_title');
+
                     // ad spot
-                    echo td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'post_style_11')); ?>
+                    echo td_global_blocks::get_instance('td_block_ad_box')->render(array('spot_id' => 'post_style_11', 'spot_title' => $tds_post_style_11_title)); ?>
 
                 </div>
 

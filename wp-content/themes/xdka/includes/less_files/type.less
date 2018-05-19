@@ -242,9 +242,14 @@ textarea {
   min-height: 168px;
   padding: 6px 9px 6px 9px;
 
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+    font-size: 16px;
+  }
+
   &:active,
   &:focus {
-    border-color: #b0b0b0;
+    border-color: #b0b0b0 !important;
   }
 }
 
@@ -285,9 +290,14 @@ input[type=email] {
   height: 34px;
   padding: 3px 9px;
 
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+    font-size: 16px;
+  }
+
   &:active,
   &:focus {
-    border-color: #b0b0b0;
+    border-color: #b0b0b0 !important;
   }
 }
 
@@ -305,6 +315,11 @@ input[type=password] {
   height: 34px;
   padding: 3px 9px;
   margin-bottom: 10px;
+
+  /* responsive portrait phone */
+  @media (max-width: @responsive_p_phone_max) {
+    font-size: 16px;
+  }
 }
 
 
@@ -331,20 +346,25 @@ input[type=password] {
     margin-bottom: 21px;
   }
 
-  // if with caption remove the padding
+  // if with caption remove the margin
   figure {
     img {
       margin-bottom: 0;
     }
   }
-}
 
-// featured image caption
-// @todo - trebuie mutat din fisieru' asta ??
-.td-post-featured-image figure img {
-  margin-bottom: 0;
-}
+  // this is for small `in content` images..
+  // for large `in content` images use wp's center align to have them look well
+  .alignnone {
+    display: inline-block;
+    margin: 0 5px;
 
+    /* responsive portrait phone */
+    @media (max-width: @responsive_p_phone_max) {
+      margin: 0 10px 0 0;
+    }
+  }
+}
 
 
 img.wp-smiley {
@@ -598,7 +618,7 @@ figure.aligncenter {
     text-decoration: underline;
   }
 
-  ul {
+  ul,ol {
     margin-bottom: 26px;
   }
 
@@ -625,11 +645,26 @@ figure.aligncenter {
       font-size: 14px;
     }
   }
+
+  //fix for embeds that overflow content width
+  embed,
+  iframe,
+  object {
+    max-width: 100% !important;
+  }
+
+  iframe {
+    &.instagram-media{
+      margin: 1px 0 12px !important;
+    }
+  }
 }
 
 //remove underline from Titles and Categories
 .entry-title a,
-.td-post-category {
+.td-post-category,
+.widget a,
+.td_block_wrap a {
 
   &:hover {
     text-decoration: none !important;
@@ -676,6 +711,13 @@ figure.aligncenter {
       text-align: center;
       text-transform: uppercase;
       color: @td_theme_color;
+      word-wrap: break-word;
+
+      /* responsive portrait tablet */
+      @media (min-width: @responsive_p_tablet_min) and (max-width: @responsive_p_tablet_max) {
+        font-size: 24px;
+        line-height: 32px;
+      }
 
       /* responsive portrait phone */
       @media (max-width: @responsive_p_phone_max) {
@@ -918,20 +960,24 @@ blockquote.pull-right:after {
     float:left;
     display: block;
     font-size: 50px;
-    line-height: 50px;
+    line-height: 56px;
     background-color: @td_theme_color;
     color: white;
     text-align: center;
     margin: 9px 13px 0 0;
-    padding: 2px 13px 5px 13px;
+    padding: 2px 10px 4px;
     font-family: @font2;
     text-transform: uppercase;
+    min-width: 62px;
+    min-height: 62px;
   }
 
   .dropcap1 {
-    -webkit-border-radius: 100%;
-    -moz-border-radius: 100%;
-    border-radius: 100%;
+    -webkit-border-radius: 70px;
+    -moz-border-radius: 70px;
+    border-radius: 70px;
+    font-size: 40px;
+    padding: 2px 14px 4px;
   }
 
   .dropcap2 {
@@ -999,6 +1045,146 @@ blockquote.pull-right:after {
   margin-bottom: 26px;
 }
 
+/*  ----------------------------------------------------------------------------
+    button
+*/
+//Default - Global
+.td_btn {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  color: white;
+  font-family: 'Open Sans', arial, sans-serif;
+  font-weight: 600;
+}
+
+.td_btn_sm {
+  padding: 5px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+
+  &.td_round_btn {
+    border-radius: 3px; //round
+  }
+}
+
+.td_btn_md {
+  padding: 9px 12px;
+  font-size: 16px;
+  line-height: 20px;
+
+  &.td_round_btn {
+    border-radius: 4px; //round
+  }
+}
+
+.td_btn_lg {
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+
+  &.td_round_btn {
+    border-radius: 6px; //round
+  }
+}
+
+// Default and round buttons
+.td_default_btn,
+.td_round_btn {
+  transition: background-color 0.1s ease;
+  -webkit-transition: background-color 0.1s ease;
+  background-color: @td_theme_color;
+
+  &:hover {
+    background-color: #444 !important;
+  }
+
+  &:active {
+    background-color: #000 !important;
+  }
+}
+
+//Outlined button
+.td_outlined_btn {
+  border-width: 2px;
+  border-style: solid;
+  border-color: @td_theme_color;
+  border-radius: 4px;
+  color: @td_theme_color;
+  background-color: transparent;
+  transition: all 0.1s ease ;
+  -webkit-transition: all 0.1s ease;
+
+  &:hover {
+    background-color: @td_theme_color;
+    color: #fff;
+  }
+
+  &:active {
+    background-color: #444 !important;
+    border-color: #444;
+  }
+}
+
+//Shadow button
+.td_shadow_btn {
+  background-color: @td_theme_color;
+  top: 0;
+  -webkit-box-shadow: 0 4px 7px 0 rgba(0,0,0,0.25);
+  -moz-box-shadow: 0 4px 7px 0 rgba(0,0,0,0.25);
+  box-shadow: 0 4px 7px 0 rgba(0,0,0,0.25);
+  transition: top 0.1s ease;
+  -webkit-transition: top 0.1s ease;
+
+  &:hover {
+    top: -3px;
+    -webkit-box-shadow: 0 6px 12px 0 rgba(0,0,0,0.25);
+    -moz-box-shadow: 0 6px 12px 0 rgba(0,0,0,0.25);
+    box-shadow: 0 6px 12px 0 rgba(0,0,0,0.25);
+  }
+
+  &:active {
+    background-color: #444 !important;
+  }
+}
+
+//3d button
+.td_3D_btn {
+  background-color: @td_theme_color;
+  top: 0;
+  transition: top 0.1s ease;
+  -webkit-transition: top 0.1s ease;
+
+  &:after {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    height: 5px;
+    background-color: rgba(0,0,0,0.25);
+    z-index: 0;
+    transition: height 0.1s ease;
+    -webkit-transition: height 0.1s ease;
+  }
+
+  &:hover {
+    top: 5px;
+
+    &:before {
+      height: 0;
+    }
+
+    &:after {
+      height: 0;
+    }
+  }
+
+  &:active {
+    background-color: #444 !important;
+  }
+}
 
 
 /*  ----------------------------------------------------------------------------
@@ -1013,9 +1199,9 @@ blockquote.pull-right:after {
   .transition(color 400ms);
   &:hover {
     color:#F9F9F9;
+    cursor: default;
   }
 }
-
 
 .td_text_highlight_marker {
   padding: 5px 0 6px 0;
@@ -1061,28 +1247,28 @@ blockquote.pull-right:after {
 
 //  text ⇠
 .td-paragraph-padding-0 {
-  display:inline-block;
+  display: block;
   padding-left: 0;
   padding-right: 6%;
 }
 
 // ⇢ text ⇠
 .td-paragraph-padding-1 {
-  display:inline-block;
+  display: block;
   padding-left: 6%;
   padding-right: 6%;
 }
 
 // ⇢⇢ text ⇠⇠
 .td-paragraph-padding-2 {
-  display:inline-block;
+  display: block;
   padding-left: 12%;
   padding-right: 12%;
 }
 
 // ⇢ text ⇠⇠
 .td-paragraph-padding-3 {
-  display:inline-block;
+  display: block;
   padding-left: 6%;
   padding-right: 12%;
 }
@@ -1090,21 +1276,21 @@ blockquote.pull-right:after {
 
 // ⇢ text
 .td-paragraph-padding-4 {
-  display:inline-block;
+  display: block;
   padding-left: 6%;
   padding-right: 0;
 }
 
 // ⇢⇢⇢ text ⇠⇠⇠
 .td-paragraph-padding-5 {
-  display:inline-block;
+  display: block;
   padding-left: 18%;
   padding-right: 18%;
 }
 
 // ⇢⇢ text ⇠
 .td-paragraph-padding-6 {
-  display:inline-block;
+  display: block;
   padding-left: 12%;
   padding-right: 6%;
 }
@@ -1112,7 +1298,6 @@ blockquote.pull-right:after {
 
 
 //smaller spaces on two columns
-.td-pb-span8,
 .td-pb-span8,
 .mceContentBody-max-width-small  //editor-style - small version
 {
@@ -1136,7 +1321,6 @@ blockquote.pull-right:after {
 
   // ⇢ text ⇠⇠
   .td-paragraph-padding-3 {
-    display:inline-block;
     padding-left: 4%;
     padding-right: 8%;
   }
@@ -1148,14 +1332,12 @@ blockquote.pull-right:after {
 
   // ⇢⇢⇢ text ⇠⇠⇠
   .td-paragraph-padding-5 {
-    display:inline-block;
     padding-left: 12%;
     padding-right: 12%;
   }
 
   // ⇢⇢ text ⇠
   .td-paragraph-padding-6 {
-    display:inline-block;
     padding-left: 8%;
     padding-right: 4%;
   }
@@ -1175,8 +1357,6 @@ blockquote.pull-right:after {
   .td-paragraph-padding-6 {
     padding-left: 10px !important;
     padding-right: 10px !important;
-
-    display: block; //fix for mobile
   }
 }
 
