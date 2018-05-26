@@ -90,18 +90,24 @@ if (td_util::get_option('tds_footer') != 'no') {
 <?php wp_footer(); ?>
 
 <!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/5a3dbdddf4461b0b4ef8a4b9/default';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
+<!-- <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/5a3dbdddf4461b0b4ef8a4b9/default';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+</script> -->
 <!--End of Tawk.to Script-->
+
+<div class="dang_ky_fix">
+    <a href="tel:0974776305"> 
+        <i class="fa fa-phone"></i><span>0974.776.305</span>
+    </a>
+</div>
 
 </body>
 </html>
