@@ -39891,6 +39891,57 @@ ul.sf-menu > .td-menu-item > a {
 }
 
 /*====================================
+ * Right Box
+ *====================================*/
+.td_block_slide .td-block-title-wrap .block-title,
+.td_block_21.td-column-1 .td-block-title-wrap .block-title,
+.td_block_18.td-column-1 .td-block-title-wrap .block-title {
+  border-color: #d19a3d;
+}
+.td_block_21.td-column-1 .td_module_16 {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #cccccc;
+}
+.td_block_21.td-column-1 .td_module_16:last-child {
+  border-bottom: none;
+}
+.td_block_slide .td-block-title-wrap .block-title a,
+.td_block_18.td-column-1 .td-block-title-wrap .block-title a,
+.td_block_21.td-column-1 .td-block-title-wrap .block-title span {
+  font-size: 16px;
+  line-height: 20px;
+  font-size: 500;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+.td_block_21.td-column-1 .td_block_inner .item-details .entry-title {
+  font-size: 16px;
+  font-family: "Arial", sans-serif;
+  letter-spacing: -0.5px;
+}
+.td_module_mx2 .entry-title {
+  font-size: 14px;
+}
+
+/*====================================
+ * Post detail
+ *====================================*/
+.post header .entry-title {
+  font-size: 30px;
+  line-height: 30px;
+  padding-bottom: 1px;
+  border-bottom: 2px solid #223455;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+.post header .td-module-meta-info {
+  display: none;
+}
+.td-post-content p {
+  font-size: 16px;
+  font-family: "Arial", sans-serif;
+}
+
+/*====================================
  * Search Box
  *====================================*/
 .td-search-form-widget .wpb_button, .header-search-wrap .td-drop-down-search .btn {
@@ -39905,16 +39956,6 @@ ul.sf-menu > .td-menu-item > a {
  *====================================*/
 form.wpcf7-form div.wpcf7-form-control-wrap {
   margin-bottom: 15px;
-}
-
-/*====================================
- * Header
- *====================================*/
-.td-header-style-1 .td-header-sp-logo {
-  margin: 20px 28px 0px 0px;
-}
-.td-header-sp-recs img {
-  margin-top: -36px;
 }
 
 /*====================================
@@ -40073,7 +40114,9 @@ form.wpcf7-form div.wpcf7-form-control-wrap {
 .td-crumb-container {
   margin-bottom: 15px;
 }
-.td-crumb-container .entry-crumbs, .td-crumb-container .entry-crumbs span, .td-crumb-container .entry-crumbs span a {
+.td-crumb-container .entry-crumbs,
+.td-crumb-container .entry-crumbs span,
+.td-crumb-container .entry-crumbs span a {
   color: #000000;
   font-family: "Arial";
   font-size: 14px;
